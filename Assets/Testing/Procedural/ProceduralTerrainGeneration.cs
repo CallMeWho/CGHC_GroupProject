@@ -5,64 +5,68 @@ using UnityEngine.Tilemaps;
 
 public class ProceduralTerrainGeneration : MonoBehaviour
 {
+    [Header("Terrain Size")]
     [SerializeField] int Width;
-    [SerializeField] int MinStoneHeight, MaxStoneHeight;
-    [Range(0,100)]
-    [SerializeField] float HeightValue, Smoothness;
-    [SerializeField] TileBase PlaneTile, GrassTile, StoneTile;
+    [SerializeField] int MinInnerTileInterval, MaxInnerTileInterval;
+    [Range(0,100)][SerializeField] float HeightValue, Smoothness;
+
+    [Header("Tilemaps")]
     [SerializeField] Tilemap TerrainTilemap;
+
+    [Header("Tiles")]
+    [SerializeField] TileBase UpperTile;
+    [SerializeField] TileBase LowerTile;
+    [SerializeField] TileBase GrassTile;
+
+    [Header("Random Generate")]
     [SerializeField] float Seed;
 
     void Start()
     {
         Seed = Random.Range(-100000, 100000);
-        Generation();
+        TerrainGeneration();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Seed = Random.Range(-100000, 100000);
-            Generation();
-        }
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             TerrainTilemap.ClearAllTiles();
+            Seed = Random.Range(-100000, 100000);
+            TerrainGeneration();
         }
     }
 
-    void Generation()
+    void TerrainGeneration()
     {
         for (int x = 0; x < Width; x++)
         {
-            int height = Mathf.RoundToInt(HeightValue * Mathf.PerlinNoise(x / Smoothness, Seed));
+            int perlinHeight = Mathf.RoundToInt(HeightValue * Mathf.PerlinNoise(x / Smoothness, Seed));
 
-            int minStoneSpawnDistance = height - MinStoneHeight;
-            int maxStoneSpawnDistance = height - MaxStoneHeight;
-            int totalStoneSpawnDistance = Random.Range(maxStoneSpawnDistance, minStoneSpawnDistance);
+            int highestInnerTileHeight = perlinHeight - MinInnerTileInterval;
+            int lowestInnerTileHeight = perlinHeight - MaxInnerTileInterval;
+            int randomInnerTileHeight = Random.Range(lowestInnerTileHeight, highestInnerTileHeight);
 
-            for (int y =  0; y < height; y++)
+            for (int y =  0; y < perlinHeight; y++)
             {
-                if (y < totalStoneSpawnDistance)
+                if (y < randomInnerTileHeight)
                 {
-                    SpawnTile(StoneTile, x, y);
+                    SpawnTile(LowerTile, x, y);
                 }
                 else
                 {
-                    SpawnTile(PlaneTile, x, y);
+                    SpawnTile(UpperTile, x, y);
                 }
             }
 
-            if (totalStoneSpawnDistance == height)
+            if (randomInnerTileHeight == perlinHeight)
             {
-                SpawnTile(StoneTile, x, height);
+                SpawnTile(LowerTile, x, perlinHeight);
             }
             else
             {
-                SpawnTile(GrassTile, x, height);
+                SpawnTile(GrassTile, x, perlinHeight);
             }
-            
         }
     }
 

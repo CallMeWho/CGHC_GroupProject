@@ -272,7 +272,7 @@ GameObject:
   - component: {fileID: 612923309}
   - component: {fileID: 612923308}
   m_Layer: 0
-  m_Name: Tilemap
+  m_Name: Terrain Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -425,14 +425,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Width: 2000
-  MinStoneHeight: 2
-  MaxStoneHeight: 7
-  HeightValue: 50
-  Smoothness: 20
-  PlaneTile: {fileID: 11400000, guid: 9e84c2c33c9a72e41be90304721ed6e4, type: 2}
-  GrassTile: {fileID: 11400000, guid: dbd1c5d8a181db54c9376e8cbced0389, type: 2}
-  StoneTile: {fileID: 11400000, guid: 2f8d60a6af753d84594475d9191811cb, type: 2}
+  MinInnerTileInterval: 2
+  MaxInnerTileInterval: 7
+  HeightValue: 38.5
+  Smoothness: 59.1
   TerrainTilemap: {fileID: 612923309}
+  UpperTile: {fileID: 11400000, guid: 183aa851138a34042afcf2b0fe1e7856, type: 2}
+  LowerTile: {fileID: 11400000, guid: 59461f0df685a4f4cb99873055d08ef5, type: 2}
+  GrassTile: {fileID: 11400000, guid: 53d7439ed885661469512ee5d4d86b27, type: 2}
   Seed: 0
 --- !u!1 &2109421808
 GameObject:
