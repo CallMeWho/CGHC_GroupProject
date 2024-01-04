@@ -8,10 +8,22 @@ using UnityEngine.UIElements;
 
 public class ProceduralTerrainGeneration : MonoBehaviour
 {
-    [Header("Terrain")]
+    [Header("Terrain Boundaries")]
     [SerializeField] int Width;
     [SerializeField] int Height;
-    [SerializeField] int Interval;
+
+    [Header("Terrain Types")]
+    [SerializeField] LevelTypeOptions LevelType;
+
+    [Header("Tutorial Terrain Settings")]
+    [SerializeField] int SectionWidth = 0;
+    [SerializeField] int MinimumSectionWidth;
+
+    [Header("Gameplay Terrain Settings")]
+    [Range(0, 100)] [SerializeField] int FloorPercent;
+    [Range(0, 100)][SerializeField] int FillPercent;
+    [SerializeField] bool EdgesAreWalls = true;
+    [SerializeField] int Smoothness;
 
     /*
     [SerializeField] int MinInnerTileInterval;
@@ -34,22 +46,29 @@ public class ProceduralTerrainGeneration : MonoBehaviour
     [Header("Randomization")]
     [SerializeField] float Seed;
 
+    public enum LevelTypeOptions
+    {
+        TutorialLevel = 1,
+        GameplayLevel = 2,
+    }
+
     void Start()
     {
-        EmptyTerrainArray = GenerateEmptyTerrainArray();
+        if (LevelType == LevelTypeOptions.TutorialLevel)
+        {
+            EmptyTerrainArray = GenerateEmptyTerrainArray(true);
+            TerrainArray = RandomWalkTopSmoothed(EmptyTerrainArray, Seed, MinimumSectionWidth);
+        }
 
-        //TerrainArray = GenerateSmoothTerrainArray(EmptyTerrainArray, Interval);
-        //TerrainArray = GenerateRandomWalkTopArray(EmptyTerrainArray, Seed);
-        TerrainArray = RandomWalkTopSmoothed(EmptyTerrainArray, Seed, 10);
-
-        //TerrainArray = PerlinNoiseCave(TerrainArray, 0.05f, true);
-        //TerrainArray = RandomWalkCave(TerrainArray, Seed, 35);
-        TerrainArray = GenerateCellularAutomata(TerrainArray, Seed, 50, true);
-        TerrainArray = SmoothMooreCellularAutomata(TerrainArray, true, 20);
-
+        else if (LevelType == LevelTypeOptions.GameplayLevel)
+        {
+            EmptyTerrainArray = GenerateEmptyTerrainArray(false);
+            TerrainArray = RandomWalkCave(EmptyTerrainArray, Seed, FloorPercent);
+            TerrainArray = GenerateCellularAutomata(TerrainArray, Seed, FillPercent, EdgesAreWalls);
+            TerrainArray = SmoothMooreCellularAutomata(TerrainArray, EdgesAreWalls, Smoothness);
+        }
 
         RenderTerrainArray(EmptyTerrainArray, TerrainTilemap);
-
         Seed = 1;
         //Seed = Random.Range(-100000, 100000);
     }
@@ -58,13 +77,28 @@ public class ProceduralTerrainGeneration : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            
+            if (LevelType == LevelTypeOptions.TutorialLevel)
+            {
+                EmptyTerrainArray = GenerateEmptyTerrainArray(true);
+                TerrainArray = RandomWalkTopSmoothed(EmptyTerrainArray, Seed, MinimumSectionWidth);
+            }
+
+            else if (LevelType == LevelTypeOptions.GameplayLevel)
+            {
+                EmptyTerrainArray = GenerateEmptyTerrainArray(false);
+                TerrainArray = RandomWalkCave(EmptyTerrainArray, Seed, FloorPercent);
+                TerrainArray = GenerateCellularAutomata(TerrainArray, Seed, FillPercent, EdgesAreWalls);
+                TerrainArray = SmoothMooreCellularAutomata(TerrainArray, EdgesAreWalls, Smoothness);
+            }
+
+            RenderTerrainArray(EmptyTerrainArray, TerrainTilemap);
+            Seed = Random.Range(-100000, 100000);
         }
     }
 
     #region GeneratingArray
     // Phase 1: Generate the Empty Array
-    public int[,] GenerateEmptyTerrainArray()
+    public int[,] GenerateEmptyTerrainArray(bool isEmpty)
     {
         int terrainWidth = Width; 
         int terrainHeight = Height;
@@ -74,7 +108,14 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         {
             for (int y = 0; y < terrainHeight; y++)
             {
-                emptyTerrainArray[x, y] = 0;
+                if (isEmpty)
+                {
+                    emptyTerrainArray[x, y] = 0;
+                }
+                else if (!isEmpty)
+                {
+                    emptyTerrainArray[x, y] = 1;
+                }
             }
         }
 
@@ -82,138 +123,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
     }
 
     // Phase 2(A): Generate the Random Height Array
-    public int[,] GenerateTerrainArray(int[,] emptyTerrainArray)
-    {
-        int terrainWidth = emptyTerrainArray.GetUpperBound(0);
-        int terrainHeight = emptyTerrainArray.GetUpperBound(1);
-        float noiseReductionValue = 0.5f;
-
-        for (int x = 0; x < terrainWidth; x++)
-        {
-            float noise = Mathf.PerlinNoise(x * 0.1f, Seed) - noiseReductionValue;  //this 0.1f is a MUST, or else no random num
-            /* EXPLANATION
-             * since noise value will be between 0 to 1, and because of noiseReductionValue 0.5f, it will finally be between -0.5 to 0.5
-             * - means the terrain will be lower
-            */
-
-            int noiseHeight = Mathf.FloorToInt(noise * terrainHeight);
-            /* EXPLANATION
-             * since noice is between -0.5 to 0.5, you can think of it like the percentage be between -50% to 50%
-             * so the noiseHeight can be negative
-            */
-
-            int averageHeight = terrainHeight / 2;
-            int newHeight = averageHeight + noiseHeight;
-            /* EXPLANATION
-             * because of noiseHeight, newHeight will sometimes lower or higher than averageHeight,
-             * and this newHeight, is part of our terrain
-            */
-
-            for (int y = newHeight; y >= 0; y--) 
-            {
-                emptyTerrainArray[x, y] = 1;
-            }
-        }
-
-        int[,] terrainArray = emptyTerrainArray;
-        return terrainArray;
-    }
-
-    public int[,] GenerateSmoothTerrainArray(int[,] emptyTerrainArray, int interval)
-    {
-        int terrainWidth = emptyTerrainArray.GetUpperBound(0);
-        int terrainHeight = emptyTerrainArray.GetUpperBound(1);
-
-        if (interval > 1) // means if got interval
-        {
-            float noiseReductionValue = 0.5f;
-
-            List<int> listPointsX = new List<int>();
-            List<int> listPointsY = new List<int>();
-
-            for (int x = 0; x < terrainWidth; x += interval) 
-            /* EXPLANATION
-             * here, instead of make every x has random height, we set an interval between each 2 x, only every interval start point and 
-             * end point will set with their random heights, the middle of them will not.
-             * EXAMPLE
-             * if interval = 3, at x = 0 and x = 3 have set their random height, but their middle which are x = 1, 2 no set random height
-             */
-            {
-                float noise = Mathf.PerlinNoise(x * 0.1f, (Seed * noiseReductionValue));    
-                int noiseHeight = Mathf.FloorToInt(noise * terrainHeight);
-
-                listPointsY.Add(noiseHeight);
-                listPointsX.Add(x);
-            }
-
-            int noiseY_Counts = listPointsY.Count;
-            for (int i = 1; i < noiseY_Counts; i++)    //start at i = 1, not i = 0
-            {
-                /* EXPLANATION
-                 * since we set interval start and end points have their random height, but the middle of them dont have yet, 
-                 * and here we pick these two points and find the height difference between them,
-                 * how much interval then divide how much times the height difference evenly => heightChange
-                 */
-                Vector2Int currentPos = new Vector2Int(listPointsX[i], listPointsY[i]);
-                Vector2Int previousPos = new Vector2Int(listPointsX[i - 1], listPointsY[i - 1]);   //because of this
-                Vector2 diff = currentPos - previousPos;
-
-                int heightChange = Mathf.RoundToInt(diff.y / interval);
-                int initialDistance = Mathf.RoundToInt(previousPos.x);
-                int initialHeight = Mathf.RoundToInt(previousPos.y);
-                int finalDistance = Mathf.RoundToInt(currentPos.x);
-                int finalHeight = Mathf.RoundToInt(currentPos.y);
-
-                for (int x = initialDistance; x < finalDistance; x++) 
-                {
-                    for (int y = finalHeight; y > 0; y--)
-                    {
-                        emptyTerrainArray[x, y] = 1;
-                    }
-                    initialHeight += heightChange;
-                }
-            }
-        }
-        else
-        {
-            emptyTerrainArray = GenerateTerrainArray(emptyTerrainArray);
-        }
-
-        int[,] terrainArray = emptyTerrainArray;
-        return terrainArray;
-    }
-
-    // Phase 2(B): Generate the Random Height Array
-    public int[,] GenerateRandomWalkTopArray(int[,] emptyTerrainArray, float seed)
-    {
-        int terrainWidth = emptyTerrainArray.GetUpperBound(0);
-        int terrainHeight = emptyTerrainArray.GetUpperBound(1);
-
-        System.Random rand = new System.Random(seed.GetHashCode());
-        int lastHeight = Random.Range(0, terrainHeight);
-
-        for (int x = 0; x < terrainWidth; x++)
-        {
-            int nextMove = rand.Next(2); //nextMove = 0 or 1, but not 2
-            if (nextMove == 0 && lastHeight > 2) 
-            {
-                lastHeight--;
-            }
-            else if (nextMove == 1 && lastHeight < terrainHeight - 2)
-            {
-                lastHeight++;
-            }
-
-            for (int y = lastHeight; y >= 0; y--) 
-            {
-                emptyTerrainArray[x,y] = 1;
-            }
-        }
-
-        int[,] terrainArray = emptyTerrainArray;
-        return terrainArray;
-    }
-    
+    // Tutorial Level
     public int[,] RandomWalkTopSmoothed(int[,] emptyTerrainArray, float seed, int minSectionWidth)
     {
         int terrainWidth = emptyTerrainArray.GetUpperBound(0);
@@ -221,23 +131,23 @@ public class ProceduralTerrainGeneration : MonoBehaviour
 
         System.Random rand = new System.Random(seed.GetHashCode());
         int lastHeight = Random.Range(0, terrainHeight);
-        int nextMove = 0;
-        int sectionWidth = 0;
+        int nextMove = 0;   //nextMove: to determine either next tile is to place either downwards or upwards
 
         for (int x = 0; x < terrainWidth; x++)
         {
             nextMove = rand.Next(2); //nextMove = 0 or 1, but not 2
-            if (nextMove == 0 && lastHeight > 0 && sectionWidth > minSectionWidth)
+
+            if (nextMove == 0 && lastHeight > 0 && SectionWidth > minSectionWidth)  //nextMove = 0, moving downwards
             {
                 lastHeight--;
-                sectionWidth = 0;
+                SectionWidth = 0;
             }
-            else if (nextMove == 1 && lastHeight < terrainHeight && sectionWidth > minSectionWidth) 
+            else if (nextMove == 1 && lastHeight < terrainHeight && SectionWidth > minSectionWidth) //nextMove = 1, moving upwards
             {
                 lastHeight++;
-                sectionWidth = 0;
+                SectionWidth = 0;
             }
-            sectionWidth++;
+            SectionWidth++;
 
             for (int y = lastHeight; y >= 0; y--)
             {
@@ -249,31 +159,157 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         return terrainArray;
     }
 
-    // Phase 3(A): Generate the Cave Array
-    public int[,] PerlinNoiseCave(int[,] map, float modifier, bool edgesAreWalls)
+    // Phase 2(B): Generate the Cave Array
+    //Gameplay Level
+    public int[,] RandomWalkCave(int[,] emptyTerrainArray, float seed, int requiredFloorPercent)
     {
-        int newPoint;
-        for (int x = 0; x < map.GetUpperBound(0); x++)
-        {
-            for (int y = 0; y < map.GetUpperBound(1); y++)
-            {
+        int terrainWidth = emptyTerrainArray.GetUpperBound(0);
+        int terrainHeight = emptyTerrainArray.GetUpperBound(1);
 
-                if (edgesAreWalls && (x == 0 || y == 0 || x == map.GetUpperBound(0) - 1 || y == map.GetUpperBound(1) - 1))
-                {
-                    map[x, y] = 1; //Keep the edges as walls
-                }
-                else
-                {
-                    //Generate a new point using Perlin noise, then round it to a value of either 0 or 1
-                    newPoint = Mathf.RoundToInt(Mathf.PerlinNoise(x * modifier, y * modifier)); //modifier value between 0 to 0.5
-                    map[x, y] = newPoint;
-                }
+        //Seed our random
+        System.Random rand = new System.Random(seed.GetHashCode());
+
+        //Define our start x position
+        int floorX = rand.Next(1, terrainWidth - 1);
+        //Define our start y position
+        int floorY = rand.Next(1, terrainHeight - 1);
+        //Determine our required floorAmount
+        int reqFloorAmount = ((terrainHeight * terrainWidth) * requiredFloorPercent) / 100;
+        //Used for our while loop, when this reaches our reqFloorAmount we will stop tunneling
+        int floorCount = 0;
+
+        //Set our start position to not be a tile (0 = no tile, 1 = tile)
+        emptyTerrainArray[floorX, floorY] = 0;
+        //Increase our floor count
+        floorCount++;
+
+        while (floorCount < reqFloorAmount)
+        {
+            //Determine our next direction
+            int randDir = rand.Next(4);
+
+            switch (randDir)
+            {
+                //Up
+                case 0:
+                    //Ensure that the edges are still tiles
+                    if ((floorY + 1) < terrainHeight - 1)
+                    {
+                        //Move the y up one
+                        floorY++;
+
+                        //Check if that piece is currently still a tile
+                        if (emptyTerrainArray[floorX, floorY] == 1)
+                        {
+                            //Change it to not a tile
+                            emptyTerrainArray[floorX, floorY] = 0;
+                            //Increase floor count
+                            floorCount++;
+                        }
+                    }
+                    break;
+
+                //Down
+                case 1:
+                    //Ensure that the edges are still tiles
+                    if ((floorY - 1) > 1)
+                    {
+                        //Move the y down one
+                        floorY--;
+                        //Check if that piece is currently still a tile
+                        if (emptyTerrainArray[floorX, floorY] == 1)
+                        {
+                            //Change it to not a tile
+                            emptyTerrainArray[floorX, floorY] = 0;
+                            //Increase the floor count
+                            floorCount++;
+                        }
+                    }
+                    break;
+
+                //Right
+                case 2:
+                    //Ensure that the edges are still tiles
+                    if ((floorX + 1) < terrainWidth - 1)
+                    {
+                        //Move the x to the right
+                        floorX++;
+                        //Check if that piece is currently still a tile
+                        if (emptyTerrainArray[floorX, floorY] == 1)
+                        {
+                            //Change it to not a tile
+                            emptyTerrainArray[floorX, floorY] = 0;
+                            //Increase the floor count
+                            floorCount++;
+                        }
+                    }
+                    break;
+
+                //Left
+                case 3:
+                    //Ensure that the edges are still tiles
+                    if ((floorX - 1) > 1)
+                    {
+                        //Move the x to the left
+                        floorX--;
+                        //Check if that piece is currently still a tile
+                        if (emptyTerrainArray[floorX, floorY] == 1)
+                        {
+                            //Change it to not a tile
+                            emptyTerrainArray[floorX, floorY] = 0;
+                            //Increase the floor count
+                            floorCount++;
+                        }
+                    }
+                    break;
             }
         }
-        return map;
+
+        //Return the updated map
+        int[,] terrainArray = emptyTerrainArray;
+        return terrainArray;
     }
 
-    // Phase 3(B): Generate the Cave Array (Fixing)
+    public int[,] GenerateCellularAutomata(int[,] terrainArray, float seed, int fillPercent, bool edgesAreWalls)
+    {
+        //Seed our random number generator
+        System.Random rand = new System.Random(seed.GetHashCode());
+
+        int terrainWidth = terrainArray.GetUpperBound(0);
+        int terrainHeight = terrainArray.GetUpperBound(1);
+
+        // Set the entrance and escape points
+        int entranceX = terrainWidth / 2;
+        int entranceY = 0;
+        int escapeX = terrainWidth / 2;
+        int escapeY = terrainHeight - 1;
+
+        // Perform flood-fill algorithm from entrance point
+        FloodFill(terrainArray, entranceX, entranceY, fillPercent, rand);
+
+        return terrainArray;
+    }
+
+    private void FloodFill(int[,] terrainArray, int x, int y, int fillPercent, System.Random rand)
+    {
+        int terrainWidth = terrainArray.GetUpperBound(0);
+        int terrainHeight = terrainArray.GetUpperBound(1);
+
+        // Check if the current cell is within the terrain bounds and is not already filled
+        if (x >= 0 && x < terrainWidth && y >= 0 && y < terrainHeight && terrainArray[x, y] == 0)
+        {
+            // Randomly fill the current cell based on fillPercent chance
+            terrainArray[x, y] = (rand.Next(0, 100) < fillPercent) ? 1 : 0;
+
+            // Recursively flood-fill the neighboring cells
+            FloodFill(terrainArray, x + 1, y, fillPercent, rand);
+            FloodFill(terrainArray, x - 1, y, fillPercent, rand);
+            FloodFill(terrainArray, x, y + 1, fillPercent, rand);
+            FloodFill(terrainArray, x, y - 1, fillPercent, rand);
+        }
+    }
+
+    /*
     public int[,] GenerateCellularAutomata(int[,] terrainArray, float seed, int fillPercent, bool edgesAreWalls)
     {
         //Seed our random number generator
@@ -300,6 +336,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         }
         return terrainArray;
     }
+    */
 
     public int GetNeighbourTilesCount(int[,] terrainArray, int mainTile_XPos, int mainTile_YPos, bool edgesAreWalls)
     {
@@ -369,109 +406,6 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         //Return the modified map
         return terrainArray;
     }
-
-    // Phase 3(C): Generate the Cave Array
-    public int[,] RandomWalkCave(int[,] map, float seed, int requiredFloorPercent)
-    {
-        //Seed our random
-        System.Random rand = new System.Random(seed.GetHashCode());
-
-        //Define our start x position
-        int floorX = rand.Next(1, map.GetUpperBound(0) - 1);
-        //Define our start y position
-        int floorY = rand.Next(1, map.GetUpperBound(1) - 1);
-        //Determine our required floorAmount
-        int reqFloorAmount = ((map.GetUpperBound(1) * map.GetUpperBound(0)) * requiredFloorPercent) / 100;
-        //Used for our while loop, when this reaches our reqFloorAmount we will stop tunneling
-        int floorCount = 0;
-
-        //Set our start position to not be a tile (0 = no tile, 1 = tile)
-        map[floorX, floorY] = 0;
-        //Increase our floor count
-        floorCount++;
-
-        while (floorCount < reqFloorAmount)
-        {
-            //Determine our next direction
-            int randDir = rand.Next(4);
-
-            switch (randDir)
-            {
-                //Up
-                case 0:
-                    //Ensure that the edges are still tiles
-                    if ((floorY + 1) < map.GetUpperBound(1) - 1)
-                    {
-                        //Move the y up one
-                        floorY++;
-
-                        //Check if that piece is currently still a tile
-                        if (map[floorX, floorY] == 1)
-                        {
-                            //Change it to not a tile
-                            map[floorX, floorY] = 0;
-                            //Increase floor count
-                            floorCount++;
-                        }
-                    }
-                    break;
-                //Down
-                case 1:
-                    //Ensure that the edges are still tiles
-                    if ((floorY - 1) > 1)
-                    {
-                        //Move the y down one
-                        floorY--;
-                        //Check if that piece is currently still a tile
-                        if (map[floorX, floorY] == 1)
-                        {
-                            //Change it to not a tile
-                            map[floorX, floorY] = 0;
-                            //Increase the floor count
-                            floorCount++;
-                        }
-                    }
-                    break;
-                //Right
-                case 2:
-                    //Ensure that the edges are still tiles
-                    if ((floorX + 1) < map.GetUpperBound(0) - 1)
-                    {
-                        //Move the x to the right
-                        floorX++;
-                        //Check if that piece is currently still a tile
-                        if (map[floorX, floorY] == 1)
-                        {
-                            //Change it to not a tile
-                            map[floorX, floorY] = 0;
-                            //Increase the floor count
-                            floorCount++;
-                        }
-                    }
-                    break;
-                //Left
-                case 3:
-                    //Ensure that the edges are still tiles
-                    if ((floorX - 1) > 1)
-                    {
-                        //Move the x to the left
-                        floorX--;
-                        //Check if that piece is currently still a tile
-                        if (map[floorX, floorY] == 1)
-                        {
-                            //Change it to not a tile
-                            map[floorX, floorY] = 0;
-                            //Increase the floor count
-                            floorCount++;
-                        }
-                    }
-                    break;
-            }
-        }
-        //Return the updated map
-        return map;
-    }
-
     #endregion
 
     #region RenderingArray
