@@ -425,13 +425,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44563e6c7dc4b8f4a941807b776a7270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BoundaryWidth: 2000
-  BoundaryHeight: 2000
-  TerrainMaxHeight: 100
-  MinInnerTileInterval: 2
-  MaxInnerTileInterval: 7
-  HeightValue: 84.6
-  Smoothness: 59.1
+  Width: 500
+  Height: 500
+  Interval: 4
   TerrainTilemap: {fileID: 612923309}
   UpperTile: {fileID: 11400000, guid: 183aa851138a34042afcf2b0fe1e7856, type: 2}
   LowerTile: {fileID: 11400000, guid: 59461f0df685a4f4cb99873055d08ef5, type: 2}
