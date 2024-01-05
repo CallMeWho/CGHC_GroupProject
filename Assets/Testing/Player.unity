@@ -314,13 +314,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da921ee99a3ab9046b64951a6700b79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravity: -20
-  fallMultiplier: 1.5
-  collideWith:
-    serializedVersion: 2
-    m_Bits: 64
-  verticalRayAmount: 4
-  horizontalRayAmount: 4
+  InitialGravity: -20
+  m_CollideWithLayer:
+    m_Bits: 0
+  m_VerticalRayAmount: 4
+  m_BoxCollider2D: {fileID: 0}
+  m_BoundTopLeft: {x: 0, y: 0}
+  m_BoundTopRight: {x: 0, y: 0}
+  m_BoundBottomLeft: {x: 0, y: 0}
+  m_BoundBottomRight: {x: 0, y: 0}
+  m_BoundWidth: 0
+  m_BoundHeight: 0
+  m_CurrentGravity: 0
+  m_GravityForce: {x: 0, y: 0}
+  m_PlayerCurrentPosition: {x: 0, y: 0}
+  m_Skin: 0.05
 --- !u!114 &1252544970
 MonoBehaviour:
   m_ObjectHideFlags: 0
