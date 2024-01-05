@@ -7,51 +7,62 @@ public class PlayerController : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float gravity = -20f;
     [SerializeField] private float fallMultiplier = 1.5f;
+
     [Header("Collisions")]
     [SerializeField] private LayerMask collideWith;
     [SerializeField] private int verticalRayAmount = 4;
     [SerializeField] private int horizontalRayAmount = 4;
+
+
     #region Properties
-    // Return if the Player is facing Right
-    public bool FacingRight { get; set; }
-    // Return the Gravity value
-    public float Gravity => gravity;
-    // Return the Force applied
-    public Vector2 Force => _force;
-    // Return the conditions
-    public PlayerConditions Conditions => _conditions;
+
+    public PlayerConditions Conditions => _conditions;  //Conditions: get _conditions all stuff in read-only
+    public float Gravity => gravity;    // Gravity: get gravity read-only value
+    public Vector2 Force => _force;     //Force: get _force read-only value
+    public bool IsFacingRight { get; set; }   //if player currently facing right, get bool value
+
     #endregion
+
+
     #region Internal
 
-    private BoxCollider2D _boxCollider2D;
-    private PlayerConditions _conditions;
-    private Vector2 _boundsTopLeft;
-    private Vector2 _boundsTopRight;
-    private Vector2 _boundsBottomLeft;
-    private Vector2 _boundsBottomRight;
-    private float _boundsWidth;
-    private float _boundsHeight;
-    private float _currentGravity;
-    private Vector2 _force;
-    private Vector2 _movePosition;
-    private float _skin = 0.05f;
-    private float _internalFaceDirection = 1f;
-    private float _faceDirection;
+    private BoxCollider2D _boxCollider2D;   //player box collider
+    private PlayerConditions _conditions;   //player condtions
+
+    private Vector2 _boundsTopLeft;         //box collider's top left point
+    private Vector2 _boundsTopRight;        //... top right point
+    private Vector2 _boundsBottomLeft;      //... bot left point
+    private Vector2 _boundsBottomRight;     //... bot right point
+
+    private float _boundsWidth;             //box collider's width
+    private float _boundsHeight;            //... height
+
+    private float _currentGravity;          //player current gravity
+    private Vector2 _force;                 //player current force
+    private Vector2 _movePosition;          //player current position
+
+    private float _skin = 0.05f;            // ray cast line will longer than collider half length a bit, that's how _skin work here
+    private float _internalFaceDirection = 1f;  //player initial face direction = right, as default face direction, and will be updated 
+    private float _faceDirection;           //player current face direction
 
     #endregion
+
+
     private void Start()
     {
         _boxCollider2D = GetComponent<BoxCollider2D>();
-        _conditions = new PlayerConditions();
+        _conditions = new PlayerConditions();   //_conditions: newly created player conditions
         _conditions.Reset();
     }
+
     private void Update()
     {
         ApplyGravity();
         StartMovement();
         SetRayOrigins();
+
         GetFaceDirection();
-        if (FacingRight)
+        if (IsFacingRight)
         {
             HorizontalCollision(1);
         }
@@ -59,63 +70,85 @@ public class PlayerController : MonoBehaviour
         {
             HorizontalCollision(-1);
         }
+
         CollisionBelow();
         CollisionAbove();
         transform.Translate(_movePosition, Space.Self);
         SetRayOrigins();
         CalculateMovement();
     }
+
+
     #region Collision
+
     #region Collision Below
     private void CollisionBelow()
     {
-        if (_movePosition.y < -0.0001f)
+        // STEP 1 : CHECK PLAYER FALLING CONDITION
+
+        if (_movePosition.y < -0.0001f) //if player is falling
         {
             _conditions.IsFalling = true;
         }
-        else
+        else  //if player not falling
         {
             _conditions.IsFalling = false;
-        }
-        if (!_conditions.IsFalling)
-        {
-            _conditions.IsCollidingBelow = false;
-            return; // if the Player going UP, then return because no point to calculate other colliding below.
+            _conditions.IsCollidingBelow = false;   //no collision happening now
+            return;
         }
 
-        // Calculate ray lenght
-        float rayLenght = _boundsHeight / 2f + _skin;
+        // STEP 2: GET RAY LENGTH
+
+        float rayLength = _boundsHeight / 2f + _skin;
+        //ray length will now be longer a bit than the collider half height now because of _skin
+
         if (_movePosition.y < 0)
         {
-            rayLenght += Mathf.Abs(_movePosition.y);
+            rayLength += Mathf.Abs(_movePosition.y);    //make rayLength will always be positive
         }
 
-        // Calculate ray origin
-        Vector2 leftOrigin = (_boundsBottomLeft + _boundsTopLeft) / 2f;
-        Vector2 rightOrigin = (_boundsBottomRight + _boundsTopRight) / 2f;
+        // STEP 3: GET STARTING POINTS FOR SHOOTING RAY
+
+        Vector2 leftOrigin = (_boundsBottomLeft + _boundsTopLeft) / 2f;     //left side mid point position = also as left ray point
+        Vector2 rightOrigin = (_boundsBottomRight + _boundsTopRight) / 2f;  
+
         leftOrigin += (Vector2)(transform.up * _skin) + (Vector2)(transform.right * _movePosition.x);
         rightOrigin += (Vector2)(transform.up * _skin) + (Vector2)(transform.right * _movePosition.x);
+        /* EXPLANATION
+         * as player moving, his collider follows as well, 
+         * so we have to let its raycast points not always in fix position but follow the collider,
+         * 
+         * (Vector2)(transform.up * _skin)              : is the vertical offset, or displacement,
+         * (Vector2)(transform.right * _movePosition.x) : is the horizontal offset
+         * 
+         * when we add these 2 offset to the ray points, thn they become dynamic
+         */
 
-        // Raycast
+        // STEP 4: START SHOOTING RAY
+
         for (int i = 0; i < verticalRayAmount; i++)
         {
-            Vector2 rayOrigin = Vector2.Lerp(leftOrigin, rightOrigin, (float)i / (float)(verticalRayAmount - 1));
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, -transform.up, rayLenght, collideWith);
-            Debug.DrawRay(rayOrigin, -transform.up * rayLenght, Color.green);
+            float fraction = (float) i / (float) (verticalRayAmount - 1);
+            Vector2 rayOrigin = Vector2.Lerp(leftOrigin, rightOrigin, fraction);    //get the ray point
+
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, -transform.up, rayLength, collideWith); //start shooting ray from the point
+            Debug.DrawRay(rayOrigin, -transform.up * rayLength, Color.green);
+
             if (hit)
             {
-                if (_force.y > 0)
+                if (_force.y > 0)   //if move upwards, like jumping
                 {
                     _movePosition.y = _force.y * Time.deltaTime;
-                    _conditions.IsCollidingBelow = false;
+                    _conditions.IsCollidingBelow = false;   //no collision happening below
                 }
-                else
+                else // if standing (_force.y = 0) or move downwards
                 {
                     _movePosition.y = -hit.distance + _boundsHeight / 2f + _skin;
                 }
 
                 _conditions.IsCollidingBelow = true;
                 _conditions.IsFalling = false;
+
                 if (Mathf.Abs(_movePosition.y) < 0.0001f)
                 {
                     _movePosition.y = 0f;
@@ -124,6 +157,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     #endregion
+
     #region Collision Horizontal
     private void HorizontalCollision(int direction)
     {
@@ -154,6 +188,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     #endregion
+
     #region Collision Above
     private void CollisionAbove()
     {
@@ -183,6 +218,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
     #endregion
+
     #region Movement
     // Clamp our force applied
     private void CalculateMovement()
@@ -219,27 +255,35 @@ public class PlayerController : MonoBehaviour
         _force.y += _currentGravity * Time.deltaTime;
     }
     #endregion
+
     #region Direction
-    // Manage the direction we are facing
     private void GetFaceDirection()
     {
         _faceDirection = _internalFaceDirection;
-        FacingRight = _faceDirection == 1; // if FacingRight is TRUE
 
-        if (_force.x > 0.0001f)
+        IsFacingRight = (_faceDirection == 1);
+        /* EXPLANATION
+         * _faceDirection = 1, means player currently facing to the right, 
+         * then, IsFacingRight = true
+         */
+
+        if (_force.x > 0.0001f)  //move to the right
         {
-            _faceDirection = 1f;
-            FacingRight = true;
+            _faceDirection = 1f;    //face to the right
+            IsFacingRight = true;
         }
         else if (_force.x < -0.0001f)
         {
             _faceDirection = -1f;
-            FacingRight = false;
+            IsFacingRight = false;
         }
-        _internalFaceDirection = _faceDirection;
+
+        _internalFaceDirection = _faceDirection;    
+        //_internalFaceDirection: will now be updated in either -1f or 1f (means facing left or right)
     }
 
     #endregion
+
     #region Ray Origins
     // Calculate ray based on our collider
     private void SetRayOrigins()
