@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TerrainUtils;
@@ -20,7 +21,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
     [SerializeField] int MinimumSectionWidth;
 
     [Header("Gameplay Terrain Settings")]
-    [Range(0, 100)] [SerializeField] int FloorPercent;
+    [Range(0, 100)] [SerializeField] int BlockPercent;
     [Range(0, 100)][SerializeField] int FillPercent;
     [SerializeField] bool EdgesAreWalls = true;
     [SerializeField] int Smoothness;
@@ -52,8 +53,13 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         GameplayLevel = 2,
     }
 
+    public delegate void ArrayGeneratedDelegate(int[,] generatedArray);
+    public static event ArrayGeneratedDelegate OnArrayGenerated;
+
     void Start()
     {
+        RenderMap renderMap = FindObjectOfType<RenderMap>();
+
         if (LevelType == LevelTypeOptions.TutorialLevel)
         {
             EmptyTerrainArray = GenerateEmptyTerrainArray(true);
@@ -63,20 +69,31 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         else if (LevelType == LevelTypeOptions.GameplayLevel)
         {
             EmptyTerrainArray = GenerateEmptyTerrainArray(false);
-            TerrainArray = RandomWalkCave(EmptyTerrainArray, Seed, FloorPercent);
+            TerrainArray = RandomWalkCave(EmptyTerrainArray, Seed, BlockPercent);
             TerrainArray = GenerateCellularAutomata(TerrainArray, Seed, FillPercent, EdgesAreWalls);
             TerrainArray = SmoothMooreCellularAutomata(TerrainArray, EdgesAreWalls, Smoothness);
+
+            OnArrayGenerated?.Invoke(TerrainArray);
+
         }
 
-        RenderTerrainArray(EmptyTerrainArray, TerrainTilemap);
-        Seed = 1;
-        //Seed = Random.Range(-100000, 100000);
+        //RenderTerrainArray(EmptyTerrainArray, TerrainTilemap);
+        
+        if (renderMap != null)
+        {
+            renderMap.RenderTerrainArray(renderMap.TerrainArray, TerrainTilemap);
+        }
+        
+        //Seed = 1;
+        Seed = Random.Range(-100000, 100000);
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            RenderMap renderMap = FindObjectOfType<RenderMap>();
+
             if (LevelType == LevelTypeOptions.TutorialLevel)
             {
                 EmptyTerrainArray = GenerateEmptyTerrainArray(true);
@@ -86,12 +103,22 @@ public class ProceduralTerrainGeneration : MonoBehaviour
             else if (LevelType == LevelTypeOptions.GameplayLevel)
             {
                 EmptyTerrainArray = GenerateEmptyTerrainArray(false);
-                TerrainArray = RandomWalkCave(EmptyTerrainArray, Seed, FloorPercent);
+                TerrainArray = RandomWalkCave(EmptyTerrainArray, Seed, BlockPercent);
                 TerrainArray = GenerateCellularAutomata(TerrainArray, Seed, FillPercent, EdgesAreWalls);
                 TerrainArray = SmoothMooreCellularAutomata(TerrainArray, EdgesAreWalls, Smoothness);
+
+                OnArrayGenerated?.Invoke(TerrainArray);
+
             }
 
-            RenderTerrainArray(EmptyTerrainArray, TerrainTilemap);
+            //RenderTerrainArray(EmptyTerrainArray, TerrainTilemap);
+
+            if (renderMap != null)
+            {
+                renderMap.RenderTerrainArray(renderMap.TerrainArray, TerrainTilemap);
+            }
+
+            //Seed = 1;
             Seed = Random.Range(-100000, 100000);
         }
     }
@@ -161,104 +188,117 @@ public class ProceduralTerrainGeneration : MonoBehaviour
 
     // Phase 2(B): Generate the Cave Array
     //Gameplay Level
-    public int[,] RandomWalkCave(int[,] emptyTerrainArray, float seed, int requiredFloorPercent)
+    public int[,] RandomWalkCave(int[,] emptyTerrainArray, float seed, int reqBlocksPercent)
     {
         int terrainWidth = emptyTerrainArray.GetUpperBound(0);
         int terrainHeight = emptyTerrainArray.GetUpperBound(1);
 
-        //Seed our random
-        System.Random rand = new System.Random(seed.GetHashCode());
+        System.Random rand = new System.Random(seed.GetHashCode()); //rand: a sequence random numbers
 
-        //Define our start x position
-        int floorX = rand.Next(1, terrainWidth - 1);
-        //Define our start y position
-        int floorY = rand.Next(1, terrainHeight - 1);
-        //Determine our required floorAmount
-        int reqFloorAmount = ((terrainHeight * terrainWidth) * requiredFloorPercent) / 100;
-        //Used for our while loop, when this reaches our reqFloorAmount we will stop tunneling
-        int floorCount = 0;
+        /* IMPORTANT
+         * block = 0, player can move area;
+         * tiles = 1, wall or something;
+         * 
+         * or you wont clearly know what codes below mean
+         */
 
-        //Set our start position to not be a tile (0 = no tile, 1 = tile)
-        emptyTerrainArray[floorX, floorY] = 0;
-        //Increase our floor count
-        floorCount++;
+        int block_Xpos = rand.Next(1, terrainWidth - 1);    //block_Xpos: random value between 1 to terrainWidth
+        //int block_Ypos = rand.Next(1, terrainHeight - 1); (TEMPT)
+        int block_Ypos = terrainHeight;
+        /* EXPLANATION
+         * Next(nI, nE): 
+         * the first parameter, nI will be the smallest value and included
+         * the second parameter, nE will be the largest value but excluded, so the largest value generated will be (nE - 1)
+         */
 
-        while (floorCount < reqFloorAmount)
+        // STEP 1: SET BLOCKS AMOUNT IN OUR TERRAIN
+
+        int terrainSize = terrainHeight * terrainWidth;
+        int reqBlocksCount = (terrainSize * reqBlocksPercent) / 100;
+        //reqBlocksCount: block counts required in our terrain map, also the player moving area counts.
+        /* QUESTION STILL
+         * int reqBlocksCount = terrainSize * (reqBlocksPercent / 100);
+         * if formula be this, random block generate not working, idk why????
+         */
+
+        int blockCurrentFilledCount = 0;    
+        //right now terrain has no moving area for the player, but will add soon below.
+
+        emptyTerrainArray[block_Xpos, block_Ypos] = 0;  
+        //so now, one random block is selected and it becomes player moving area, we call it main block.
+        blockCurrentFilledCount++;
+
+        while (blockCurrentFilledCount < reqBlocksCount)
         {
-            //Determine our next direction
-            int randDir = rand.Next(4);
+            int randDir = rand.Next(4); //randDir: random value between 0 to 3, used to determine next direction
 
             switch (randDir)
             {
                 //Up
                 case 0:
-                    //Ensure that the edges are still tiles
-                    if ((floorY + 1) < terrainHeight - 1)
-                    {
-                        //Move the y up one
-                        floorY++;
+                    if ((block_Ypos + 1) < (terrainHeight - 1))
+                    /* EXPLANATION
+                     * block_Ypos: main block y pos, so (block_Ypos + 1) is its upper position
+                     * (terrainHeight - 1): the position under 2 blocks away from highest boundary height 
+                     * 
+                     * so, it means that the main block upper part, must under 2 blocks away from hbh
+                     */
 
-                        //Check if that piece is currently still a tile
-                        if (emptyTerrainArray[floorX, floorY] == 1)
+                    {
+                        block_Ypos++;    //now we set the main block's upper block y pos (call it neigh upper block),
+                                         //and it now sets to main block 
+
+                        if (emptyTerrainArray[block_Xpos, block_Ypos] == 1) //if the new main block is tile
                         {
-                            //Change it to not a tile
-                            emptyTerrainArray[floorX, floorY] = 0;
-                            //Increase floor count
-                            floorCount++;
+                            emptyTerrainArray[block_Xpos, block_Ypos] = 0;  //then we remove it to become block instead
+                            blockCurrentFilledCount++;  //player can move area increased
                         }
                     }
                     break;
 
                 //Down
                 case 1:
-                    //Ensure that the edges are still tiles
-                    if ((floorY - 1) > 1)
+                    if ((block_Ypos - 1) > 1)
+                    /* EXPLANATION
+                     * (block_Ypos - 1): main block lower position
+                     * since lowest boundary height = 0, so (> 1) means its position has to be above 2 blocks away from lbh
+                     */
+
                     {
-                        //Move the y down one
-                        floorY--;
-                        //Check if that piece is currently still a tile
-                        if (emptyTerrainArray[floorX, floorY] == 1)
+                        block_Ypos--;   //set neigh lower block be new main block
+                        
+                        if (emptyTerrainArray[block_Xpos, block_Ypos] == 1) //check new main block
                         {
-                            //Change it to not a tile
-                            emptyTerrainArray[floorX, floorY] = 0;
-                            //Increase the floor count
-                            floorCount++;
+                            emptyTerrainArray[block_Xpos, block_Ypos] = 0;
+                            blockCurrentFilledCount++;
                         }
                     }
                     break;
 
                 //Right
                 case 2:
-                    //Ensure that the edges are still tiles
-                    if ((floorX + 1) < terrainWidth - 1)
+                    if ((block_Xpos + 1) < terrainWidth - 1)
                     {
-                        //Move the x to the right
-                        floorX++;
-                        //Check if that piece is currently still a tile
-                        if (emptyTerrainArray[floorX, floorY] == 1)
+                        block_Xpos++;
+
+                        if (emptyTerrainArray[block_Xpos, block_Ypos] == 1)
                         {
-                            //Change it to not a tile
-                            emptyTerrainArray[floorX, floorY] = 0;
-                            //Increase the floor count
-                            floorCount++;
+                            emptyTerrainArray[block_Xpos, block_Ypos] = 0;
+                            blockCurrentFilledCount++;
                         }
                     }
                     break;
 
                 //Left
                 case 3:
-                    //Ensure that the edges are still tiles
-                    if ((floorX - 1) > 1)
+                    if ((block_Xpos - 1) > 1)
                     {
-                        //Move the x to the left
-                        floorX--;
-                        //Check if that piece is currently still a tile
-                        if (emptyTerrainArray[floorX, floorY] == 1)
+                        block_Xpos--;
+                        
+                        if (emptyTerrainArray[block_Xpos, block_Ypos] == 1)
                         {
-                            //Change it to not a tile
-                            emptyTerrainArray[floorX, floorY] = 0;
-                            //Increase the floor count
-                            floorCount++;
+                            emptyTerrainArray[block_Xpos, block_Ypos] = 0;
+                            blockCurrentFilledCount++;
                         }
                     }
                     break;
@@ -386,7 +426,8 @@ public class ProceduralTerrainGeneration : MonoBehaviour
                 {
                     int surroundingTiles = GetNeighbourTilesCount(terrainArray, x, y, edgesAreWalls);
 
-                    if (edgesAreWalls && (x == 0 || x == (terrainWidth - 1) || y == 0 || y == (terrainHeight - 1)))
+                    //if (edgesAreWalls && (x == 0 || x == (terrainWidth - 1) || y == 0 || y == (terrainHeight - 1)))
+                    if (edgesAreWalls && (x == 0 || x == (terrainWidth - 1) || y == 0))
                     {
                         //Set the edge to be a wall if we have edgesAreWalls to be true
                         terrainArray[x, y] = 1;
@@ -407,7 +448,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         return terrainArray;
     }
     #endregion
-
+    /*
     #region RenderingArray
     public void RenderTerrainArray(int[,] terrainArray, Tilemap terrainTilemap)
     {
@@ -448,4 +489,5 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         TerrainTilemap.SetTile(tilePosition, tile);
     }
     #endregion
+    */
 }
