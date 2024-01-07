@@ -13,114 +13,60 @@ public class ProceduralTerrainGeneration : MonoBehaviour
     [SerializeField] int Width;
     [SerializeField] int Height;
 
-    [Header("Terrain Types")]
-    [SerializeField] LevelTypeOptions LevelType;
-
-    [Header("Tutorial Terrain Settings")]
-    [SerializeField] int SectionWidth = 0;
-    [SerializeField] int MinimumSectionWidth;
-
-    [Header("Gameplay Terrain Settings")]
+    [Header("Terrain Settings")]
     [Range(0, 100)] [SerializeField] int BlockPercent;
     [Range(0, 100)][SerializeField] int FillPercent;
     [SerializeField] bool EdgesAreWalls = true;
     [SerializeField] int Smoothness;
 
-    /*
-    [SerializeField] int MinInnerTileInterval;
-    [SerializeField] int MaxInnerTileInterval;
-    [Range(0,100)][SerializeField] float HeightValue, Smoothness;
-    */
-    private int[,] EmptyTerrainArray;
-    public int[,] TerrainArray;
-    //int RandomInnerTileHeight;
-
     [Header("Tilemaps")]
     [SerializeField] Tilemap TerrainTilemap;
-
+    [SerializeField] Tilemap ItemsTilemap;
 
     [Header("Tiles")]
+    [SerializeField] TileBase CaveTile;
     [SerializeField] TileBase UpperTile;
-    [SerializeField] TileBase LowerTile;
     [SerializeField] TileBase GrassTile;
 
     [Header("Randomization")]
     [SerializeField] float Seed;
 
-    public enum LevelTypeOptions
-    {
-        TutorialLevel = 1,
-        GameplayLevel = 2,
-    }
 
-    public delegate void ArrayGeneratedDelegate(int[,] generatedArray);
-    public static event ArrayGeneratedDelegate OnArrayGenerated;
+    private int[,] EmptyTerrainArray;
+    public int[,] TerrainArray;
+
+    private int x_playerSpawnPoint;
+    private int y_playerSpawnPoint;
 
     void Start()
     {
-        RenderMap renderMap = FindObjectOfType<RenderMap>();
-
-        if (LevelType == LevelTypeOptions.TutorialLevel)
-        {
-            EmptyTerrainArray = GenerateEmptyTerrainArray(true);
-            TerrainArray = RandomWalkTopSmoothed(EmptyTerrainArray, Seed, MinimumSectionWidth);
-        }
-
-        else if (LevelType == LevelTypeOptions.GameplayLevel)
-        {
-            EmptyTerrainArray = GenerateEmptyTerrainArray(false);
-            TerrainArray = RandomWalkCave(EmptyTerrainArray, Seed, BlockPercent);
-            TerrainArray = GenerateCellularAutomata(TerrainArray, Seed, FillPercent, EdgesAreWalls);
-            TerrainArray = SmoothMooreCellularAutomata(TerrainArray, EdgesAreWalls, Smoothness);
-
-            OnArrayGenerated?.Invoke(TerrainArray);
-
-        }
-
-        //RenderTerrainArray(EmptyTerrainArray, TerrainTilemap);
-        
-        if (renderMap != null)
-        {
-            renderMap.RenderTerrainArray(renderMap.TerrainArray, TerrainTilemap);
-        }
-        
-        //Seed = 1;
-        Seed = Random.Range(-100000, 100000);
+        RunTheWholeProcess();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            RenderMap renderMap = FindObjectOfType<RenderMap>();
-
-            if (LevelType == LevelTypeOptions.TutorialLevel)
-            {
-                EmptyTerrainArray = GenerateEmptyTerrainArray(true);
-                TerrainArray = RandomWalkTopSmoothed(EmptyTerrainArray, Seed, MinimumSectionWidth);
-            }
-
-            else if (LevelType == LevelTypeOptions.GameplayLevel)
-            {
-                EmptyTerrainArray = GenerateEmptyTerrainArray(false);
-                TerrainArray = RandomWalkCave(EmptyTerrainArray, Seed, BlockPercent);
-                TerrainArray = GenerateCellularAutomata(TerrainArray, Seed, FillPercent, EdgesAreWalls);
-                TerrainArray = SmoothMooreCellularAutomata(TerrainArray, EdgesAreWalls, Smoothness);
-
-                OnArrayGenerated?.Invoke(TerrainArray);
-
-            }
-
-            //RenderTerrainArray(EmptyTerrainArray, TerrainTilemap);
-
-            if (renderMap != null)
-            {
-                renderMap.RenderTerrainArray(renderMap.TerrainArray, TerrainTilemap);
-            }
-
-            //Seed = 1;
-            Seed = Random.Range(-100000, 100000);
+            RunTheWholeProcess();
         }
+    }
+
+    public void RunTheWholeProcess()
+    {
+        //Seed = 1;
+        Seed = Random.Range(-100000, 100000);
+
+        EmptyTerrainArray = GenerateEmptyTerrainArray(false);
+        TerrainArray = new int[EmptyTerrainArray.GetLength(0), EmptyTerrainArray.GetLength(1)];
+        TerrainArray = RandomWalkCave(EmptyTerrainArray, Seed, BlockPercent);
+        TerrainArray = GenerateCellularAutomata(TerrainArray, Seed, FillPercent, EdgesAreWalls);
+        TerrainArray = SmoothMooreCellularAutomata(TerrainArray, EdgesAreWalls, Smoothness);
+
+        TerrainArray = GeneratePlayerSpawnPoint(TerrainArray);
+        //TerrainArray = PlayerSpawn(TerrainArray);
+        //TerrainArray = ChangeTile(TerrainArray);
+
+        RenderTerrainArray(TerrainArray, TerrainTilemap);
     }
 
     #region GeneratingArray
@@ -149,45 +95,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         return emptyTerrainArray;
     }
 
-    // Phase 2(A): Generate the Random Height Array
-    // Tutorial Level
-    public int[,] RandomWalkTopSmoothed(int[,] emptyTerrainArray, float seed, int minSectionWidth)
-    {
-        int terrainWidth = emptyTerrainArray.GetUpperBound(0);
-        int terrainHeight = emptyTerrainArray.GetUpperBound(1);
-
-        System.Random rand = new System.Random(seed.GetHashCode());
-        int lastHeight = Random.Range(0, terrainHeight);
-        int nextMove = 0;   //nextMove: to determine either next tile is to place either downwards or upwards
-
-        for (int x = 0; x < terrainWidth; x++)
-        {
-            nextMove = rand.Next(2); //nextMove = 0 or 1, but not 2
-
-            if (nextMove == 0 && lastHeight > 0 && SectionWidth > minSectionWidth)  //nextMove = 0, moving downwards
-            {
-                lastHeight--;
-                SectionWidth = 0;
-            }
-            else if (nextMove == 1 && lastHeight < terrainHeight && SectionWidth > minSectionWidth) //nextMove = 1, moving upwards
-            {
-                lastHeight++;
-                SectionWidth = 0;
-            }
-            SectionWidth++;
-
-            for (int y = lastHeight; y >= 0; y--)
-            {
-                emptyTerrainArray[x, y] = 1;
-            }
-        }
-
-        int[,] terrainArray = emptyTerrainArray;
-        return terrainArray;
-    }
-
-    // Phase 2(B): Generate the Cave Array
-    //Gameplay Level
+    // Phase 2: Generate the Cave Array
     public int[,] RandomWalkCave(int[,] emptyTerrainArray, float seed, int reqBlocksPercent)
     {
         int terrainWidth = emptyTerrainArray.GetUpperBound(0);
@@ -205,11 +113,6 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         int block_Xpos = rand.Next(1, terrainWidth - 1);    //block_Xpos: random value between 1 to terrainWidth
         //int block_Ypos = rand.Next(1, terrainHeight - 1); (TEMPT)
         int block_Ypos = terrainHeight;
-        /* EXPLANATION
-         * Next(nI, nE): 
-         * the first parameter, nI will be the smallest value and included
-         * the second parameter, nE will be the largest value but excluded, so the largest value generated will be (nE - 1)
-         */
 
         // STEP 1: SET BLOCKS AMOUNT IN OUR TERRAIN
 
@@ -349,35 +252,6 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         }
     }
 
-    /*
-    public int[,] GenerateCellularAutomata(int[,] terrainArray, float seed, int fillPercent, bool edgesAreWalls)
-    {
-        //Seed our random number generator
-        System.Random rand = new System.Random(seed.GetHashCode());
-
-        int terrainWidth = terrainArray.GetUpperBound(0);
-        int terrainHeight = terrainArray.GetUpperBound(1);
-
-        for (int x = 0; x < terrainWidth; x++)
-        {
-            for (int y = 0; y < terrainHeight; y++)
-            {
-                //If we have the edges set to be walls, ensure the cell is set to on (1)
-                if (edgesAreWalls && (x == 0 || x == terrainWidth - 1 || y == 0 || y == terrainHeight - 1))
-                {
-                    terrainArray[x, y] = 1;
-                }
-                else
-                {
-                    //Randomly generate the grid
-                    terrainArray[x, y] = (rand.Next(0, 100) < fillPercent) ? 1 : 0;
-                }
-            }
-        }
-        return terrainArray;
-    }
-    */
-
     public int GetNeighbourTilesCount(int[,] terrainArray, int mainTile_XPos, int mainTile_YPos, bool edgesAreWalls)
     {
         /* Moore Neighbourhood looks like this ('T' is the main tile, 'N' is the neighbour tiles)
@@ -448,11 +322,103 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         return terrainArray;
     }
     #endregion
-    /*
+
+
+    #region PlayerSpawnPoint
+    public int[,] GeneratePlayerSpawnPoint(int[,] terrainArray)
+    {
+        int terrainWidth = terrainArray.GetUpperBound(0);
+        int terrainHeight = terrainArray.GetUpperBound(1);
+
+        int x_LongestNullColumn = -1;
+        //x_LongestNullColumn: x pos which has the longest y = 0 column, this x pos is where player spawns
+        //= -1 means it has none for now.
+
+        //int y_longestNullColumn = -1;
+        int longestNullColumn = 0;   //longest y = 0 column length
+
+        for (int x = 0; x <= terrainWidth; x++) 
+        {
+            if (terrainArray[x, terrainHeight] == 0)
+            {
+                int nullColumns = 0;
+
+                for (int y = terrainHeight; y >= 0; y--)
+                {
+                    if (terrainArray[x, y] == 0)
+                    {
+                        nullColumns++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                if (nullColumns > longestNullColumn)
+                {
+                    x_LongestNullColumn = x;
+                    longestNullColumn = nullColumns;
+                }
+            }
+
+            if (terrainArray[x, terrainHeight] == 1)
+            {
+                terrainArray[x, terrainHeight] = 0;
+            }
+        }
+
+        for (int x = 0; x <= terrainWidth; x++)
+        {
+            if (x == x_LongestNullColumn)
+            {
+                terrainArray[x_LongestNullColumn, terrainHeight - 1] = 0;
+            }
+
+            else if (x != x_LongestNullColumn)
+            {
+                terrainArray[x, terrainHeight - 1] = 1;
+            }
+        }
+
+        return terrainArray;
+    }
+
+    public int[,] ChangeTile(int[,] terrainArray)
+    {
+        int terrainWidth = terrainArray.GetUpperBound(0);
+        int terrainHeight = terrainArray.GetUpperBound(1);
+
+        for (int x = 0; x <= terrainWidth; x++)
+        {
+            for (int y = 0; y <= terrainHeight; y++)
+            {
+                if (y == terrainHeight - 1)
+                {
+                    terrainArray[x, y] = 3;
+                }
+                
+
+                
+            }
+        }
+
+        return terrainArray;
+    }
+    #endregion
+
+
+    #region ItemSpawn
+
+
+    #endregion
+
+
     #region RenderingArray
     public void RenderTerrainArray(int[,] terrainArray, Tilemap terrainTilemap)
     {
         terrainTilemap.ClearAllTiles();
+
         int terrainWidth = terrainArray.GetUpperBound(0);
         int terrainHeight = terrainArray.GetUpperBound(1);
 
@@ -467,7 +433,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
                 
                 if (terrainArray[x, y] == 1)
                 {
-                    SpawnTile(LowerTile, x, y);
+                    SpawnTile(CaveTile, x, y);
                 }
 
                 if (terrainArray[x, y] == 2)
@@ -489,5 +455,4 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         TerrainTilemap.SetTile(tilePosition, tile);
     }
     #endregion
-    */
 }
