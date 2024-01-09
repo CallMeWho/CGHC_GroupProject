@@ -1,0 +1,4 @@
+repository "CGHC_GroupProject@lewxiuzhen@cloud"
+  path "/"
+    br "/main"
+    co "/main"

@@ -447,7 +447,7 @@ SpriteRenderer:
   m_Size: {x: 3.2, y: 1.76}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &838430620
@@ -509,18 +509,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44563e6c7dc4b8f4a941807b776a7270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Width: 500
-  Height: 500
-  LevelType: 2
-  SectionWidth: 0
-  MinimumSectionWidth: 6
-  FloorPercent: 50
+  Width: 20
+  Height: 20
+  BlockPercent: 50
   FillPercent: 50
   EdgesAreWalls: 1
   Smoothness: 20
   TerrainTilemap: {fileID: 612923309}
-  UpperTile: {fileID: 11400000, guid: 183aa851138a34042afcf2b0fe1e7856, type: 2}
-  LowerTile: {fileID: 11400000, guid: 59461f0df685a4f4cb99873055d08ef5, type: 2}
+  ItemsTilemap: {fileID: 2053542306}
+  CaveTile: {fileID: 11400000, guid: 59461f0df685a4f4cb99873055d08ef5, type: 2}
+  UpperTile: {fileID: 11400000, guid: 05635828d4a0933459abe76e2b0cfbd7, type: 2}
   GrassTile: {fileID: 11400000, guid: 53d7439ed885661469512ee5d4d86b27, type: 2}
   Seed: 0
 --- !u!1 &2053542303
@@ -535,7 +533,7 @@ GameObject:
   - component: {fileID: 2053542306}
   - component: {fileID: 2053542305}
   m_Layer: 0
-  m_Name: Trap Tilemap
+  m_Name: Items Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
