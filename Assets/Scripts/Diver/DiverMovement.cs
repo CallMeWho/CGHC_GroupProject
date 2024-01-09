@@ -4,23 +4,46 @@ using UnityEngine;
 
 public class DiverMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    private Diving divingScript;
+    private DiverConditions m_diverConditions;
 
     private void Start()
     {
-        divingScript = GetComponent<Diving>();
+        m_diverConditions = GetComponent<DiverConditions>();
     }
 
     private void Update()
     {
-        if (divingScript.IsDiving)
+        switch (m_diverConditions.currentState)
         {
-            float horizontalInput = Input.GetAxis("Horizontal");
-            float verticalInput = Input.GetAxis("Vertical");
+            case DiverState.Walking:
+                HandleWalking();
+                break;
 
-            Vector2 movement = new Vector2(horizontalInput, verticalInput) * moveSpeed * Time.deltaTime;
-            transform.Translate(movement);
+            case DiverState.Diving:
+                HandleDiving();
+                break;
+
+            case DiverState.Dead:
+                break;
         }
+    }
+
+    private void HandleWalking()
+    {
+        float horzInput = Input.GetAxis("Horizontal");
+        float moveSpeed = m_diverConditions.CurrentMoveSpeed;
+
+        Vector2 displacement = new Vector2(horzInput, 0) * moveSpeed * Time.deltaTime;
+        transform.Translate(displacement);
+    }
+
+    private void HandleDiving()
+    {
+        float horzInput = Input.GetAxis("Horizontal");
+        float vertInput = Input.GetAxis("Vertical");
+        float moveSpeed = m_diverConditions.CurrentMoveSpeed;
+
+        Vector2 displacement = new Vector2(horzInput, vertInput) * moveSpeed * Time.deltaTime;
+        transform.Translate(displacement);
     }
 }

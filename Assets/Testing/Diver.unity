@@ -134,12 +134,9 @@ GameObject:
   - component: {fileID: 358499681}
   - component: {fileID: 358499680}
   - component: {fileID: 358499682}
+  - component: {fileID: 358499685}
   - component: {fileID: 358499683}
   - component: {fileID: 358499684}
-  - component: {fileID: 358499688}
-  - component: {fileID: 358499687}
-  - component: {fileID: 358499686}
-  - component: {fileID: 358499685}
   m_Layer: 0
   m_Name: diver
   m_TagString: Untagged
@@ -272,7 +269,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsDiving: 0
-  CurrentOxygenLevel: 0
+  CurrentOxygenLevel: 100
 --- !u!114 &358499684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,12 +277,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 358499679}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d79cc3ea4fe3a5b4abcd9ebfac666a1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
 --- !u!114 &358499685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,55 +291,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 358499679}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da921ee99a3ab9046b64951a6700b79b, type: 3}
+  m_Script: {fileID: 11500000, guid: c1983740455730648900dc6c52f3abb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravity: -20
-  fallMultiplier: 1.5
-  collideWith:
-    serializedVersion: 2
-    m_Bits: 64
-  verticalRayAmount: 4
-  horizontalRayAmount: 4
---- !u!114 &358499686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 358499679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 125140a220c3edd4e93179e9aeeba68d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumpHeight: 5
-  maxJumps: 2
---- !u!114 &358499687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 358499679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b461dc1421079945b33afa89e529222, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &358499688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 358499679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ea0cef747eed814995bb62ff253f310, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 10
+  currentState: 0
+  CurrentMoveSpeed: 0
+  CurrentOxygen: 0
+  WaterPressureEndurance: 0
+  CurrentMoney: 0
 --- !u!1 &1135753288
 GameObject:
   m_ObjectHideFlags: 0
