@@ -32,7 +32,7 @@ public class DiverMovement : MonoBehaviour
         transform.position = spawnPoint;
     }
 
-    private void Update()
+    public void FixedUpdate()
     {
         //ShowRays();
 
@@ -70,7 +70,7 @@ public class DiverMovement : MonoBehaviour
 
     private void HandleDiving()
     {
-        
+        m_rb.freezeRotation = false;
 
         if (m_diverConditions.CurrentMoveSpeed <= 0)
         {
