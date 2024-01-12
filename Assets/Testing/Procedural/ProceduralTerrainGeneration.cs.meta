@@ -3,7 +3,12 @@ guid: 44563e6c7dc4b8f4a941807b776a7270
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - TerrainTilemap: {instanceID: 0}
+  - ItemsTilemap: {instanceID: 0}
+  - CaveTile: {instanceID: 0}
+  - UpperTile: {instanceID: 0}
+  - GrassTile: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

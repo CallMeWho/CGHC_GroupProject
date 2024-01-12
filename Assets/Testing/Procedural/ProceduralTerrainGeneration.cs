@@ -28,6 +28,10 @@ public class ProceduralTerrainGeneration : MonoBehaviour
     [SerializeField] TileBase UpperTile;
     [SerializeField] TileBase GrassTile;
 
+    [Header("Player Spawner")]
+    [SerializeField] GameObject Spawner;
+    [SerializeField] GameObject Player;
+
     [Header("Randomization")]
     [SerializeField] float Seed;
 
@@ -66,6 +70,8 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         //TerrainArray = PlayerSpawn(TerrainArray);
         //TerrainArray = ChangeTile(TerrainArray);
 
+        PlayerSpawner(TerrainArray);
+        SetPlayerSpawnPoint(Player);
         RenderTerrainArray(TerrainArray, TerrainTilemap);
     }
 
@@ -359,6 +365,9 @@ public class ProceduralTerrainGeneration : MonoBehaviour
                 {
                     x_LongestNullColumn = x;
                     longestNullColumn = nullColumns;
+
+                    x_playerSpawnPoint = x_LongestNullColumn;
+                    y_playerSpawnPoint = terrainHeight;
                 }
             }
 
@@ -384,26 +393,17 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         return terrainArray;
     }
 
-    public int[,] ChangeTile(int[,] terrainArray)
+    public void PlayerSpawner(int[,] terrainArray)
     {
-        int terrainWidth = terrainArray.GetUpperBound(0);
-        int terrainHeight = terrainArray.GetUpperBound(1);
+        Spawner.transform.position = new Vector3(x_playerSpawnPoint, y_playerSpawnPoint - 2, 0);
 
-        for (int x = 0; x <= terrainWidth; x++)
-        {
-            for (int y = 0; y <= terrainHeight; y++)
-            {
-                if (y == terrainHeight - 1)
-                {
-                    terrainArray[x, y] = 3;
-                }
-                
+        Debug.Log(x_playerSpawnPoint);
+        Debug.Log(y_playerSpawnPoint);
+    }
 
-                
-            }
-        }
-
-        return terrainArray;
+    public void SetPlayerSpawnPoint(GameObject player)
+    {
+        GameObject playerInstance = Instantiate(player, Spawner.transform.position, Quaternion.identity);
     }
     #endregion
 

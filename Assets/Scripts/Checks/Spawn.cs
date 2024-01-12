@@ -40,7 +40,13 @@ public class Spawn : MonoBehaviour
     private bool CheckPlayerExists(string tag)
     {
         GameObject player = GameObject.FindWithTag("Player");
-        return isSpawned = player != null;
+        isSpawned = player != null;
+
+        if (!isSpawned)
+        {
+            SetPlayerSpawnPoint(player, spawner);
+        }
+        return isSpawned;
     }
 
     public string GetSceneName()
@@ -56,5 +62,11 @@ public class Spawn : MonoBehaviour
     public GameObject GetSpawner()
     {
         return spawner;
+    }
+
+    public void SetPlayerSpawnPoint(GameObject player, GameObject spawner)
+    {
+        //player.transform.position = spawner.transform.position;
+        GameObject playerInstance = Instantiate(player, spawner.transform.position, Quaternion.identity);
     }
 }
