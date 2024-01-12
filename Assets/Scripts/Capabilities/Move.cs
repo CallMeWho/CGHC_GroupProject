@@ -14,40 +14,58 @@ public class Move : MonoBehaviour
     private Vector2 velocity;
     private Rigidbody2D body;
     private Ground ground;
+    private Spawn spawn;
 
     private float maxSpeedChange;
     private float acceleration;
     private bool onGround;
+    private string sceneName;
 
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
         ground = GetComponent<Ground>();
+        spawn = GetComponent<Spawn>();
     }
 
     private void Update()
     {
-        direction.x = input.RetrieveHorizontalMoveInput();
-        desiredVelocity = new Vector2(direction.x, 0f) * MathF.Max(maxSpeed - ground.GetFriction(), 0f);
+        sceneName = spawn.GetSceneName();
 
-        // flipping
-        if (Math.Abs(direction.x) > 0)
+        if (sceneName == "Company")
         {
-            Vector3 newScale = transform.localScale;
-            newScale.x = Mathf.Sign(input.RetrieveHorizontalMoveInput()) * Mathf.Abs(newScale.x);
-            transform.localScale = newScale;
+            if (body.gravityScale <= 0f)
+            {
+                body.gravityScale = 1f;
+            }
+
+            direction.x = input.RetrieveHorizontalMoveInput();
+            desiredVelocity = new Vector2(direction.x, 0f) * MathF.Max(maxSpeed - ground.GetFriction(), 0f);
+
+            // flipping
+            if (Math.Abs(direction.x) > 0)
+            {
+                Vector3 newScale = transform.localScale;
+                newScale.x = Mathf.Sign(input.RetrieveHorizontalMoveInput()) * Mathf.Abs(newScale.x);
+                transform.localScale = newScale;
+            }
         }
+        else { return; }
     }
 
     private void FixedUpdate()
     {
-        onGround = ground.GetOnGround();
-        velocity = body.velocity;
+        if (sceneName == "Company")
+        {
+            onGround = ground.GetOnGround();
+            velocity = body.velocity;
 
-        acceleration = onGround? maxAcceleration : 0;
-        maxSpeedChange = acceleration * Time.deltaTime;
-        velocity.x = Mathf.MoveTowards(velocity.x, desiredVelocity.x, maxSpeedChange);
+            acceleration = onGround ? maxAcceleration : 0;
+            maxSpeedChange = acceleration * Time.deltaTime;
+            velocity.x = Mathf.MoveTowards(velocity.x, desiredVelocity.x, maxSpeedChange);
 
-        body.velocity = velocity;
+            body.velocity = velocity;
+        }
+        else { return; }
     }
 }

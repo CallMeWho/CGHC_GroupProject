@@ -6,15 +6,37 @@ public class Ground : MonoBehaviour
 {
     private bool onGround;
     private float friction;
+    private Spawn spawn;
+    private string sceneName;
+
+    private void Awake()
+    {
+        spawn = GetComponent<Spawn>();
+    }
+
+    private void Update()
+    {
+        sceneName = spawn.GetSceneName();
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (sceneName != "Company")
+        {
+            return;
+        }
+
         EvaluateCollision(collision);
         RetrieveFriction(collision);
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
+        if (sceneName != "Company")
+        {
+            return;
+        }
+
         onGround = false;
         friction = 0;
     }
