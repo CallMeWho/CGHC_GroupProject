@@ -38,6 +38,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
 
     private int[,] EmptyTerrainArray;
     public int[,] TerrainArray;
+    public bool isTerrainGenerated = false;
 
     private int x_playerSpawnPoint;
     private int y_playerSpawnPoint;
@@ -57,6 +58,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
 
     public void RunTheWholeProcess()
     {
+        isTerrainGenerated = false;
         //Seed = 1;
         Seed = Random.Range(-100000, 100000);
 
@@ -72,6 +74,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
 
         PlayerSpawner(TerrainArray);
         SetPlayerSpawnPoint(Player);
+        GetTerrainArray();
         RenderTerrainArray(TerrainArray, TerrainTilemap);
     }
 
@@ -230,8 +233,6 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         // Set the entrance and escape points
         int entranceX = terrainWidth / 2;
         int entranceY = 0;
-        int escapeX = terrainWidth / 2;
-        int escapeY = terrainHeight - 1;
 
         // Perform flood-fill algorithm from entrance point
         FloodFill(terrainArray, entranceX, entranceY, fillPercent, rand);
@@ -348,16 +349,17 @@ public class ProceduralTerrainGeneration : MonoBehaviour
             if (terrainArray[x, terrainHeight] == 0)
             {
                 int nullColumns = 0;
+                bool stopCounting = false;
 
                 for (int y = terrainHeight; y >= 0; y--)
                 {
-                    if (terrainArray[x, y] == 0)
+                    if (terrainArray[x, y] == 0 && !stopCounting)
                     {
                         nullColumns++;
                     }
                     else
                     {
-                        break;
+                        stopCounting = true; // Set stopCounting to true when encountering a non-null tile
                     }
                 }
 
@@ -390,6 +392,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
             }
         }
 
+        isTerrainGenerated = true;
         return terrainArray;
     }
 
@@ -403,6 +406,12 @@ public class ProceduralTerrainGeneration : MonoBehaviour
 
     public void SetPlayerSpawnPoint(GameObject player)
     {
+        GameObject playerToDestroy = GameObject.FindGameObjectWithTag("Player");
+        if (playerToDestroy != null)
+        {
+            Destroy(playerToDestroy);
+        }
+
         GameObject playerInstance = Instantiate(player, Spawner.transform.position, Quaternion.identity);
     }
     #endregion
@@ -413,6 +422,16 @@ public class ProceduralTerrainGeneration : MonoBehaviour
 
     #endregion
 
+
+    public int[,] GetTerrainArray()
+    {
+        if (isTerrainGenerated)
+        {
+            return TerrainArray;
+        }
+
+        return null;
+    }
 
     #region RenderingArray
     public void RenderTerrainArray(int[,] terrainArray, Tilemap terrainTilemap)
