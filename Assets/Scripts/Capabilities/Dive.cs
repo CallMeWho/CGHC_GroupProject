@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class Dive : MonoBehaviour
 {
-    [SerializeField] private InputController input = null;
+    [SerializeField] private PlayerController input = null;
     [SerializeField, Range(0f, 100f)] private float maxSpeed = 4f;
     [SerializeField, Range(0f, 100f)] private float maxAcceleration = 35f;
     [SerializeField, Range(0f, 1080f)] private float rotationSpeed = 720f;
@@ -16,6 +17,7 @@ public class Dive : MonoBehaviour
     private Vector2 velocity;
     private Rigidbody2D body;
     private Spawn spawn;
+    private PlayerInput playerInput;
 
     private float maxSpeedChange;
     private float acceleration;
@@ -25,6 +27,7 @@ public class Dive : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         spawn = GetComponent<Spawn>();
+        playerInput = GetComponent<PlayerInput>();
     }
 
     private void Update()
@@ -36,6 +39,7 @@ public class Dive : MonoBehaviour
             body.gravityScale = 0f;
 
             direction.x = input.RetrieveHorizontalMoveInput();
+            //direction.x = input.RetrieveHorizontalMoveInput();
             direction.y = input.RetrieveVerticalMoveInput();
             //desiredVelocity = new Vector2(direction.x, direction.y) * MathF.Max(maxSpeed - ground.GetFriction(), 0f);
             desiredVelocity = new Vector2(direction.x, direction.y) * MathF.Max(maxSpeed, 0f);

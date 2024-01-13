@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7048888764201567737}
   - component: {fileID: 3604584465439044365}
   - component: {fileID: 5022461997421547025}
+  - component: {fileID: -8437707232005501310}
   m_Layer: 0
   m_Name: diver
   m_TagString: Player
@@ -218,3 +219,17 @@ MonoBehaviour:
   maxSpeed: 4
   maxAcceleration: 35
   rotationSpeed: 720
+--- !u!114 &-8437707232005501310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4109214323134627538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f08344e35563e2d4dae31f58450f1d23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 11400000, guid: 78aca62eb68e655459f706dcd3e41716, type: 2}
+  InteractIcon: {fileID: 6879591399820218959, guid: dd04912cf70803040b8602647e831c7b, type: 3}
