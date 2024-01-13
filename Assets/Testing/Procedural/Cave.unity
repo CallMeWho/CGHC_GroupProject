@@ -645,13 +645,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1122443349}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44563e6c7dc4b8f4a941807b776a7270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Width: 100
-  Height: 100
+  Width: 500
+  Height: 500
   BlockPercent: 50
   FillPercent: 50
   EdgesAreWalls: 1
@@ -672,76 +672,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1122443349}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9aa1064903cbcf40b115e72a61238ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Item: {fileID: 8640378114612665991, guid: 609469735e81107489afe6cfdc04b72d, type: 3}
   itemParent: {fileID: 0}
---- !u!1 &1215055074
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1215055077}
-  - component: {fileID: 1215055076}
-  - component: {fileID: 1215055075}
-  m_Layer: 0
-  m_Name: terrain
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1215055075
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1215055074}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f1cad5e2f2470b4998e5d23e9e12a44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TerrainTilemap: {fileID: 612923309}
-  CaveTile: {fileID: 11400000, guid: 59461f0df685a4f4cb99873055d08ef5, type: 2}
---- !u!114 &1215055076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1215055074}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ad6ec5fd70599848bb7b6cbc57d453a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Width: 100
-  Height: 100
-  Seed: 0
-  BlockPercent: 50
---- !u!4 &1215055077
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1215055074}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 44.75478, y: 80.98767, z: 3.979809}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2053542303
 GameObject:
   m_ObjectHideFlags: 0
@@ -956,4 +893,3 @@ SceneRoots:
   - {fileID: 27447013}
   - {fileID: 838430620}
   - {fileID: 257738880}
-  - {fileID: 1215055077}

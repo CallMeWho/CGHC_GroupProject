@@ -66,7 +66,6 @@ public class Spawn : MonoBehaviour
 
     public void SetPlayerSpawnPoint(GameObject player, GameObject spawner)
     {
-        //player.transform.position = spawner.transform.position;
         GameObject playerInstance = Instantiate(player, spawner.transform.position, Quaternion.identity);
     }
 }
