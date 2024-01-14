@@ -8,12 +8,13 @@ public class Chest : InteractableObject
     [SerializeField] public Sprite Open;
     [SerializeField] public Sprite Closed;
     [SerializeField] private GameObject TouchBorder;
+    [SerializeField] public int Value = 100;
 
     private SpriteRenderer sr;
     private bool isOpen;
     private bool isTouch;
 
-    public override void Interact()
+    public override bool Interact()
     {
         if (isOpen)
         {
@@ -27,7 +28,13 @@ public class Chest : InteractableObject
             StartCoroutine(FadeSprite());
         }
 
-        isOpen = !isOpen;
+        isOpen = !isOpen;   //vice versa
+        return isOpen;
+    }
+
+    public override int GetValue()
+    {
+        return Value;
     }
 
     private void Start()

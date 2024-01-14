@@ -333,3 +333,4 @@ MonoBehaviour:
   Open: {fileID: 21300000, guid: 4c25389652a46a544ab4aa75d2ca5fbb, type: 3}
   Closed: {fileID: 21300000, guid: 4c25389652a46a544ab4aa75d2ca5fbb, type: 3}
   TouchBorder: {fileID: 6853245622150431149}
+  Value: 100

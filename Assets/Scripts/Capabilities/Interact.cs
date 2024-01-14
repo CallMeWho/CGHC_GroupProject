@@ -14,10 +14,12 @@ public class Interact : MonoBehaviour
     private BoxCollider2D playerCol;
     private Vector2 boxSize;
     private Vector3 iconScale;
+    private Buy buy;
 
     private void Awake()
     {
         playerCol = GetComponent<BoxCollider2D>();
+        buy = GetComponent<Buy>();
     }
 
     private void Start()
@@ -56,8 +58,17 @@ public class Interact : MonoBehaviour
                 {
                     if (hit.transform.GetComponent<InteractableObject>())
                     {
-                        hit.transform.GetComponent<InteractableObject>().Interact();
-                        return;
+                        bool isInteracted =  hit.transform.GetComponent<InteractableObject>().Interact();
+
+                        Debug.Log(isInteracted);
+
+                        if (isInteracted)
+                        {
+                            int itemValue = hit.transform.GetComponent<InteractableObject>().GetValue();
+                            buy.Credit += itemValue;
+                        }
+
+                        return; // will choose the nearest one only, if dont want then remove return
                     }
                 }
             }

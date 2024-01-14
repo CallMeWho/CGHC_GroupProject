@@ -10,7 +10,8 @@ public abstract class InteractableObject : MonoBehaviour
         GetComponent<BoxCollider2D>().isTrigger = true;
     }
 
-    public abstract void Interact();    // if player interacts
+    public abstract bool Interact();    // if player interacts
+    public abstract int GetValue();
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
