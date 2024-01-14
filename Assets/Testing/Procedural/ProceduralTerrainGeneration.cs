@@ -407,12 +407,21 @@ public class ProceduralTerrainGeneration : MonoBehaviour
     public void SetPlayerSpawnPoint(GameObject player)
     {
         GameObject playerToDestroy = GameObject.FindGameObjectWithTag("Player");
+        /*
         if (playerToDestroy != null)
         {
             Destroy(playerToDestroy);
         }
 
         GameObject playerInstance = Instantiate(player, Spawner.transform.position, Quaternion.identity);
+        */
+
+        if (playerToDestroy == null)
+        {
+            GameObject playerInstance = Instantiate(player, Spawner.transform.position, Quaternion.identity);
+        }
+
+        playerToDestroy.transform.position = Spawner.transform.position;
     }
     #endregion
 
