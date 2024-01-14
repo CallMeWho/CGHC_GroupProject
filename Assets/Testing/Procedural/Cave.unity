@@ -846,12 +846,12 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 140.71545, y: 291.34854}
-      - {x: 7.361372, y: 258.74164}
+    - - {x: 241.1985, y: 655.59955}
+      - {x: -13.572565, y: 646.01996}
       - {x: -53.58668, y: -25.320486}
       - {x: 0.568552, y: -35.34501}
-      - {x: 541.96893, y: -22.395353}
-      - {x: 469.99887, y: 379.13794}
+      - {x: 629.8916, y: -22.395353}
+      - {x: 610.2566, y: 661.74646}
   m_UseDelaunayMesh: 0
 --- !u!4 &1051705536
 Transform:
@@ -945,8 +945,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9aa1064903cbcf40b115e72a61238ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Item: {fileID: 8640378114612665991, guid: 609469735e81107489afe6cfdc04b72d, type: 3}
-  itemParent: {fileID: 0}
+  ChestPrefab: {fileID: 8640378114612665991, guid: 609469735e81107489afe6cfdc04b72d, type: 3}
+  ChestFillPercent: 0.5
+  ChestSpawnProbability: 0.5
+  ChestDetectRadius: 5
+  Diamond: {fileID: 0}
 --- !u!1 &1986265146
 GameObject:
   m_ObjectHideFlags: 3

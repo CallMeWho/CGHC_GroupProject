@@ -399,9 +399,6 @@ public class ProceduralTerrainGeneration : MonoBehaviour
     public void PlayerSpawner(int[,] terrainArray)
     {
         Spawner.transform.position = new Vector3(x_playerSpawnPoint, y_playerSpawnPoint - 2, 0);
-
-        Debug.Log(x_playerSpawnPoint);
-        Debug.Log(y_playerSpawnPoint);
     }
 
     public void SetPlayerSpawnPoint(GameObject player)
@@ -424,13 +421,6 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         playerToDestroy.transform.position = Spawner.transform.position;
     }
     #endregion
-
-
-    #region ItemSpawn
-
-
-    #endregion
-
 
     public int[,] GetTerrainArray()
     {
