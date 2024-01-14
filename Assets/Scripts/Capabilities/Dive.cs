@@ -18,6 +18,7 @@ public class Dive : MonoBehaviour
     private Rigidbody2D body;
     private Spawn spawn;
     private PlayerInput playerInput;
+    private BreatheOxygen oxygen;
 
     private float maxSpeedChange;
     private float acceleration;
@@ -28,6 +29,7 @@ public class Dive : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         spawn = GetComponent<Spawn>();
         playerInput = GetComponent<PlayerInput>();
+        oxygen = GetComponent<BreatheOxygen>();
     }
 
     private void Update()
@@ -36,6 +38,13 @@ public class Dive : MonoBehaviour
         
         if (sceneName == "Cave")
         {
+            if (oxygen.GetIsNoOxygen())
+            { 
+                desiredVelocity = Vector2.zero; 
+                body.velocity = Vector2.zero;   //if dont have these two, player will still straight moving, even though we dont press any key
+                return;
+            }
+
             body.gravityScale = 0f;
 
             direction.x = input.RetrieveHorizontalMoveInput();

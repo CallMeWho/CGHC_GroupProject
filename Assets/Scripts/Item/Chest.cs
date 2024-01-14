@@ -18,10 +18,13 @@ public class Chest : InteractableObject
         if (isOpen)
         {
             sr.sprite = Closed;
+            
         }
         else
         {
             sr.sprite = Open;
+            Wait(0.1f);
+            StartCoroutine(FadeSprite());
         }
 
         isOpen = !isOpen;
@@ -42,5 +45,32 @@ public class Chest : InteractableObject
     public void HideBorder()
     {
         TouchBorder.SetActive(false);
+    }
+
+    private IEnumerator Wait(float second)
+    {
+        yield return new WaitForSeconds(second); // Wait for 1 second before starting the fading effect
+    }
+
+    private IEnumerator FadeSprite()
+    {
+        float duration = 1.0f; // Time it takes for the sprite to fully disappear
+        float elapsedTime = 0.0f;
+        Material material = sr.material;
+
+        Color originalColor = material.color;
+        Color transparentColor = new Color(originalColor.r, originalColor.g, originalColor.b, 0.0f);
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+            material.color = Color.Lerp(originalColor, transparentColor, t);
+            yield return null;
+        }
+
+        // Once the sprite has fully disappeared, you can perform other actions if needed
+        // For example, disabling the object or removing it from the scene
+        gameObject.SetActive(false);
     }
 }

@@ -66,7 +66,7 @@ public class Interact : MonoBehaviour
 
     private void UpdateIconPosition()
     {
-        InteractIcon.transform.position = transform.position + new Vector3(iconOffsetX, iconOffsetY, 0);
+        InteractIcon.transform.position = transform.position + new Vector3(iconOffsetX, iconOffsetY, -2);
         InteractIcon.transform.rotation = Quaternion.identity;
 
         bool isFlipped = transform.localScale.x < 0;

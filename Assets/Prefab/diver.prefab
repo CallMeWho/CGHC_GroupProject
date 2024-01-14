@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 3604584465439044365}
   - component: {fileID: 5022461997421547025}
   - component: {fileID: -8437707232005501310}
+  - component: {fileID: 3880648654655424894}
   m_Layer: 0
   m_Name: diver
   m_TagString: Player
@@ -236,6 +237,22 @@ MonoBehaviour:
   InteractIcon: {fileID: 6879591399820218959}
   iconOffsetX: 1.2
   iconOffsetY: 1
+--- !u!114 &3880648654655424894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4109214323134627538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2634bad920be7348a2df7c0d2abfa2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentOxygenLevel: 0
+  MaxOxygenLevel: 100
+  OxygenRecoverRate: 20
+  OxygenConsumptionRate: 1
 --- !u!1 &6879591399820218959
 GameObject:
   m_ObjectHideFlags: 0
