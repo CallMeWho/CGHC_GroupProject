@@ -10,13 +10,18 @@ public abstract class InteractableObject : MonoBehaviour
         GetComponent<BoxCollider2D>().isTrigger = true;
     }
 
-    public abstract void Interact();    // if interacting with player
+    public abstract void Interact();    // if player interacts
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
             collision.GetComponent<Interact>().ShowInteractIcon();
+
+            if (this.GetComponent<Chest>())
+            {
+                this.GetComponent<Chest>().ShowBorder();
+            }
         }
     }
 
@@ -25,6 +30,11 @@ public abstract class InteractableObject : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             collision.GetComponent<Interact>().HideInteractIcon();
+
+            if (this.GetComponent<Chest>())
+            {
+                this.GetComponent<Chest>().HideBorder();
+            }
         }
     }
 }

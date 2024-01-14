@@ -650,8 +650,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44563e6c7dc4b8f4a941807b776a7270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Width: 500
-  Height: 500
+  Width: 100
+  Height: 100
   BlockPercent: 50
   FillPercent: 50
   EdgesAreWalls: 1
