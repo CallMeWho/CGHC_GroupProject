@@ -17,6 +17,7 @@ public class ProcItemGenerate : MonoBehaviour
     [SerializeField] GameObject Diamond;
 
     private ProceduralTerrainGeneration ptgScript;
+
     private int[,] terrainArray;
 
     private void Awake()
@@ -44,9 +45,8 @@ public class ProcItemGenerate : MonoBehaviour
         {
             yield return null;
         }
-
-        RemoveItems();
         terrainArray = ptgScript.GetTerrainArray();
+        RemoveItems();
         SpawnChest(terrainArray);
     }
     
@@ -156,7 +156,7 @@ public class ProcItemGenerate : MonoBehaviour
     }
     #endregion
 
-    private GameObject CreateEmptyFolder(string folderName)
+    public GameObject CreateEmptyFolder(string folderName)
     {
         GameObject itemParent = GameObject.Find(folderName);
 
