@@ -168,9 +168,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8754874917760587179}
   - component: {fileID: 545297670875322116}
-  - component: {fileID: 1283730512139763654}
   - component: {fileID: 5752039665584101831}
   - component: {fileID: 2384081341709032608}
+  - component: {fileID: -4836842118527718856}
   m_Layer: 0
   m_Name: diamond example
   m_TagString: Item
@@ -246,33 +246,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &1283730512139763654
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8640378114612665991}
-  m_BodyType: 2
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!61 &5752039665584101831
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -334,3 +307,33 @@ MonoBehaviour:
   Closed: {fileID: 21300000, guid: 4c25389652a46a544ab4aa75d2ca5fbb, type: 3}
   TouchBorder: {fileID: 6853245622150431149}
   Value: 100
+--- !u!114 &-4836842118527718856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8640378114612665991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 0
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 1
+  m_ApplyToSortingLayers: 00000000
+  m_ShapePath:
+  - {x: -1.8, y: -1.8000002, z: 0}
+  - {x: -1.8, y: 1.8000002, z: 0}
+  - {x: 1.8000002, y: 1.8000002, z: 0}
+  - {x: 1.8000002, y: -1.8000002, z: 0}
+  m_ShapePathHash: 0
+  m_Mesh: {fileID: 0}
+  m_InstanceId: -355084
+  m_LocalBounds:
+    m_Center: {x: 0.00000011920929, y: 0, z: 0}
+    m_Extent: {x: 1.8000001, y: 1.8000002, z: 0}

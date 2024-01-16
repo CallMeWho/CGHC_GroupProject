@@ -20,11 +20,13 @@ public class Dive : MonoBehaviour
     private PlayerInput playerInput;
     private BreatheOxygen oxygen;
     private WaterPressureBearing pressure;
+    private Animator animator;
 
     private float maxSpeedChange;
     private float acceleration;
     private string sceneName;
     private bool isDead = false;
+    private Quaternion initialRotation;
 
     private void Awake()
     {
@@ -33,6 +35,12 @@ public class Dive : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         oxygen = GetComponent<BreatheOxygen>();
         pressure = GetComponent<WaterPressureBearing>();
+        animator = GetComponent<Animator>();
+    }
+
+    private void Start()
+    {
+        initialRotation = transform.localRotation;
     }
 
     private void Update()
@@ -55,7 +63,36 @@ public class Dive : MonoBehaviour
             //direction.x = input.RetrieveHorizontalMoveInput();
             direction.y = input.RetrieveVerticalMoveInput();
             //desiredVelocity = new Vector2(direction.x, direction.y) * MathF.Max(maxSpeed - ground.GetFriction(), 0f);
-            desiredVelocity = new Vector2(direction.x, direction.y) * MathF.Max(maxSpeed, 0f);
+            bool isMoving = direction.x != 0f || direction.y != 0f;
+
+            if (isMoving)
+            {
+                desiredVelocity = new Vector2(direction.x, direction.y) * MathF.Max(maxSpeed, 0f);
+                AnimationCall.Instance.ChangeAnimationState(AnimationCall.CAVE_DIVE);
+            }
+            else
+            {
+                desiredVelocity = Vector2.zero;
+                //StartCoroutine(RotateToInitialRotation());
+
+
+                //STILL NEED TO MODIFY
+                Quaternion startRotation = transform.rotation;
+                float rotationTime = 1f; // The duration of the rotation in seconds
+                float elapsedTime = 0f;
+
+                while (elapsedTime < rotationTime)
+                {
+                    float t = elapsedTime / rotationTime;
+                    transform.rotation = Quaternion.Slerp(startRotation, initialRotation, t);
+                    elapsedTime += Time.deltaTime;
+                    
+                }
+
+                transform.rotation = initialRotation;
+
+                AnimationCall.Instance.ChangeAnimationState(AnimationCall.CAVE_IDLE);
+            }
 
             // flipping
             if (desiredVelocity != Vector2.zero)
@@ -97,4 +134,22 @@ public class Dive : MonoBehaviour
     {
         return isDead;
     }
+
+    /*
+    IEnumerator RotateToInitialRotation()
+    {
+        Quaternion startRotation = transform.rotation;
+        float rotationTime = 1f; // The duration of the rotation in seconds
+        float elapsedTime = 0f;
+
+        while (elapsedTime < rotationTime)
+        {
+            float t = elapsedTime / rotationTime;
+            transform.rotation = Quaternion.Slerp(startRotation, initialRotation, t);
+            elapsedTime += Time.deltaTime;
+            yield return 0.1f;
+        }
+
+        transform.rotation = initialRotation;
+    }*/
 }
