@@ -19,10 +19,12 @@ public class Dive : MonoBehaviour
     private Spawn spawn;
     private PlayerInput playerInput;
     private BreatheOxygen oxygen;
+    private WaterPressureBearing pressure;
 
     private float maxSpeedChange;
     private float acceleration;
     private string sceneName;
+    private bool isDead = false;
 
     private void Awake()
     {
@@ -30,6 +32,7 @@ public class Dive : MonoBehaviour
         spawn = GetComponent<Spawn>();
         playerInput = GetComponent<PlayerInput>();
         oxygen = GetComponent<BreatheOxygen>();
+        pressure = GetComponent<WaterPressureBearing>();
     }
 
     private void Update()
@@ -38,10 +41,11 @@ public class Dive : MonoBehaviour
         
         if (sceneName == "Cave")
         {
-            if (oxygen.GetIsNoOxygen())
+            if (oxygen.GetIsNoOxygen() || pressure.GetIsOverWaterPressure())    // player dead conditions
             { 
                 desiredVelocity = Vector2.zero; 
                 body.velocity = Vector2.zero;   //if dont have these two, player will still straight moving, even though we dont press any key
+                isDead = true;
                 return;
             }
 
@@ -87,5 +91,10 @@ public class Dive : MonoBehaviour
             body.velocity = velocity;
         }
         else { return; }
+    }
+
+    public bool GetIsDead()
+    {
+        return isDead;
     }
 }

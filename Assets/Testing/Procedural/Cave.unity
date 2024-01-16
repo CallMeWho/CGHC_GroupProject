@@ -351,6 +351,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4109214323134627538, guid: 83e2bd0dbf9200046ab31f2e70e5f702, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2145969917}
+    - targetCorrespondingSourceObject: {fileID: 4109214323134627538, guid: 83e2bd0dbf9200046ab31f2e70e5f702, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2145969927}
   m_SourcePrefab: {fileID: 100100000, guid: 83e2bd0dbf9200046ab31f2e70e5f702, type: 3}
 --- !u!1 &612923306
 GameObject:
@@ -1268,6 +1271,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Credit: 0
   Quota: 0
+--- !u!114 &2145969927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145969907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a22b0ecf4d80e3242b68c56ca65f4a24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentWaterPressure: 1
+  MaxWaterPressureBearing: 100
+  pressureChangeRate: 0.2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

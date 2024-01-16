@@ -11,12 +11,15 @@ public class BreatheOxygen : MonoBehaviour
     [SerializeField] public float OxygenConsumptionRate = 1f;
 
     private Spawn spawn;
+    private Dive dive;
+
     private string sceneName;
     private bool isNoOxygen;
 
     private void Awake()
     {
         spawn = GetComponent<Spawn>();
+        dive = GetComponent<Dive>();
     }
 
     private void Start()
@@ -27,6 +30,11 @@ public class BreatheOxygen : MonoBehaviour
 
     private void Update()
     {
+        if (dive.GetIsDead())
+        {
+            return;
+        }
+
         sceneName = spawn.GetSceneName();
 
         if (sceneName == "Company")
