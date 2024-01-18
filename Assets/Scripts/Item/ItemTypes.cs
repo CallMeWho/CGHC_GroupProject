@@ -11,4 +11,5 @@ public class ItemTypes
     [Range(0, 100)] public float SpawnProbability;
     public int DetectRadius;
     [Range(2, 4)] public int ArrayIndex;
+    public Vector3 SpawnOffset;
 }

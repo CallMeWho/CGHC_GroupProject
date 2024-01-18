@@ -19,9 +19,9 @@ public abstract class InteractableObject : MonoBehaviour
         {
             collision.GetComponent<Interact>().ShowInteractIcon();
 
-            if (this.GetComponent<Chest>())
+            if (this.GetComponent<ItemInteraction>())
             {
-                this.GetComponent<Chest>().ShowBorder();
+                this.GetComponent<ItemInteraction>().ShowBorder();
             }
         }
     }
@@ -32,9 +32,9 @@ public abstract class InteractableObject : MonoBehaviour
         {
             collision.GetComponent<Interact>().HideInteractIcon();
 
-            if (this.GetComponent<Chest>())
+            if (this.GetComponent<ItemInteraction>())
             {
-                this.GetComponent<Chest>().HideBorder();
+                this.GetComponent<ItemInteraction>().HideBorder();
             }
         }
     }

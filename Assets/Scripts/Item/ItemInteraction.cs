@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class Chest : InteractableObject
+public class ItemInteraction : InteractableObject
 {
     [SerializeField] public Sprite Open;
     [SerializeField] public Sprite Closed;

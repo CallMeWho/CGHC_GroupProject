@@ -100,7 +100,7 @@ public class ItemManager : MonoBehaviour
                         if (isAtEdge && neighItemsCount == 0 && itemSpawned < maxItems)
                             if (UnityEngine.Random.value < ele.SpawnProbability)
                             {
-                                Vector3 spawnPosition = new Vector3(x + 0.5f, y + 0.3f, 0);
+                                Vector3 spawnPosition = new Vector3(x + ele.SpawnOffset.x, y + ele.SpawnOffset.y, ele.SpawnOffset.z = 0.5f);
                                 GameObject newItem = ItemProcessMethods.GetRandomSelectedPrefab(ele.PrefabList);
                                 newItem = Instantiate(newItem, spawnPosition, Quaternion.identity);
 

@@ -18,6 +18,6 @@ public class PlayerController : InputController
 
     public override bool RetrieveInteractInput()
     {
-        return Input.GetKeyDown(KeyCode.F);
+        return Input.GetKeyDown(KeyCode.J);
     }
 }

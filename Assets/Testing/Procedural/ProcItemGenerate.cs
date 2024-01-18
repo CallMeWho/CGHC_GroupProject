@@ -74,7 +74,7 @@ public class ProcItemGenerate : MonoBehaviour
                         if (isAtEdge && neighItemsCount == 0 && itemSpawned < maxItems)
                             if (Random.value < ChestSpawnProbability)
                             {
-                                Vector3 spawnPosition = new Vector3(x + 0.5f, y + 0.3f, 0);
+                                Vector3 spawnPosition = new Vector3(x + 0.5f, y + 0.3f, 0.5f);
                                 GameObject newItem = Instantiate(ChestPrefab, spawnPosition, Quaternion.identity);
 
                                 newItem.transform.SetParent(itemParent.transform);
