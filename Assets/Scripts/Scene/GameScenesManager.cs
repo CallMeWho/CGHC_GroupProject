@@ -25,13 +25,28 @@ public class GameScenesManager : MonoBehaviour
 
     [SerializeField] private GameObject Player;
 
+    public static GameScenesManager GameScenesManagerInstance;
+
+    private void Awake()
+    {
+        if (GameScenesManagerInstance == null)
+        {
+            GameScenesManagerInstance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private void Start()
     {
-        LoadGameScene(SceneNameSelection.ToString());
+        //LoadGameScene(SceneNameSelection.ToString());
         SpawnPlayer(SceneNameSelection.ToString());
     }
 
-    private void LoadGameScene(string sceneName)
+    public void LoadGameScene(string sceneName)
     {
         if (SceneManager.GetActiveScene().name != sceneName && SceneArray.Length > 0)
         {

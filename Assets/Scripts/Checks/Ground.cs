@@ -60,6 +60,7 @@ public class Ground : MonoBehaviour
         {
             friction = material.friction;
         }
+        else { return; }
     }
 
     public bool GetOnGround()
