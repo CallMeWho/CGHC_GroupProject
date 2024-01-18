@@ -36,7 +36,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
     [Header("Randomization")]
     [SerializeField] float Seed;
 
-
+    public static ProceduralTerrainGeneration Instance;
     private int[,] EmptyTerrainArray;
     public int[,] TerrainArray;
     public bool isTerrainGenerated = false;
@@ -400,8 +400,9 @@ public class ProceduralTerrainGeneration : MonoBehaviour
     public void PlayerSpawner(int[,] terrainArray)
     {
         Spawner.transform.position = new Vector3(x_playerSpawnPoint, y_playerSpawnPoint - 2, 0);
-        ExitPoint.transform.position = new Vector3(x_playerSpawnPoint + 0.5f, y_playerSpawnPoint - 0.5f, 0);
+        ExitPoint.transform.position = new Vector3(x_playerSpawnPoint + 0.5f, y_playerSpawnPoint, 0);
     }
+
 
     public void SetPlayerSpawnPoint(GameObject player)
     {
