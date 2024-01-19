@@ -12,5 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf23aadf84d3b304581932e0be66ee5d, type: 3}
   m_Name: GameInfo
   m_EditorClassIdentifier: 
-  CurrentSceneName: 
-  Oxygen: 
+  CurrentSceneName: Company
+  MaxSpeed: 10
+  MaxAcceleration: 35
+  GroundFriction: 0
+  CurrentOxygen: 10
+  MaxOxygen: 10
+  OxygenRecoverRate: 20
+  OxygenConsumptionRate: 3
+  IsOnGround: 0
+  HasNoOxygen: 0
+  Player: {fileID: 0}
+  PlayerRB: {fileID: 0}

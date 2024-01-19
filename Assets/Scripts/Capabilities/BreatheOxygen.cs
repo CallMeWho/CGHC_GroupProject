@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.RenderGraphModule;
 
 public class BreatheOxygen : MonoBehaviour
 {
@@ -29,15 +30,6 @@ public class BreatheOxygen : MonoBehaviour
     {
         CurrentOxygenLevel = MaxOxygenLevel;
         isNoOxygen = false;
-
-        if (GameInfo != null)
-        {
-            GameInfo.Oxygen = 100;
-        }
-        else
-        {
-            Debug.LogError("GameInfo scriptable object is not assigned to BreatheOxygen script!");
-        }
     }
 
     private void Update()
@@ -74,6 +66,21 @@ public class BreatheOxygen : MonoBehaviour
 
     private void RecoverOxygen()
     {
+        //game info
+        if (GameInfo != null)
+        {
+            if (GameInfo.CurrentOxygen < GameInfo.MaxOxygen)
+            {
+                GameInfo.CurrentOxygen += GameInfo.OxygenRecoverRate * Time.deltaTime;
+
+                if (GameInfo.CurrentOxygen > GameInfo.MaxOxygen)
+                {
+                    GameInfo.CurrentOxygen = GameInfo.MaxOxygen;
+                    GameInfo.HasNoOxygen = false;
+                }
+            }
+        }
+
         if (CurrentOxygenLevel < MaxOxygenLevel)
         {
             CurrentOxygenLevel += OxygenRecoverRate * Time.deltaTime;   //oxygen will recover gradually
@@ -86,7 +93,7 @@ public class BreatheOxygen : MonoBehaviour
             }
         }
 
-        GameInfo.Oxygen = CurrentOxygenLevel;
+        GameInfo.CurrentOxygen = CurrentOxygenLevel;
     }
 
     public bool GetIsNoOxygen()
