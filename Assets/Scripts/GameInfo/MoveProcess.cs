@@ -64,9 +64,20 @@ public class MoveProcess : MonoBehaviour
     private void PlayerMove()   //naming might be incorrect
     {
         direction.x = input.RetrieveHorizontalMoveInput();
-        desiredVelocity = new Vector2(direction.x, 0f) * MathF.Max(GameInfo.MaxSpeed - GameInfo.GroundFriction, 0f);
 
-        Flipping();
+        bool isMoving = direction.x != 0f;
+
+        if (isMoving)
+        {
+            desiredVelocity = new Vector2(direction.x, 0f) * MathF.Max(GameInfo.MaxSpeed - GameInfo.GroundFriction, 0f);
+            AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.LAND_RUN);
+            Flipping();
+        }
+        else
+        {
+            desiredVelocity = Vector2.zero;
+            AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.LAND_IDLE);
+        }
     }
 
     private void Flipping()

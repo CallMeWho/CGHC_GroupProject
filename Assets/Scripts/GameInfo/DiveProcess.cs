@@ -11,7 +11,7 @@ public class DiveProcess : MonoBehaviour
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
 
-    private Vector2 direction;
+    public Vector2 direction;
     private Vector2 desiredVelocity;
     private Vector2 velocity;
     private float maxSpeedChange;

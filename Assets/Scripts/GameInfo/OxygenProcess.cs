@@ -56,20 +56,16 @@ public class OxygenProcess : MonoBehaviour
 
     private void RecoverOxygen()
     {
-        if (GameInfo.CurrentOxygen < GameInfo.MaxOxygen)
+        if (GameInfo.CurrentOxygen == 0 || GameInfo.CurrentOxygen < GameInfo.MaxOxygen)
         {
             GameInfo.CurrentOxygen += GameInfo.OxygenRecoverRate * Time.deltaTime;
-
-            if (GameInfo.CurrentOxygen > GameInfo.MaxOxygen)
-            {
-                GameInfo.CurrentOxygen = GameInfo.MaxOxygen;
-                GameInfo.HasNoOxygen = false;
-            }
         }
 
         else if (GameInfo.CurrentOxygen >= GameInfo.MaxOxygen)
         {
             GameInfo.CurrentOxygen = GameInfo.MaxOxygen;
         }
+
+        GameInfo.HasNoOxygen = false;
     }
 }

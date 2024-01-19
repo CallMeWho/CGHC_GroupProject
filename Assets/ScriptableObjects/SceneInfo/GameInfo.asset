@@ -19,14 +19,14 @@ MonoBehaviour:
   GroundFriction: 0
   CurrentOxygen: 100
   MaxOxygen: 100
-  OxygenRecoverRate: 20
-  OxygenConsumptionRate: 1
+  OxygenRecoverRate: 100
+  OxygenConsumptionRate: 3
   CurrentWaterPressure: 0
   MaxPressureCapacity: 100
   PressureChangeRate: 1
-  CurrentCredit: 1050
+  CurrentCredit: 100
   Quota: 100
-  IsOnGround: 0
+  IsOnGround: 1
   IsVerticalMoving: 0
   IsInteracting: 0
   HasNoOxygen: 0
