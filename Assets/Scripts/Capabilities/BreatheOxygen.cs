@@ -10,6 +10,9 @@ public class BreatheOxygen : MonoBehaviour
     [SerializeField] public float OxygenRecoverRate = 20f;
     [SerializeField] public float OxygenConsumptionRate = 1f;
 
+    [Header("Data Keeper")]
+    [SerializeField] public GameInfo GameInfo;
+
     private Spawn spawn;
     private Dive dive;
 
@@ -26,6 +29,15 @@ public class BreatheOxygen : MonoBehaviour
     {
         CurrentOxygenLevel = MaxOxygenLevel;
         isNoOxygen = false;
+
+        if (GameInfo != null)
+        {
+            GameInfo.Oxygen = 100;
+        }
+        else
+        {
+            Debug.LogError("GameInfo scriptable object is not assigned to BreatheOxygen script!");
+        }
     }
 
     private void Update()
@@ -73,6 +85,8 @@ public class BreatheOxygen : MonoBehaviour
                 isNoOxygen = false;
             }
         }
+
+        GameInfo.Oxygen = CurrentOxygenLevel;
     }
 
     public bool GetIsNoOxygen()

@@ -22,8 +22,10 @@ public class GameScenesManager : MonoBehaviour
     [SerializeField] private GameObject PlayerSpawner;
     [SerializeField] private GameObject SceneLoader;
     [SerializeField] public SceneElement[] SceneArray;
-
     [SerializeField] public GameObject Player;
+
+    [Header("Data Keeper")]
+    [SerializeField] public GameInfo GameInfo;
 
     public static GameScenesManager GameScenesManagerInstance;
 
@@ -43,6 +45,11 @@ public class GameScenesManager : MonoBehaviour
     private void Start()
     {
         SpawnPlayer(SceneNameSelection.ToString());
+    }
+
+    private void Update()
+    {
+        GameInfo.CurrentSceneName = SceneManager.GetActiveScene().name;
     }
 
     public void LoadGameScene(string sceneName)
@@ -78,7 +85,6 @@ public class GameScenesManager : MonoBehaviour
 
                 Player.transform.position = PlayerSpawner.transform.position;
             }
-            return;
         }
     }
 }

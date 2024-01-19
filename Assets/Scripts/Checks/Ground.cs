@@ -2,10 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ground : MonoBehaviour //only at company
+public class Ground : MonoBehaviour // only at company
 {
-    private bool onGround;
-    private float friction;
+    // player
+    private bool isOnGround;
+
+    // ground
+    private float groundFriction;
+
+    // scene
     private Spawn spawn;
     private string sceneName;
 
@@ -37,16 +42,16 @@ public class Ground : MonoBehaviour //only at company
             return;
         }
 
-        onGround = false;
-        friction = 0;
+        isOnGround = false;
+        groundFriction = 0;
     }
 
-    private void EvaluateCollision(Collision2D collision)   // to check if game object collide with (xxx)
+    private void EvaluateCollision(Collision2D collision)   // to check if player collides with (collision)
     {
         for (int i = 0; i < collision.contactCount; i++)
         {
             Vector2 normal = collision.GetContact(i).normal;
-            onGround |= normal.y >= 0.9f;
+            isOnGround |= normal.y >= 0.9f;
         }
     }
 
@@ -54,22 +59,22 @@ public class Ground : MonoBehaviour //only at company
     {
         PhysicsMaterial2D material = collision.rigidbody.sharedMaterial;
 
-        friction = 0;
+        groundFriction = 0;
 
         if (material != null)
         {
-            friction = material.friction;
+            groundFriction = material.friction;
         }
         else { return; }
     }
 
     public bool GetOnGround()
     {
-        return onGround;
+        return isOnGround;
     }
 
     public float GetFriction()
     {
-        return friction;
+        return groundFriction;
     }
 }
