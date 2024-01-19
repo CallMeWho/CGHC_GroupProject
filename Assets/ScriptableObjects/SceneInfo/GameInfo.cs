@@ -11,6 +11,7 @@ public class GameInfo : ScriptableObject
     [Header("Player Move Condition")]
     public float MaxSpeed = 4f;
     public float MaxAcceleration = 35f;
+    public float RotationSpeed = 720f;
     public float GroundFriction;
 
     [Header("Player Oxygen Condition")]
@@ -22,4 +23,5 @@ public class GameInfo : ScriptableObject
     [Header("Player Current States")]
     public bool IsOnGround = false;
     public bool HasNoOxygen = false;
+    public bool HasOverWaterPressure = false;
 }

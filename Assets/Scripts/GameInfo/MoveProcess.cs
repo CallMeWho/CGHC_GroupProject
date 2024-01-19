@@ -11,7 +11,6 @@ public class MoveProcess : MonoBehaviour
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
 
-   
     private Vector2 direction;
     private Vector2 desiredVelocity;
     private Vector2 velocity;
@@ -44,15 +43,25 @@ public class MoveProcess : MonoBehaviour
 
     private void Update()
     {
+        if (GameInfo.CurrentSceneName != "Company")
+        {
+            return;
+        }
+
         PlayerMove();
     }
 
     private void FixedUpdate()
     {
+        if (GameInfo.CurrentSceneName != "Company")
+        {
+            return;
+        }
+
         Accelerate();
     }
 
-    private void PlayerMove()
+    private void PlayerMove()   //naming might be incorrect
     {
         direction.x = input.RetrieveHorizontalMoveInput();
         desiredVelocity = new Vector2(direction.x, 0f) * MathF.Max(GameInfo.MaxSpeed - GameInfo.GroundFriction, 0f);
@@ -70,7 +79,7 @@ public class MoveProcess : MonoBehaviour
         }
     }
 
-    private void Accelerate()
+    private void Accelerate()   //this one attached then will just start moving
     {
         velocity = Body.velocity;
         acceleration = GameInfo.IsOnGround ? GameInfo.MaxAcceleration : 0;

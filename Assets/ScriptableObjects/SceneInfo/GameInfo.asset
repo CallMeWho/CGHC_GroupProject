@@ -15,12 +15,12 @@ MonoBehaviour:
   CurrentSceneName: Company
   MaxSpeed: 10
   MaxAcceleration: 35
+  RotationSpeed: 720
   GroundFriction: 0
-  CurrentOxygen: 10
-  MaxOxygen: 10
+  CurrentOxygen: 100
+  MaxOxygen: 100
   OxygenRecoverRate: 20
   OxygenConsumptionRate: 3
   IsOnGround: 0
   HasNoOxygen: 0
-  Player: {fileID: 0}
-  PlayerRB: {fileID: 0}
+  HasOverWaterPressure: 0
