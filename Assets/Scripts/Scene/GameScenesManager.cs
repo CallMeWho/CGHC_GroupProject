@@ -42,7 +42,6 @@ public class GameScenesManager : MonoBehaviour
 
     private void Start()
     {
-        //LoadGameScene(SceneNameSelection.ToString());
         SpawnPlayer(SceneNameSelection.ToString());
     }
 

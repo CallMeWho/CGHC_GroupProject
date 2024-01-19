@@ -68,7 +68,7 @@ public class Dive : MonoBehaviour
             if (isMoving)
             {
                 desiredVelocity = new Vector2(direction.x, direction.y) * MathF.Max(maxSpeed, 0f);
-                AnimationCall.Instance.ChangeAnimationState(AnimationCall.CAVE_DIVE);
+                AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.CAVE_DIVE);
             }
             else
             {
@@ -91,7 +91,7 @@ public class Dive : MonoBehaviour
 
                 transform.rotation = initialRotation;
 
-                AnimationCall.Instance.ChangeAnimationState(AnimationCall.CAVE_IDLE);
+                AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.CAVE_IDLE);
             }
 
             // flipping

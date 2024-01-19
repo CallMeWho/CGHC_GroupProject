@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AnimationCall : MonoBehaviour
 {
-    public static AnimationCall Instance;
+    public static AnimationCall PlayerAnimationInstance;
     public Animator Animator;
     public string CurrentState;
 
@@ -13,9 +13,9 @@ public class AnimationCall : MonoBehaviour
     {
         Animator = GetComponent<Animator>();
 
-        if (Instance == null)
+        if (PlayerAnimationInstance == null)
         {
-            Instance = this;
+            PlayerAnimationInstance = this;
             //DontDestroyOnLoad(gameObject);
         }
         else
