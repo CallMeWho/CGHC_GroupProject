@@ -7,6 +7,7 @@ public class GameInfo : ScriptableObject
 {
     [Header("Current Scene")]
     public string CurrentSceneName;
+    public int CaveLevel = 0;
 
     [Header("Player Move Condition")]
     public float MaxSpeed = 4f;

@@ -21,6 +21,11 @@ public class TeleportPoint : MonoBehaviour
                 GameInfo.CurrentSceneName == "Company")
             {
                 GameScenesManager.GameScenesManagerInstance.LoadGameScene(sceneName);
+
+                if (sceneName == "Cave")
+                {
+                    GameInfo.CaveLevel += 1;
+                }
             }
             else
             {
