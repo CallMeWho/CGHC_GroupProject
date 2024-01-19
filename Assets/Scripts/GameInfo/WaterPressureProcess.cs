@@ -19,6 +19,15 @@ public class WaterPressureProcess : MonoBehaviour
     private void Update()
     {
         UpdateWaterPressure();
+
+        if (GameInfo.CurrentWaterPressure >= GameInfo.MaxPressureCapacity)
+        {
+            GameInfo.HasOverWaterPressure = true;
+        }
+        else
+        {
+            GameInfo.HasOverWaterPressure = false;
+        }
     }
 
     private void UpdateWaterPressure()
