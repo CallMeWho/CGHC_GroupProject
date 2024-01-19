@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem.iOS;
+//using UnityEngine.InputSystem.iOS;
 using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class SceneElement
 {
     public string SceneName;
-    public SceneAsset Scene;
+    //public SceneAsset Scene;
 }
 
 public enum SceneSelection { Company, Cave }
@@ -58,10 +58,10 @@ public class GameScenesManager : MonoBehaviour
         {
             foreach (SceneElement sceneEle in SceneArray)
             {
-                if (sceneEle.SceneName != null && sceneEle.Scene != null &&
+                if (sceneEle.SceneName != null &&
                      sceneEle.SceneName == sceneName)
                 {
-                    SceneManager.LoadScene(sceneEle.Scene.name);
+                    SceneManager.LoadScene(sceneEle.SceneName);
                     break;
                 }
             }
