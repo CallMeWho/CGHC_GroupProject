@@ -307,6 +307,7 @@ MonoBehaviour:
   Closed: {fileID: 21300000, guid: 4c25389652a46a544ab4aa75d2ca5fbb, type: 3}
   TouchBorder: {fileID: 6853245622150431149}
   Value: 100
+  GameInfo: {fileID: 11400000, guid: 6aff3c642ba480f4b9bc667943b91095, type: 2}
 --- !u!114 &-4836842118527718856
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,12 +16,24 @@ public class GameInfo : ScriptableObject
 
     [Header("Player Oxygen Condition")]
     public float CurrentOxygen;
-    public float MaxOxygen;
-    public float OxygenRecoverRate;
-    public float OxygenConsumptionRate;
+    public float MaxOxygen = 100f;
+    public float OxygenRecoverRate = 20f;
+    public float OxygenConsumptionRate = 1f;
+
+    [Header("Player Water Pressure Condition")]
+    public float CurrentWaterPressure = 0f;
+    public float MaxPressureCapacity = 100f;
+    public float PressureChangeRate = 1f;
+
+    [Header("Player Quota Condition")]
+    public int CurrentCredit = 0;
+    public int Quota = 100;
 
     [Header("Player Current States")]
     public bool IsOnGround = false;
+    public bool IsVerticalMoving = false;
+    public bool IsInteracting = false;  //useless for now, interacting got prob
     public bool HasNoOxygen = false;
     public bool HasOverWaterPressure = false;
+    public bool HasMetQuota = false;
 }

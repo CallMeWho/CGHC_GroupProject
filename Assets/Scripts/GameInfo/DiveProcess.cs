@@ -101,6 +101,7 @@ public class DiveProcess : MonoBehaviour
         {
             desiredVelocity = Vector2.zero;
             Body.velocity = Vector2.zero;   //if dont have these two, player will still straight moving, even though we dont press any key
+            GameInfo.CurrentCredit = 0;
             return;
         }
     }

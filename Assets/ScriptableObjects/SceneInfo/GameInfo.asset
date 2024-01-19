@@ -20,7 +20,15 @@ MonoBehaviour:
   CurrentOxygen: 100
   MaxOxygen: 100
   OxygenRecoverRate: 20
-  OxygenConsumptionRate: 3
+  OxygenConsumptionRate: 1
+  CurrentWaterPressure: 0
+  MaxPressureCapacity: 100
+  PressureChangeRate: 1
+  CurrentCredit: 1050
+  Quota: 100
   IsOnGround: 0
+  IsVerticalMoving: 0
+  IsInteracting: 0
   HasNoOxygen: 0
   HasOverWaterPressure: 0
+  HasMetQuota: 1

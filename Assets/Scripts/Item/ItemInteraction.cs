@@ -10,6 +10,9 @@ public class ItemInteraction : InteractableObject
     [SerializeField] private GameObject TouchBorder;
     [SerializeField] public int Value = 100;
 
+    [Header("Data Keeper")]
+    [SerializeField] public GameInfo GameInfo;
+
     private SpriteRenderer sr;
     private bool isOpen;
     private bool isTouch;
@@ -24,6 +27,7 @@ public class ItemInteraction : InteractableObject
         else
         {
             sr.sprite = Open;
+            GameInfo.CurrentCredit += Value;
             Wait(0.1f);
             StartCoroutine(FadeSprite());
         }
