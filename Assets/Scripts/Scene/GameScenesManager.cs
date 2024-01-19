@@ -21,9 +21,9 @@ public class GameScenesManager : MonoBehaviour
     [SerializeField] private SceneSelection SceneNameSelection;
     [SerializeField] private GameObject PlayerSpawner;
     [SerializeField] private GameObject SceneLoader;
-    [SerializeField] private SceneElement[] SceneArray;
+    [SerializeField] public SceneElement[] SceneArray;
 
-    [SerializeField] private GameObject Player;
+    [SerializeField] public GameObject Player;
 
     public static GameScenesManager GameScenesManagerInstance;
 
