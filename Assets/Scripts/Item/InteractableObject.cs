@@ -17,11 +17,11 @@ public abstract class InteractableObject : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            collision.GetComponent<InteractProcess>().ShowInteractIcon();
+            collision.GetComponent<InteractProcess>().ShowInteractIcon();   //show player icon
             
             if (this.GetComponent<ItemInteraction>())
             {
-                this.GetComponent<ItemInteraction>().ShowBorder();
+                this.GetComponent<ItemInteraction>().ShowBorder();  //show itself border
             }
         }
     }

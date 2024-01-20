@@ -29,22 +29,63 @@ public class InteractProcess : MonoBehaviour
 
     private void Update()
     {
+        CheckIfPressingKey();
+        CheckIfHasInteracted();
+
+        CheckInteract();
+        UpdateIconPosition();
+    }
+
+    #region newCodes
+    private void CheckIfPressingKey()
+    {
+        if (Input.GetKey(KeyCode.J))
+        {
+            GameInfo.IsPressingKey = true;
+        }
+        else
+        {
+            GameInfo.IsPressingKey = false;
+        }
+    }
+
+    private void CheckIfHasInteracted()
+    {
+        if (GameInfo.IsTouchingObject && GameInfo.IsPressingKey)
+        {
+            GameInfo.HasInteracted = true;
+        }
+        else
+        {
+            GameInfo.HasInteracted = false;
+        }
+    }
+
+    #endregion
+
+
+    private void temp()
+    {
         if (input.RetrieveInteractInput())
         {
+            GameInfo.IsPressingKey = true;
             CheckInteract();
         }
-
-        UpdateIconPosition();
-        //CheckInteract();
+        else
+        {
+            GameInfo.IsPressingKey = false;
+        }
     }
 
     public void ShowInteractIcon()
     {
+        GameInfo.IsTouchingObject = true;
         InteractIcon.SetActive(true);
     }
 
     public void HideInteractIcon()
     {
+        GameInfo.IsTouchingObject = false;
         InteractIcon.SetActive(false);
     }
 
@@ -54,7 +95,6 @@ public class InteractProcess : MonoBehaviour
 
         if (hits.Length > 0)
         {
-            Debug.Log("got hit");
             foreach (RaycastHit2D hit in hits)
             {
                 if (hit.transform.GetComponent<InteractableObject>())
@@ -64,13 +104,8 @@ public class InteractProcess : MonoBehaviour
                     if (isInteracted)
                     {
                         int itemValue = hit.transform.GetComponent<InteractableObject>().GetValue();
-                        GameInfo.IsInteracting = true;
                         GameInfo.CurrentCredit += itemValue;
                         return; // will choose the nearest one only, if dont want then remove return
-                    }
-                    else
-                    {
-                        GameInfo.IsInteracting = false;
                     }
 
                 }
@@ -88,5 +123,10 @@ public class InteractProcess : MonoBehaviour
         float y = iconScale.y;
         float z = iconScale.z;
         InteractIcon.transform.localScale = isFlipped ? new Vector3(-x, y, z) : new Vector3(x, y, z);
+    }
+
+    private IEnumerator Wait(float second)
+    {
+        yield return new WaitForSeconds(second); // Wait for 1 second before starting the fading effect
     }
 }

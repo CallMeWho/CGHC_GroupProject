@@ -19,7 +19,7 @@ public class TeleportPoint : MonoBehaviour
         {
             if (GameInfo.CurrentSceneName == "Company")
             {
-                if (sceneName == "Shop" && GameInfo.CanBuySkill)
+                if (sceneName == "Shop" && GameInfo.CanBuySkill && GameInfo.HasInteracted)
                 {
                     GameScenesManager.GameScenesManagerInstance.LoadGameScene(sceneName);
                 }

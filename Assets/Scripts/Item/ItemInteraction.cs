@@ -1,38 +1,94 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class ItemInteraction : InteractableObject
 {
+    public enum InteractType { Item, Shop }
+
+    [SerializeField] private InteractType interactType;
     [SerializeField] public Sprite Open;
     [SerializeField] public Sprite Closed;
     [SerializeField] private GameObject TouchBorder;
-    [SerializeField] public int Value = 100;
+    [SerializeField] public int Value;
 
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
 
+    
+
     private SpriteRenderer sr;
     private bool isOpen;
     private bool isTouch;
+    private bool canInteract = true;
 
     public override bool Interact()
     {
-        if (isOpen)
+        bool interactDone = false;
+
+        if (canInteract && GameInfo.HasInteracted)
         {
-            sr.sprite = Closed;
-            
-        }
-        else
-        {
-            sr.sprite = Open;
-            GameInfo.CurrentCredit += Value;
-            Wait(0.1f);
-            StartCoroutine(FadeSprite());
+            if (interactType.ToString() == "Item")
+            {
+                StartCoroutine(InteractCoroutine());    //internal cooldown, or if player keep pressing will get more money for only 1 item
+                StartCoroutine(FadeSprite());
+            }
+
+            else if (interactType.ToString() == "Shop")
+            {
+                if (GameInfo.CanBuySkill && GameInfo.HasInteracted)
+                {
+                    GameScenesManager.GameScenesManagerInstance.LoadGameScene("Shop");
+                }
+            }
+
+            interactDone = true;
         }
 
-        isOpen = !isOpen;   //vice versa
+        return interactDone;
+    }
+
+    private bool temp()
+    {
+        if (interactType.ToString() == "Item")
+        {
+            if (isOpen)
+            {
+                sr.sprite = Closed;
+
+            }
+            else
+            {
+                sr.sprite = Open;
+                GameInfo.CurrentCredit += Value;
+                //Wait(0.1f);
+                StartCoroutine(FadeSprite());
+            }
+
+            isOpen = !isOpen;   //vice versa
+            return isOpen;
+        }
+
+        if (interactType.ToString() == "Shop")
+        {
+            if (isOpen)
+            {
+                sr.sprite = Closed;
+            }
+            else
+            {
+                if (GameInfo.CanBuySkill && GameInfo.HasInteracted)
+                {
+                    GameScenesManager.GameScenesManagerInstance.LoadGameScene("Shop");
+                }
+            }
+
+            isOpen = !isOpen;   //vice versa
+            return isOpen;
+        }
+
         return isOpen;
     }
 
@@ -58,9 +114,11 @@ public class ItemInteraction : InteractableObject
         TouchBorder.SetActive(false);
     }
 
-    private IEnumerator Wait(float second)
+    private IEnumerator InteractCoroutine()
     {
-        yield return new WaitForSeconds(second); // Wait for 1 second before starting the fading effect
+        canInteract = false;
+        yield return new WaitForSeconds(1f);
+        canInteract = true;
     }
 
     private IEnumerator FadeSprite()

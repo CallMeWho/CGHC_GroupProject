@@ -34,9 +34,13 @@ public class GameInfo : ScriptableObject
     [Header("Player Current States")]
     public bool IsOnGround = false;
     public bool IsVerticalMoving = false;
-    public bool IsInteracting = false;  //useless for now, interacting got prob
     public bool HasNoOxygen = false;
     public bool HasOverWaterPressure = false;
     public bool HasMetQuota = false;
-    public bool CanBuySkill = false;    
+    public bool CanBuySkill = false;
+
+    [Header("Player Interaction Status")]
+    public bool IsTouchingObject = false;
+    public bool IsPressingKey = false;
+    public bool HasInteracted = false;  //useless for now, interacting got prob
 }

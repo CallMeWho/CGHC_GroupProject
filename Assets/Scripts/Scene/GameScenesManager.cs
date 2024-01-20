@@ -63,6 +63,7 @@ public class GameScenesManager : MonoBehaviour
         GameInfo.CaveLevel = 0;
         GameInfo.CurrentCredit = 0;
         GameInfo.Quota = 0;
+        GameInfo.HasInteracted = false;
     }
 
     private void Update()
