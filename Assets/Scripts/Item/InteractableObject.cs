@@ -17,8 +17,8 @@ public abstract class InteractableObject : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            collision.GetComponent<Interact>().ShowInteractIcon();
-
+            collision.GetComponent<InteractProcess>().ShowInteractIcon();
+            
             if (this.GetComponent<ItemInteraction>())
             {
                 this.GetComponent<ItemInteraction>().ShowBorder();
@@ -30,7 +30,7 @@ public abstract class InteractableObject : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            collision.GetComponent<Interact>().HideInteractIcon();
+            collision.GetComponent<InteractProcess>().HideInteractIcon();
 
             if (this.GetComponent<ItemInteraction>())
             {

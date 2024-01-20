@@ -17,22 +17,38 @@ public class TeleportPoint : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (GameInfo.CurrentSceneName == "Cave" && GameInfo.HasMetQuota ||
-                GameInfo.CurrentSceneName == "Company")
+            if (GameInfo.CurrentSceneName == "Company")
             {
-                GameScenesManager.GameScenesManagerInstance.LoadGameScene(sceneName);
+                if (sceneName == "Shop" && GameInfo.CanBuySkill)
+                {
+                    GameScenesManager.GameScenesManagerInstance.LoadGameScene(sceneName);
+                }
 
                 if (sceneName == "Cave")
                 {
+                    GameScenesManager.GameScenesManagerInstance.LoadGameScene(sceneName);
                     GameInfo.CaveLevel += 1;
                 }
             }
-            else
+
+            else if (GameInfo.CurrentSceneName == "Cave")
             {
-                // player will be pushed back
-                Vector2 pushDirection = (collision.transform.position - transform.position).normalized;
-                Vector2 pushVector = pushDirection * 2f;
-                collision.transform.position += new Vector3(pushVector.x, pushVector.y, 0f);
+                if (sceneName == "Company" && GameInfo.HasMetQuota)
+                {
+                    GameScenesManager.GameScenesManagerInstance.LoadGameScene(sceneName);
+                }
+                else
+                {
+                    // player will be pushed back
+                    Vector2 pushDirection = (collision.transform.position - transform.position).normalized;
+                    Vector2 pushVector = pushDirection * 2f;
+                    collision.transform.position += new Vector3(pushVector.x, pushVector.y, 0f);
+                }
+            }
+
+            else if (GameInfo.CurrentSceneName == "Shop")
+            {
+
             }
         }
     }

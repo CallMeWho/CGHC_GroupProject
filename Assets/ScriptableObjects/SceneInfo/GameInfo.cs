@@ -29,6 +29,7 @@ public class GameInfo : ScriptableObject
     [Header("Player Quota Condition")]
     public int CurrentCredit = 0;
     public int Quota = 100;
+    public int ShopCost = 50;
 
     [Header("Player Current States")]
     public bool IsOnGround = false;
@@ -37,4 +38,5 @@ public class GameInfo : ScriptableObject
     public bool HasNoOxygen = false;
     public bool HasOverWaterPressure = false;
     public bool HasMetQuota = false;
+    public bool CanBuySkill = false;    
 }

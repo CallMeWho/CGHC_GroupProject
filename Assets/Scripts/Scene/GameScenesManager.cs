@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -14,7 +15,7 @@ public class SceneElement
     //public SceneAsset Scene;
 }
 
-public enum SceneSelection { Company, Cave }
+public enum SceneSelection { Company, Cave, Shop}
 
 public class GameScenesManager : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class GameScenesManager : MonoBehaviour
     [SerializeField] public GameInfo GameInfo;
 
     public static GameScenesManager GameScenesManagerInstance;
+
+    private bool hasStarted = false;
 
     private void Awake()
     {
@@ -44,7 +47,22 @@ public class GameScenesManager : MonoBehaviour
 
     private void Start()
     {
+        if (!hasStarted)
+        {
+            // Run your initialization/reset code here
+            ResetGame();
+
+            hasStarted = true;
+        }
+
         SpawnPlayer(SceneNameSelection.ToString());
+    }
+
+    private void ResetGame()
+    {
+        GameInfo.CaveLevel = 0;
+        GameInfo.CurrentCredit = 0;
+        GameInfo.Quota = 0;
     }
 
     private void Update()
@@ -85,6 +103,11 @@ public class GameScenesManager : MonoBehaviour
 
                 Player.transform.position = PlayerSpawner.transform.position;
             }
+        }
+
+        if (sceneName == "Shop")
+        {
+            return;
         }
     }
 }

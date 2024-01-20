@@ -13,7 +13,7 @@ public class QuotaProcess : MonoBehaviour
     {
         int currentLevel = GameInfo.CaveLevel; // Get the current level
 
-        if (currentLevel > previousLevel)
+        if (currentLevel > previousLevel && GameInfo.CurrentSceneName != "Cave")
         {
             int levelDifference = currentLevel - previousLevel;
             GameInfo.Quota += levelDifference * 100;
@@ -30,6 +30,20 @@ public class QuotaProcess : MonoBehaviour
         else
         {
             GameInfo.HasMetQuota = false;
+        }
+
+        ShopCheckInRequirement();
+    }
+
+    private void ShopCheckInRequirement()
+    {
+        if (GameInfo.CurrentCredit >= GameInfo.ShopCost)
+        {
+            GameInfo.CanBuySkill = true;
+        }
+        else
+        {
+            GameInfo.CanBuySkill = false;
         }
     }
 }
