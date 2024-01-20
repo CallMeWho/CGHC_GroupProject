@@ -93,7 +93,8 @@ public class MoveProcess : MonoBehaviour
     private void Accelerate()   //this one attached then will just start moving
     {
         velocity = Body.velocity;
-        acceleration = GameInfo.IsOnGround ? GameInfo.MaxAcceleration : 0;
+        //acceleration = GameInfo.IsOnGround ? GameInfo.MaxAcceleration : 0;  //got issue if collide with tile horizontal side of other tilemap
+        acceleration = GameInfo.MaxAcceleration;
 
         maxSpeedChange = acceleration * Time.deltaTime;
         velocity.x = Mathf.MoveTowards(velocity.x, desiredVelocity.x, maxSpeedChange);

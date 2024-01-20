@@ -34,6 +34,7 @@ public class GroundCheck : MonoBehaviour
         {
             Vector2 normal = collision.GetContact(i).normal;
             GameInfo.IsOnGround |= normal.y >= 0.9f;
+            //GameInfo.IsOnGround |= normal.y >= 0.9f || Mathf.Abs(normal.x) >= 0.9f;
         }
     }
 
