@@ -123,12 +123,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &185201258 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6879591399820218959, guid: 83e2bd0dbf9200046ab31f2e70e5f702, type: 3}
-  m_PrefabInstance: {fileID: 868368979}
-  m_PrefabAsset: {fileID: 0}
---- !u!43 &376827905
+--- !u!43 &93725043
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -293,6 +288,11 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &185201258 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6879591399820218959, guid: 83e2bd0dbf9200046ab31f2e70e5f702, type: 3}
+  m_PrefabInstance: {fileID: 868368979}
+  m_PrefabAsset: {fileID: 0}
 --- !u!225 &473484738 stripped
 CanvasGroup:
   m_CorrespondingSourceObject: {fileID: 3554615284799552620, guid: 1cecf0b27c9406e4095ac59a3bdb6252, type: 3}

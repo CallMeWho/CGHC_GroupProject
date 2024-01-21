@@ -17,8 +17,6 @@ public class ItemInteraction : InteractableObject
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
 
-    
-
     private SpriteRenderer sr;
     private bool isOpen;
     private bool isTouch;
@@ -123,6 +121,8 @@ public class ItemInteraction : InteractableObject
 
     private IEnumerator FadeSprite()
     {
+        sr.sprite = Open;
+
         float duration = 1.0f; // Time it takes for the sprite to fully disappear
         float elapsedTime = 0.0f;
         Material material = sr.material;
