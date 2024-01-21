@@ -12,29 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf23aadf84d3b304581932e0be66ee5d, type: 3}
   m_Name: GameInfo
   m_EditorClassIdentifier: 
-  CurrentSceneName: Shop
+  CurrentSceneName: Cave
   CaveLevel: 0
   MaxSpeed: 10
   MaxAcceleration: 35
   RotationSpeed: 720
   GroundFriction: 0
-  CurrentOxygen: 100
+  CurrentOxygen: 88.09985
   MaxOxygen: 100
   OxygenRecoverRate: 100
   OxygenConsumptionRate: 0.5
-  CurrentWaterPressure: 0
+  CurrentWaterPressure: 11.037319
   MaxPressureCapacity: 100
   PressureChangeRate: 0.5
   CurrentCredit: 0
   Quota: 0
   ShopCost: 100
   CostIncrementPercent: 0.5
-  IsOnGround: 1
-  IsVerticalMoving: 0
+  IsOnGround: 0
+  IsVerticalMoving: 1
   HasNoOxygen: 0
   HasOverWaterPressure: 0
   HasMetQuota: 1
-  CanBuySkill: 1
+  CanBuySkill: 0
   IsTouchingObject: 0
-  IsPressingKey: 1
+  IsPressingKey: 0
   HasInteracted: 0

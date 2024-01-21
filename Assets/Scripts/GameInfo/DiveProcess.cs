@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class DiveProcess : MonoBehaviour
 {
@@ -78,7 +79,6 @@ public class DiveProcess : MonoBehaviour
         {
             desiredVelocity = Vector2.zero;
             //StartCoroutine(RotateToInitialRotation());
-
 
             //STILL NEED TO MODIFY
             Quaternion startRotation = transform.rotation;

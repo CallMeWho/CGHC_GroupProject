@@ -144,6 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ddf124985f0f44b9c9f8b71b44b06a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactType: 0
   Open: {fileID: 21300000, guid: 3b5e5833f94fc594eb0c0436ae01a3de, type: 3}
   Closed: {fileID: 21300000, guid: 3b5e5833f94fc594eb0c0436ae01a3de, type: 3}
   TouchBorder: {fileID: 4913571848425153266}
