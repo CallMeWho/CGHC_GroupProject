@@ -17,7 +17,6 @@ public class Description : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Mouse Enter");
         if (infoPanel != null)
         {
             infoPanel.SetActive(true);
@@ -26,7 +25,6 @@ public class Description : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("Mouse Exit");
         if (infoPanel != null)
         {
             infoPanel.SetActive(false);
