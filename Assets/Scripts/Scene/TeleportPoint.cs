@@ -11,6 +11,13 @@ public class TeleportPoint : MonoBehaviour
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
 
+    private FadeInOut Fade;
+
+    private void Start()
+    {
+        Fade = FindAnyObjectByType<FadeInOut>();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         string sceneName = SceneNameSelection.ToString();
@@ -21,12 +28,12 @@ public class TeleportPoint : MonoBehaviour
             {
                 if (sceneName == "Shop" && GameInfo.CanBuySkill && GameInfo.HasInteracted)
                 {
-                    GameScenesManager.GameScenesManagerInstance.LoadGameScene(sceneName);
+                    StartCoroutine(FadeInLoadScene(sceneName));
                 }
 
                 if (sceneName == "Cave")
                 {
-                    GameScenesManager.GameScenesManagerInstance.LoadGameScene(sceneName);
+                    StartCoroutine(FadeInLoadScene(sceneName));
                     GameInfo.CaveLevel += 1;
                 }
             }
@@ -35,7 +42,7 @@ public class TeleportPoint : MonoBehaviour
             {
                 if (sceneName == "Company" && GameInfo.HasMetQuota)
                 {
-                    GameScenesManager.GameScenesManagerInstance.LoadGameScene(sceneName);
+                    StartCoroutine(FadeInLoadScene(sceneName));
                 }
                 else
                 {
@@ -45,11 +52,13 @@ public class TeleportPoint : MonoBehaviour
                     collision.transform.position += new Vector3(pushVector.x, pushVector.y, 0f);
                 }
             }
-
-            else if (GameInfo.CurrentSceneName == "Shop")
-            {
-
-            }
         }
+    }
+
+    private IEnumerator FadeInLoadScene(string sceneName)
+    {
+        Fade.StartFadeIn();
+        yield return new WaitForSeconds(1);
+        GameScenesManager.GameScenesManagerInstance.LoadGameScene(sceneName);
     }
 }

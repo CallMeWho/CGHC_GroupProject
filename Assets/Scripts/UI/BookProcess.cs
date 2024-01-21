@@ -14,7 +14,7 @@ public class BookProcess : MonoBehaviour
     {
         GameInfo.CurrentCredit -= GameInfo.ShopCost;
         GameInfo.ShopCost += Mathf.RoundToInt(GameInfo.ShopCost * GameInfo.CostIncrementPercent);
-        SceneManager.LoadScene("Company");
+        SceneManager.LoadSceneAsync("Company");
     }
 
     // movespeed
@@ -30,4 +30,5 @@ public class BookProcess : MonoBehaviour
     }
 
     // vision
+
 }

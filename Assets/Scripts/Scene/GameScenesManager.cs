@@ -15,7 +15,7 @@ public class SceneElement
     //public SceneAsset Scene;
 }
 
-public enum SceneSelection { Company, Cave, Shop}
+public enum SceneSelection { Company, Cave, Shop, GameStartScene }
 
 public class GameScenesManager : MonoBehaviour
 {
@@ -47,18 +47,16 @@ public class GameScenesManager : MonoBehaviour
 
     private void Start()
     {
-        if (!hasStarted)
+        if (!hasStarted && GameInfo.CurrentSceneName != "GameStartScene")
         {
-            // Run your initialization/reset code here
             ResetGame();
-
             hasStarted = true;
         }
 
         SpawnPlayer(SceneNameSelection.ToString());
     }
 
-    private void ResetGame()
+    public void ResetGame()
     {
         GameInfo.CaveLevel = 0;
         GameInfo.MaxSpeed = 10;
