@@ -5,8 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class ShopUIUpdateProcess : MonoBehaviour
 {
-    [SerializeField] private float ShopCostIncreasePercent = 0.5f;
-
     [SerializeField] public GameObject[] Positions;
     [SerializeField] public GameObject[] Books;
 
@@ -39,12 +37,5 @@ public class ShopUIUpdateProcess : MonoBehaviour
 
             availableBooks.RemoveAt(randomIndex);
         }
-    }
-
-    public void BuySkill()
-    {
-        GameInfo.CurrentCredit -= GameInfo.ShopCost;
-        GameInfo.ShopCost += Mathf.RoundToInt(GameInfo.ShopCost * ShopCostIncreasePercent);
-        SceneManager.LoadScene("Company");
     }
 }

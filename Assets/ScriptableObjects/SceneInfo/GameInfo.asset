@@ -27,7 +27,7 @@ MonoBehaviour:
   PressureChangeRate: 0.1
   CurrentCredit: 100
   Quota: 0
-  ShopCost: 50
+  ShopCost: 75
   IsOnGround: 1
   IsVerticalMoving: 0
   HasNoOxygen: 0

@@ -30,6 +30,7 @@ public class GameInfo : ScriptableObject
     public int CurrentCredit = 0;
     public int Quota = 100;
     public int ShopCost = 50;
+    public float CostIncrementPercent = 0.5f;
 
     [Header("Player Current States")]
     public bool IsOnGround = false;
