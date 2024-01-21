@@ -61,8 +61,16 @@ public class GameScenesManager : MonoBehaviour
     private void ResetGame()
     {
         GameInfo.CaveLevel = 0;
+        GameInfo.MaxSpeed = 10;
+        GameInfo.MaxAcceleration = 35;
+        GameInfo.MaxOxygen = 100;
+        GameInfo.OxygenRecoverRate = 100;
+        GameInfo.OxygenConsumptionRate = 0.5f;
+        GameInfo.MaxPressureCapacity = 100;
+        GameInfo.PressureChangeRate = 0.5f;
         GameInfo.CurrentCredit = 0;
         GameInfo.Quota = 0;
+        GameInfo.ShopCost = 100;
         GameInfo.HasInteracted = false;
     }
 

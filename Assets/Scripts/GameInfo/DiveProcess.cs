@@ -7,6 +7,7 @@ public class DiveProcess : MonoBehaviour
 {
     [SerializeField] private InputController input = null;
     [SerializeField] public Rigidbody2D Body;
+    [SerializeField] private GameObject Light;
 
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
@@ -30,6 +31,11 @@ public class DiveProcess : MonoBehaviour
 
     private void Start()
     {
+        if (GameInfo.CurrentSceneName != "Cave")
+        {
+            return;
+        }
+
         Body.gravityScale = 1f;
         initialRotation = transform.localRotation;
     }
@@ -42,6 +48,7 @@ public class DiveProcess : MonoBehaviour
         }
 
         Diving();
+        Light.SetActive(true);
     }
 
     private void FixedUpdate()

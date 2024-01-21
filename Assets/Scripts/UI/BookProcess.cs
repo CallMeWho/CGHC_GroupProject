@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class BookProcess : MonoBehaviour
 {
+    [SerializeField] float MaxPressureIncreasePer = 0.2f;
+
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
 
@@ -14,4 +16,18 @@ public class BookProcess : MonoBehaviour
         GameInfo.ShopCost += Mathf.RoundToInt(GameInfo.ShopCost * GameInfo.CostIncrementPercent);
         SceneManager.LoadScene("Company");
     }
+
+    // movespeed
+
+
+    // oxygen
+
+
+    // water pressure
+    public void IncreaseMaxPressure()
+    {
+        GameInfo.MaxPressureCapacity += (100 * MaxPressureIncreasePer);
+    }
+
+    // vision
 }

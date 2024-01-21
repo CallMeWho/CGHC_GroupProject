@@ -2,11 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class MoveProcess : MonoBehaviour
 {
     [SerializeField] private InputController input = null;
     [SerializeField] public Rigidbody2D Body;
+    [SerializeField] private GameObject Light;
 
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
@@ -49,6 +51,7 @@ public class MoveProcess : MonoBehaviour
         }
 
         PlayerMove();
+        Light.SetActive(false);
     }
 
     private void FixedUpdate()
