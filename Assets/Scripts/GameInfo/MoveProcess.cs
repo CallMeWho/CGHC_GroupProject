@@ -104,4 +104,17 @@ public class MoveProcess : MonoBehaviour
 
         Body.velocity = velocity;
     }
+
+    private void PlayWalkSound()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+
+        }
+
+        if (Input.GetKeyUp(KeyCode.A))
+        {
+
+        }
+    }
 }

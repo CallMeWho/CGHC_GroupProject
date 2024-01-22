@@ -748,6 +748,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 6aff3c642ba480f4b9bc667943b91095, type: 2}
     - target: {fileID: 2560320743891448678, guid: acb9b046bfb8f5e4b8a9c78e0087e53b, type: 3}
+      propertyPath: TerrainInfo
+      value: 
+      objectReference: {fileID: 11400000, guid: 4965bcc74452a89419197178527a5d38, type: 2}
+    - target: {fileID: 2560320743891448678, guid: acb9b046bfb8f5e4b8a9c78e0087e53b, type: 3}
       propertyPath: SceneNameSelection
       value: 2
       objectReference: {fileID: 0}

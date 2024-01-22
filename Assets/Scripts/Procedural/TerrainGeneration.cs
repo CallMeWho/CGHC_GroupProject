@@ -27,7 +27,7 @@ public class TerrainGeneration : MonoBehaviour
         if (TerrainInfo.TerrainLevel < GameInfo.CaveLevel)
         {
             TerrainInfo.Width += 15;
-            TerrainInfo.Height += 15;
+            TerrainInfo.Height += 30;
             TerrainInfo.TerrainLevel++;
         }
 
@@ -60,7 +60,7 @@ public class TerrainGeneration : MonoBehaviour
             if (TerrainInfo.TerrainLevel != GameInfo.CaveLevel)
             {
                 TerrainInfo.Width += 15;
-                TerrainInfo.Height += 15;
+                TerrainInfo.Height += 30;
                 TerrainInfo.TerrainLevel++;
             }
 

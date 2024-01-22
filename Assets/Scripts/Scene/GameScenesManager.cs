@@ -55,6 +55,7 @@ public class GameScenesManager : MonoBehaviour
         }
 
         SpawnPlayer(SceneNameSelection.ToString());
+        PlayBGM();
     }
 
     public void ResetGame()
@@ -70,6 +71,9 @@ public class GameScenesManager : MonoBehaviour
         GameInfo.CurrentCredit = 0;
         GameInfo.Quota = 0;
         GameInfo.ShopCost = 100;
+        GameInfo.LightIntensity = 2;
+        GameInfo.LightInnerRadius = 3;
+        GameInfo.LightOuterRadius = 5;
         GameInfo.HasInteracted = false;
 
         TerrainInfo.TerrainLevel = 0;
@@ -121,5 +125,19 @@ public class GameScenesManager : MonoBehaviour
         {
             return;
         }
+    }
+
+    private void PlayBGM()
+    {
+        if (SceneManager.GetActiveScene().name == "GameStartScene")
+        {
+            AudioManager.instance.PlayMusic("bgm");
+        }
+
+        if (SceneManager.GetActiveScene().name == "Company")
+        {
+            AudioManager.instance.PlayMusic("bgm");
+        }
+
     }
 }
