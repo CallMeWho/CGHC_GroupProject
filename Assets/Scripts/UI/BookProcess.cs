@@ -17,6 +17,7 @@ public class BookProcess : MonoBehaviour
     // after player clicks the book, this activates.
     public void BuySkill()
     {
+        AudioManager.instance.PlaySFX("BookBuySound");
         GameInfo.CurrentCredit -= GameInfo.ShopCost;
         GameInfo.ShopCost += Mathf.RoundToInt(GameInfo.ShopCost * GameInfo.CostIncrementPercent);
         SceneManager.LoadSceneAsync("Company");

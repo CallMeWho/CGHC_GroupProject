@@ -311,9 +311,12 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: cecd5326e46ab934c9864f676e466037, type: 3}
   - name: PlayerWalkSound
     clip: {fileID: 8300000, guid: 966b42a8471d75943bf7fb0b9d5de6d6, type: 3}
+  - name: ShopBuySound
+    clip: {fileID: 8300000, guid: 200ea1e55339a964587e8dc767198458, type: 3}
+  - name: BookBuySound
+    clip: {fileID: 8300000, guid: 8582cc765b5d49b45a5658b58f6d8811, type: 3}
   musicSource: {fileID: 1291738835213685241}
   sfxSource: {fileID: 3374238318137227757}
-  footstepSource: {fileID: 4052169564274803358}
 --- !u!1 &8166445647764542186
 GameObject:
   m_ObjectHideFlags: 0

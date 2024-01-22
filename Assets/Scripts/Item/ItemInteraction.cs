@@ -30,6 +30,7 @@ public class ItemInteraction : InteractableObject
         {
             if (interactType.ToString() == "Item")
             {
+                PlaySound();
                 StartCoroutine(InteractCoroutine());    //internal cooldown, or if player keep pressing will get more money for only 1 item
                 StartCoroutine(FadeSprite());
             }
@@ -38,6 +39,7 @@ public class ItemInteraction : InteractableObject
             {
                 if (GameInfo.CanBuySkill && GameInfo.HasInteracted)
                 {
+                    PlaySound();
                     GameScenesManager.GameScenesManagerInstance.LoadGameScene("Shop");
                 }
             }
@@ -141,5 +143,19 @@ public class ItemInteraction : InteractableObject
         // Once the sprite has fully disappeared, you can perform other actions if needed
         // For example, disabling the object or removing it from the scene
         gameObject.SetActive(false);
+    }
+
+    private void PlaySound()
+    {
+        if (name == "ShopCollider")
+        {
+            AudioManager.instance.PlaySFX("ShopBuySound");
+        }
+
+        if (name == "Chest(Clone)" || name == "Crystal 1(Clone)" || name == "Crystal 2(Clone)" || name == "Crystal 3(Clone)" ||
+            name == "Gold(Clone)" || name == "Iron(Clone)")
+        {
+            AudioManager.instance.PlaySFX("MiningSound");
+        }
     }
 }

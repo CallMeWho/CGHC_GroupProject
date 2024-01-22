@@ -8,6 +8,7 @@ public class QuotaProcess : MonoBehaviour
     [SerializeField] public GameInfo GameInfo;
 
     private int previousLevel;
+    private bool hasPlayedQuotaSound = false;
 
     private void Start()
     {
@@ -19,6 +20,8 @@ public class QuotaProcess : MonoBehaviour
             GameInfo.Quota += levelDifference * 100;
             previousLevel = currentLevel;
         }
+
+        hasPlayedQuotaSound = false;
     }
 
     private void Update()
@@ -33,6 +36,7 @@ public class QuotaProcess : MonoBehaviour
         }
 
         ShopCheckInRequirement();
+        ReachQuotaSound();
     }
 
     private void ShopCheckInRequirement()
@@ -44,6 +48,15 @@ public class QuotaProcess : MonoBehaviour
         else
         {
             GameInfo.CanBuySkill = false;
+        }
+    }
+
+    private void ReachQuotaSound()  //maybe this one can apply in shopbuysound there
+    {
+        if (GameInfo.HasMetQuota && !hasPlayedQuotaSound && GameInfo.CurrentSceneName == "Cave")
+        {
+            AudioManager.instance.PlaySFX("ReachQuotaSound");
+            hasPlayedQuotaSound = true;
         }
     }
 }

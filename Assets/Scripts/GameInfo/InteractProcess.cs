@@ -122,7 +122,7 @@ public class InteractProcess : MonoBehaviour
         float x = iconScale.x;
         float y = iconScale.y;
         float z = iconScale.z;
-        InteractIcon.transform.localScale = isFlipped ? new Vector3(-x, y, z) : new Vector3(x, y, z);
+        InteractIcon.transform.localScale = isFlipped ? new Vector3(x, y, z) : new Vector3(-x, y, z);
     }
 
     private IEnumerator Wait(float second)
