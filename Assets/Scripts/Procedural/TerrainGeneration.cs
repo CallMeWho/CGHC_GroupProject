@@ -13,8 +13,10 @@ public class TerrainGeneration : MonoBehaviour
     [Header("Tiles")]
     [SerializeField] TileBase CaveTile;
 
-    [Header("testing")]
-    [SerializeField] GameObject entrypointtest;
+    [Header("Check Points")]
+    [SerializeField] GameObject Player;
+    [SerializeField] GameObject PlayerSpawnPoint;
+    [SerializeField] GameObject PlayerTeleportPoint;
 
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
@@ -22,7 +24,7 @@ public class TerrainGeneration : MonoBehaviour
 
     private void Start()
     {
-        if (TerrainInfo.TerrainLevel != GameInfo.CaveLevel)
+        if (TerrainInfo.TerrainLevel < GameInfo.CaveLevel)
         {
             TerrainInfo.Width += 15;
             TerrainInfo.Height += 15;
@@ -35,6 +37,8 @@ public class TerrainGeneration : MonoBehaviour
         GenerateCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.FillChance, TerrainInfo.WallEdges);
         SmoothMooreCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.WallEdges, TerrainInfo.SmoothCount);
         GeneratePlayerSpawnPoint(TerrainInfo.TerrainArray);
+        PlayerSpawner(TerrainInfo.TerrainArray);
+        SetPlayerSpawnPoint(Player);
         RenderTerrainArray(TerrainInfo.TerrainArray, TerrainTilemap);
 
         GameObject entryPoint = GameObject.Find("entrypointtest");
@@ -45,7 +49,7 @@ public class TerrainGeneration : MonoBehaviour
         }
         else
         {
-            entryPoint = Instantiate(entrypointtest, new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
+            entryPoint = Instantiate(PlayerSpawnPoint, new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
         }
     }
 
@@ -76,7 +80,7 @@ public class TerrainGeneration : MonoBehaviour
             }
             else
             {
-                entryPoint = Instantiate(entrypointtest, new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
+                entryPoint = Instantiate(PlayerSpawnPoint, new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
             }
 
         }
@@ -418,5 +422,32 @@ public class TerrainGeneration : MonoBehaviour
     {
         Vector3Int tilePosition = new Vector3Int(xPos, yPos, 0);
         TerrainTilemap.SetTile(tilePosition, tile);
+    }
+
+    public void PlayerSpawner(int[,] terrainArray)
+    {
+        PlayerSpawnPoint.transform.position = new Vector3(TerrainInfo.SpawnPoint.x, TerrainInfo.SpawnPoint.y - 2, 0);
+        PlayerTeleportPoint.transform.position = new Vector3(TerrainInfo.SpawnPoint.x + 0.5f, TerrainInfo.SpawnPoint.y, 0);
+    }
+
+
+    public void SetPlayerSpawnPoint(GameObject player)
+    {
+        GameObject playerToDestroy = GameObject.FindGameObjectWithTag("Player");
+        /*
+        if (playerToDestroy != null)
+        {
+            Destroy(playerToDestroy);
+        }
+
+        GameObject playerInstance = Instantiate(player, Spawner.transform.position, Quaternion.identity);
+        */
+
+        if (playerToDestroy == null)
+        {
+            GameObject playerInstance = Instantiate(player, PlayerSpawnPoint.transform.position, Quaternion.identity);
+        }
+
+        playerToDestroy.transform.position = PlayerSpawnPoint.transform.position;
     }
 }

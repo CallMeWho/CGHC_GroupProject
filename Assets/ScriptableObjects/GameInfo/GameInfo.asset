@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GameInfo
   m_EditorClassIdentifier: 
   CurrentSceneName: Cave
-  CaveLevel: 2
+  CaveLevel: 1
   MaxSpeed: 10
   MaxAcceleration: 35
   RotationSpeed: 720

@@ -15,17 +15,17 @@ MonoBehaviour:
   TerrainLevel: 0
   Width: 100
   Height: 100
-  Size: 40000
-  ActualSize: 39601
-  BoundaryMaxPoint: {x: 199, y: 199}
+  Size: 62500
+  ActualSize: 62001
+  BoundaryMaxPoint: {x: 249, y: 249}
   BoundaryMinPoint: {x: 0, y: 0}
-  Seed: 82385
-  EntryPoint1: {x: 97, y: 199}
+  Seed: 37575
+  EntryPoint1: {x: 12, y: 249}
   PlayerMovingAreaPercent: 40
-  PlayerMovingAreaCount: 15840
-  EntryPoint2: {x: 0, y: 99}
+  PlayerMovingAreaCount: 24800
+  EntryPoint2: {x: 0, y: 124}
   FillChance: 10
   WallEdges: 1
   SmoothCount: 20
-  SpawnPoint: {x: 97, y: 199}
+  SpawnPoint: {x: 12, y: 249}
   IsTerrainGenerated: 1

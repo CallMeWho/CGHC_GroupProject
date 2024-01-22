@@ -27,6 +27,7 @@ public class GameScenesManager : MonoBehaviour
 
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
+    [SerializeField] public TerrainInfo TerrainInfo;
 
     public static GameScenesManager GameScenesManagerInstance;
 
@@ -70,6 +71,8 @@ public class GameScenesManager : MonoBehaviour
         GameInfo.Quota = 0;
         GameInfo.ShopCost = 100;
         GameInfo.HasInteracted = false;
+
+        TerrainInfo.TerrainLevel = 0;
     }
 
     private void Update()
