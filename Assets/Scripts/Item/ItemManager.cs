@@ -11,6 +11,9 @@ public class ItemManager : MonoBehaviour
     [SerializeField] 
     public ItemTypes[] itemList;
 
+    [Header("Data Keeper")]
+    [SerializeField] public GameInfo GameInfo;
+
     private ProceduralTerrainGeneration ptgScript;
     private int[,] terrainArray;
     private int terrainWidth;
@@ -74,6 +77,11 @@ public class ItemManager : MonoBehaviour
         x.ArrayIndex > 1);
 
         return ele;
+    }
+
+    private void IncreaseRate()
+    {
+
     }
 
     private void SpawnItem(ItemTypes ele)

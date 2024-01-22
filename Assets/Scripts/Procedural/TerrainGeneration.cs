@@ -1,150 +1,83 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.TerrainUtils;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
 
-public class ProceduralTerrainGeneration : MonoBehaviour
+public class TerrainGeneration : MonoBehaviour
 {
-    [Header("Terrain Boundaries")]
-    [SerializeField] int Width = 0;
-    [SerializeField] int Height = 0;
-
-    [Header("Terrain Settings")]
-    [Range(0, 100)] [SerializeField] int BlockPercent;
-    [Range(0, 100)][SerializeField] int FillPercent;
-    [SerializeField] bool EdgesAreWalls = true;
-    [SerializeField] int Smoothness;
-
     [Header("Tilemaps")]
     [SerializeField] Tilemap TerrainTilemap;
-    [SerializeField] Tilemap ItemsTilemap;
 
     [Header("Tiles")]
     [SerializeField] TileBase CaveTile;
-    [SerializeField] TileBase UpperTile;
-    [SerializeField] TileBase GrassTile;
-
-    [Header("Player Spawner")]
-    [SerializeField] GameObject Spawner;
-    [SerializeField] GameObject Player;
-    [SerializeField] GameObject ExitPoint;
-
-    [Header("Randomization")]
-    [SerializeField] float Seed;
 
     [Header("Data Keeper")]
     [SerializeField] public TerrainInfo TerrainInfo;
 
-    public static ProceduralTerrainGeneration Instance;
-    private int[,] EmptyTerrainArray;
-    public int[,] TerrainArray;
-    public bool isTerrainGenerated = false;
-
-    private int x_playerSpawnPoint;
-    private int y_playerSpawnPoint;
-
-    void Start()
+    private void Start()
     {
-        RunTheWholeProcess();
+        GenerateBaseTerrainArray();
+        RandomWalkCave(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.PlayerMovingAreaPercent);
+        GenerateCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.FillChance, TerrainInfo.WallEdges);
+        SmoothMooreCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.WallEdges, TerrainInfo.SmoothCount);
+        RenderTerrainArray(TerrainInfo.TerrainArray, TerrainTilemap);
+        
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            RunTheWholeProcess();
+            GenerateBaseTerrainArray();
+            RandomWalkCave(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.PlayerMovingAreaPercent);
+            GenerateCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.FillChance, TerrainInfo.WallEdges);
+            SmoothMooreCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.WallEdges, TerrainInfo.SmoothCount);
+            RenderTerrainArray(TerrainInfo.TerrainArray, TerrainTilemap);
         }
     }
 
-    public void RunTheWholeProcess()
+    public void GenerateBaseTerrainArray()
     {
-        isTerrainGenerated = false;
-        //Seed = 1;
-        Seed = Random.Range(-100000, 100000);
-
-        EmptyTerrainArray = GenerateEmptyTerrainArray(false);
-        TerrainArray = new int[EmptyTerrainArray.GetLength(0), EmptyTerrainArray.GetLength(1)];
-        TerrainArray = RandomWalkCave(EmptyTerrainArray, Seed, BlockPercent);
-        TerrainArray = GenerateCellularAutomata(TerrainArray, Seed, FillPercent, EdgesAreWalls);
-        TerrainArray = SmoothMooreCellularAutomata(TerrainArray, EdgesAreWalls, Smoothness);
-
-        TerrainArray = GeneratePlayerSpawnPoint(TerrainArray);
-        //TerrainArray = PlayerSpawn(TerrainArray);
-        //TerrainArray = ChangeTile(TerrainArray);
-
-        PlayerSpawner(TerrainArray);
-        SetPlayerSpawnPoint(Player);
-        GetTerrainArray();
-        RenderTerrainArray(TerrainArray, TerrainTilemap);
-    }
-
-    #region GeneratingArray
-    // Phase 1: Generate the Empty Array
-    public int[,] GenerateEmptyTerrainArray(bool isEmpty)
-    {
-        int terrainWidth = Width; 
-        int terrainHeight = Height;
-        int[,] emptyTerrainArray = new int[terrainWidth, terrainHeight];
-
-        for (int x = 0; x < terrainWidth; x++)
+        TerrainInfo.TerrainArray = new int[TerrainInfo.Width, TerrainInfo.Height];
+        
+        for (int x = 0; x < TerrainInfo.Width; x++)
         {
-            for (int y = 0; y < terrainHeight; y++)
+            for (int y = 0; y < TerrainInfo.Height; y++)
             {
-                if (isEmpty)
-                {
-                    emptyTerrainArray[x, y] = 0;
-                }
-                else if (!isEmpty)
-                {
-                    emptyTerrainArray[x, y] = 1;
-                }
+                TerrainInfo.TerrainArray[x, y] = 1;
             }
         }
 
-        return emptyTerrainArray;
+        // get basic info
+        TerrainInfo.Size = TerrainInfo.Width * TerrainInfo.Height;
+        TerrainInfo.BoundaryMaxPoint = new Vector2(TerrainInfo.TerrainArray.GetUpperBound(0), TerrainInfo.TerrainArray.GetUpperBound(1));
+        TerrainInfo.BoundaryMinPoint = new Vector2(TerrainInfo.TerrainArray.GetLowerBound(0), TerrainInfo.TerrainArray.GetLowerBound(1));
+        TerrainInfo.ActualSize = TerrainInfo.TerrainArray.GetUpperBound(0) * TerrainInfo.TerrainArray.GetUpperBound(1);
     }
 
-    // Phase 2: Generate the Cave Array
     public int[,] RandomWalkCave(int[,] emptyTerrainArray, float seed, int reqBlocksPercent)
     {
-        int terrainWidth = emptyTerrainArray.GetUpperBound(0);
-        int terrainHeight = emptyTerrainArray.GetUpperBound(1);
-
+        TerrainInfo.Seed = Random.Range(-100000, 100000);
+        //TerrainInfo.Seed = 1;
         System.Random rand = new System.Random(seed.GetHashCode()); //rand: a sequence random numbers
 
-        /* IMPORTANT
-         * block = 0, player can move area;
-         * tiles = 1, wall or something;
-         * 
-         * or you wont clearly know what codes below mean
-         */
+        int terrainWidth = TerrainInfo.TerrainArray.GetUpperBound(0);
+        int terrainHeight = TerrainInfo.TerrainArray.GetUpperBound(1);
 
-        int block_Xpos = rand.Next(1, terrainWidth - 1);    //block_Xpos: random value between 1 to terrainWidth
-        //int block_Ypos = rand.Next(1, terrainHeight - 1); (TEMPT)
+        int block_Xpos = rand.Next(1, terrainWidth - 1);    
         int block_Ypos = terrainHeight;
-
+        TerrainInfo.EntryPoint1 = new Vector2 (block_Xpos, block_Ypos);
+        
         // STEP 1: SET BLOCKS AMOUNT IN OUR TERRAIN
 
         int terrainSize = terrainHeight * terrainWidth;
-        int reqBlocksCount = (terrainSize * reqBlocksPercent) / 100;
-        //reqBlocksCount: block counts required in our terrain map, also the player moving area counts.
-        /* QUESTION STILL
-         * int reqBlocksCount = terrainSize * (reqBlocksPercent / 100);
-         * if formula be this, random block generate not working, idk why????
-         */
+        TerrainInfo.PlayerMovingAreaCount = (terrainSize * reqBlocksPercent) / 100;
 
-        int blockCurrentFilledCount = 0;    
-        //right now terrain has no moving area for the player, but will add soon below.
-
-        emptyTerrainArray[block_Xpos, block_Ypos] = 0;  
-        //so now, one random block is selected and it becomes player moving area, we call it main block.
+        int blockCurrentFilledCount = 0;
+        emptyTerrainArray[block_Xpos, block_Ypos] = 0;
         blockCurrentFilledCount++;
 
-        while (blockCurrentFilledCount < reqBlocksCount)
+        while (blockCurrentFilledCount < TerrainInfo.PlayerMovingAreaCount)
         {
             int randDir = rand.Next(4); //randDir: random value between 0 to 3, used to determine next direction
 
@@ -182,7 +115,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
 
                     {
                         block_Ypos--;   //set neigh lower block be new main block
-                        
+
                         if (emptyTerrainArray[block_Xpos, block_Ypos] == 1) //check new main block
                         {
                             emptyTerrainArray[block_Xpos, block_Ypos] = 0;
@@ -210,7 +143,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
                     if ((block_Xpos - 1) > 1)
                     {
                         block_Xpos--;
-                        
+
                         if (emptyTerrainArray[block_Xpos, block_Ypos] == 1)
                         {
                             emptyTerrainArray[block_Xpos, block_Ypos] = 0;
@@ -235,8 +168,12 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         int terrainHeight = terrainArray.GetUpperBound(1);
 
         // Set the entrance and escape points
-        int entranceX = terrainWidth / 2;
-        int entranceY = 0;
+        //int entranceX = terrainWidth / 2;
+        //int entranceY = 0;
+
+        int entranceX = terrainWidth/2;
+        int entranceY = 0; ;
+        TerrainInfo.EntryPoint2 = new Vector2(entranceX, entranceY);
 
         // Perform flood-fill algorithm from entrance point
         FloodFill(terrainArray, entranceX, entranceY, fillPercent, rand);
@@ -275,7 +212,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
 
         int terrainWidth = terrainArray.GetUpperBound(0);
         int terrainHeight = terrainArray.GetUpperBound(1);
-        
+
         int mX = mainTile_XPos;
         int mY = mainTile_YPos;
         // nX = neighTile_XPos = neighbourhood tile of X position
@@ -332,113 +269,7 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         //Return the modified map
         return terrainArray;
     }
-    #endregion
 
-
-    #region PlayerSpawnPoint
-    public int[,] GeneratePlayerSpawnPoint(int[,] terrainArray)
-    {
-        int terrainWidth = terrainArray.GetUpperBound(0);
-        int terrainHeight = terrainArray.GetUpperBound(1);
-
-        int x_LongestNullColumn = -1;
-        //x_LongestNullColumn: x pos which has the longest y = 0 column, this x pos is where player spawns
-        //= -1 means it has none for now.
-
-        //int y_longestNullColumn = -1;
-        int longestNullColumn = 0;   //longest y = 0 column length
-
-        for (int x = 0; x <= terrainWidth; x++) 
-        {
-            if (terrainArray[x, terrainHeight] == 0)
-            {
-                int nullColumns = 0;
-                bool stopCounting = false;
-
-                for (int y = terrainHeight; y >= 0; y--)
-                {
-                    if (terrainArray[x, y] == 0 && !stopCounting)
-                    {
-                        nullColumns++;
-                    }
-                    else
-                    {
-                        stopCounting = true; // Set stopCounting to true when encountering a non-null tile
-                    }
-                }
-
-                if (nullColumns > longestNullColumn)
-                {
-                    x_LongestNullColumn = x;
-                    longestNullColumn = nullColumns;
-
-                    x_playerSpawnPoint = x_LongestNullColumn;
-                    y_playerSpawnPoint = terrainHeight;
-                }
-            }
-
-            if (terrainArray[x, terrainHeight] == 1)
-            {
-                terrainArray[x, terrainHeight] = 0;
-            }
-        }
-
-        for (int x = 0; x <= terrainWidth; x++)
-        {
-            if (x == x_LongestNullColumn)
-            {
-                terrainArray[x_LongestNullColumn, terrainHeight - 1] = 0;
-            }
-
-            else if (x != x_LongestNullColumn)
-            {
-                terrainArray[x, terrainHeight - 1] = 1;
-            }
-        }
-
-        isTerrainGenerated = true;
-        return terrainArray;
-    }
-
-    public void PlayerSpawner(int[,] terrainArray)
-    {
-        Spawner.transform.position = new Vector3(x_playerSpawnPoint, y_playerSpawnPoint - 2, 0);
-        ExitPoint.transform.position = new Vector3(x_playerSpawnPoint + 0.5f, y_playerSpawnPoint, 0);
-    }
-
-
-    public void SetPlayerSpawnPoint(GameObject player)
-    {
-        GameObject playerToDestroy = GameObject.FindGameObjectWithTag("Player");
-        /*
-        if (playerToDestroy != null)
-        {
-            Destroy(playerToDestroy);
-        }
-
-        GameObject playerInstance = Instantiate(player, Spawner.transform.position, Quaternion.identity);
-        */
-
-        if (playerToDestroy == null)
-        {
-            GameObject playerInstance = Instantiate(player, Spawner.transform.position, Quaternion.identity);
-        }
-
-        playerToDestroy.transform.position = Spawner.transform.position;
-    }
-    #endregion
-
-    public int[,] GetTerrainArray()
-    {
-        if (isTerrainGenerated)
-        {
-            return TerrainArray;
-        }
-
-        return null;
-    }
-
-    #region RenderingArray
     public void RenderTerrainArray(int[,] terrainArray, Tilemap terrainTilemap)
     {
         terrainTilemap.ClearAllTiles();
@@ -454,20 +285,10 @@ public class ProceduralTerrainGeneration : MonoBehaviour
                 {
                     SpawnTile(null, x, y);
                 }
-                
+
                 if (terrainArray[x, y] == 1)
                 {
                     SpawnTile(CaveTile, x, y);
-                }
-
-                if (terrainArray[x, y] == 2)
-                {
-                    SpawnTile(UpperTile, x, y);
-                }
-
-                if (terrainArray[x, y] == 3)
-                {
-                    SpawnTile(GrassTile, x, y);
                 }
             }
         }
@@ -478,5 +299,4 @@ public class ProceduralTerrainGeneration : MonoBehaviour
         Vector3Int tilePosition = new Vector3Int(xPos, yPos, 0);
         TerrainTilemap.SetTile(tilePosition, tile);
     }
-    #endregion
 }
