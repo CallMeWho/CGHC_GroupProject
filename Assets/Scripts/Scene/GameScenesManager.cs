@@ -79,6 +79,7 @@ public class GameScenesManager : MonoBehaviour
         TerrainInfo.TerrainLevel = 0;
         TerrainInfo.Width = 100;
         TerrainInfo.Height = 100;
+        TerrainInfo.TerrainLightIntensity = 1f;
     }
 
     private void Update()

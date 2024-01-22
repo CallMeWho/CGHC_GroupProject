@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 
 public class TerrainGeneration : MonoBehaviour
@@ -18,17 +19,34 @@ public class TerrainGeneration : MonoBehaviour
     [SerializeField] GameObject PlayerSpawnPoint;
     [SerializeField] GameObject PlayerTeleportPoint;
 
+    [Header("Lights")]
+    [SerializeField] GameObject GlobalLightPrefab;
+
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
     [SerializeField] public TerrainInfo TerrainInfo;
+
+    private Light2D Light;
+
+    private void Awake()
+    {
+        Light = GlobalLightPrefab.GetComponent<Light2D>();
+        Light.intensity = TerrainInfo.TerrainLightIntensity;
+    }
 
     private void Start()
     {
         if (TerrainInfo.TerrainLevel < GameInfo.CaveLevel)
         {
+            TerrainInfo.TerrainLevel++;
             TerrainInfo.Width += 15;
             TerrainInfo.Height += 30;
-            TerrainInfo.TerrainLevel++;
+            
+            TerrainInfo.TerrainLightIntensity -= 0.1f;
+            if (TerrainInfo.TerrainLightIntensity <= 0)
+            {
+                TerrainInfo.TerrainLightIntensity = 0;
+            }
         }
 
 

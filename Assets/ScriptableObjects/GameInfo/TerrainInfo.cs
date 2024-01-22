@@ -39,4 +39,7 @@ public class TerrainInfo : ScriptableObject
 
     [Header("Terrain States")]
     public bool IsTerrainGenerated; //later will remove
+
+    [Header("Terrain Light")]
+    public float TerrainLightIntensity = 1f;
 }
