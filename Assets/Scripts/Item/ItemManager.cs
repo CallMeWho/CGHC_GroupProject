@@ -13,14 +13,16 @@ public class ItemManager : MonoBehaviour
 
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
+    [SerializeField] public TerrainInfo TerrainInfo;
 
     private ProceduralTerrainGeneration ptgScript;
-    private int[,] terrainArray;
+    //private int[,] terrainArray;
     private int terrainWidth;
     private int terrainHeight;
 
     private void Awake()
     {
+        return;
         ptgScript = GetComponent<ProceduralTerrainGeneration>();
     }
     
@@ -34,6 +36,7 @@ public class ItemManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             StartCoroutine(ReloadScene());
+            StartCoroutine(GenerateItems());
         }
     }
 
@@ -50,12 +53,13 @@ public class ItemManager : MonoBehaviour
 
     private IEnumerator GenerateItems()
     {
-        while (!ptgScript.isTerrainGenerated)
+        //while (!ptgScript.isTerrainGenerated)
+        while (!TerrainInfo.IsTerrainGenerated)
         {
             yield return null;
         }
 
-        terrainArray = ptgScript.GetTerrainArray();
+        //terrainArray = ptgScript.GetTerrainArray();
 
         foreach (ItemTypes ele in itemList)
         {
@@ -90,8 +94,11 @@ public class ItemManager : MonoBehaviour
         {
             GameObject itemParent = ItemProcessMethods.CreateEmptyFolder($"{ele.ItemName}Parent");
 
-            terrainWidth = terrainArray.GetUpperBound(0);
-            terrainHeight = terrainArray.GetUpperBound(1);
+            //terrainWidth = terrainArray.GetUpperBound(0);
+            //terrainHeight = terrainArray.GetUpperBound(1);
+
+            terrainWidth = TerrainInfo.TerrainArray.GetUpperBound(0);
+            terrainHeight = TerrainInfo.TerrainArray.GetUpperBound(1);
 
             int maxItems = (int)(terrainWidth * terrainHeight * ele.FillPercent);
             int itemSpawned = 0;
@@ -100,10 +107,13 @@ public class ItemManager : MonoBehaviour
             {
                 for (int y = 0; y < terrainHeight; y++)
                 {
-                    if (terrainArray[x, y] == 0)
+                    //if (terrainArray[x, y] == 0)
+                    if (TerrainInfo.TerrainArray[x, y] == 0)
                     {
-                        bool isAtEdge = ItemProcessMethods.GetAtEdge(terrainArray, x, y);
-                        float neighItemsCount = ItemProcessMethods.GetNeighItemsCount(terrainArray, x, y, ele.DetectRadius, ele.ArrayIndex);
+                        //bool isAtEdge = ItemProcessMethods.GetAtEdge(terrainArray, x, y);
+                        //float neighItemsCount = ItemProcessMethods.GetNeighItemsCount(terrainArray, x, y, ele.DetectRadius, ele.ArrayIndex);
+                        bool isAtEdge = ItemProcessMethods.GetAtEdge(TerrainInfo.TerrainArray, x, y);
+                        float neighItemsCount = ItemProcessMethods.GetNeighItemsCount(TerrainInfo.TerrainArray, x, y, ele.DetectRadius, ele.ArrayIndex);
 
                         if (isAtEdge && neighItemsCount == 0 && itemSpawned < maxItems)
                             if (UnityEngine.Random.value < ele.SpawnProbability)
@@ -114,7 +124,8 @@ public class ItemManager : MonoBehaviour
 
                                 newItem.transform.SetParent(itemParent.transform);
                                 itemSpawned++;
-                                terrainArray[x, y] = 2; // use 2 for easy item detection future
+                                //terrainArray[x, y] = 2; // use 2 for easy item detection future
+                                TerrainInfo.TerrainArray[x, y] = 2; // use 2 for easy item detection future
                             }
                     }
                 }

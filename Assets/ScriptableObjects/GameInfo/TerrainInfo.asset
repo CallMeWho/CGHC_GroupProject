@@ -12,18 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8037dba9b2e0ff47af5580a32d982c0, type: 3}
   m_Name: TerrainInfo
   m_EditorClassIdentifier: 
-  Width: 500
-  Height: 500
-  Size: 250000
-  ActualSize: 249001
-  BoundaryMaxPoint: {x: 499, y: 499}
+  Width: 100
+  Height: 100
+  Size: 10000
+  ActualSize: 9801
+  BoundaryMaxPoint: {x: 99, y: 99}
   BoundaryMinPoint: {x: 0, y: 0}
-  Seed: 38172
-  EntryPoint1: {x: 386, y: 499}
+  Seed: -88298
+  EntryPoint1: {x: 59, y: 99}
   PlayerMovingAreaPercent: 40
-  PlayerMovingAreaCount: 99600
-  EntryPoint2: {x: 0, y: 249}
+  PlayerMovingAreaCount: 3920
+  EntryPoint2: {x: 0, y: 49}
   FillChance: 10
   WallEdges: 1
   SmoothCount: 20
-  SpawnPoint: {x: 386, y: 499}
+  SpawnPoint: {x: 59, y: 99}
+  IsTerrainGenerated: 1

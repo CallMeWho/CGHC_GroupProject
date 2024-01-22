@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -26,7 +28,16 @@ public class TerrainGeneration : MonoBehaviour
         GeneratePlayerSpawnPoint(TerrainInfo.TerrainArray);
         RenderTerrainArray(TerrainInfo.TerrainArray, TerrainTilemap);
 
-        Instantiate(entrypointtest, new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
+        GameObject entryPoint = GameObject.Find("entrypointtest");
+
+        if (entryPoint != null)
+        {
+            entryPoint.transform.position = new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0);
+        }
+        else
+        {
+            entryPoint = Instantiate(entrypointtest, new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
+        }
     }
 
     private void Update()
@@ -39,14 +50,26 @@ public class TerrainGeneration : MonoBehaviour
             SmoothMooreCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.WallEdges, TerrainInfo.SmoothCount);
             GeneratePlayerSpawnPoint(TerrainInfo.TerrainArray);
             RenderTerrainArray(TerrainInfo.TerrainArray, TerrainTilemap);
-            
 
-            Instantiate(entrypointtest, new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
+            // this spawn entry point got some issue still, the position
+            GameObject entryPoint = GameObject.Find("EntryPoint(Clone)");
+
+            if (entryPoint != null)
+            {
+                entryPoint.transform.position = new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0);
+            }
+            else
+            {
+                entryPoint = Instantiate(entrypointtest, new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
+            }
+
         }
     }
 
     public void GenerateBaseTerrainArray()
     {
+        TerrainInfo.IsTerrainGenerated = false;
+
         TerrainInfo.TerrainArray = new int[TerrainInfo.Width, TerrainInfo.Height];
         
         for (int x = 0; x < TerrainInfo.Width; x++)
@@ -345,6 +368,7 @@ public class TerrainGeneration : MonoBehaviour
             }
         }
 
+        TerrainInfo.IsTerrainGenerated = true;
         //isTerrainGenerated = true;
         return terrainArray;
     }

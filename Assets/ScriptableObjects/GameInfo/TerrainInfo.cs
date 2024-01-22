@@ -35,4 +35,7 @@ public class TerrainInfo : ScriptableObject
 
     [Header("Player Spawn Point")]
     public Vector2 SpawnPoint;
+
+    [Header("Terrain States")]
+    public bool IsTerrainGenerated; //later will remove
 }
