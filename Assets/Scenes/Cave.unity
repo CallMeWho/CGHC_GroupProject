@@ -243,6 +243,10 @@ PrefabInstance:
       value: -2689556
       objectReference: {fileID: 0}
     - target: {fileID: 1746051650688031423, guid: 83e2bd0dbf9200046ab31f2e70e5f702, type: 3}
+      propertyPath: m_Intensity
+      value: 2.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 1746051650688031423, guid: 83e2bd0dbf9200046ab31f2e70e5f702, type: 3}
       propertyPath: m_FalloffIntensity
       value: 0.3
       objectReference: {fileID: 0}
@@ -368,6 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LightObject: {fileID: 1172117285}
+  GameInfo: {fileID: 11400000, guid: 6aff3c642ba480f4b9bc667943b91095, type: 2}
 --- !u!1 &257738879
 GameObject:
   m_ObjectHideFlags: 0

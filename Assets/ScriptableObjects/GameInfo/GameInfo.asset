@@ -22,7 +22,7 @@ MonoBehaviour:
   MaxOxygen: 100
   OxygenRecoverRate: 100
   OxygenConsumptionRate: 0.5
-  CurrentWaterPressure: 12.932182
+  CurrentWaterPressure: 6.3885117
   MaxPressureCapacity: 100
   PressureChangeRate: 0.5
   CurrentCredit: 0
@@ -32,7 +32,7 @@ MonoBehaviour:
   LightIntensity: 2
   IsOnGround: 0
   IsVerticalMoving: 1
-  HasNoOxygen: 1
+  HasNoOxygen: 0
   HasOverWaterPressure: 0
   HasMetQuota: 1
   CanBuySkill: 0

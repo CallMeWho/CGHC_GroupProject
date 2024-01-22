@@ -34,7 +34,8 @@ public class GameInfo : ScriptableObject
 
     [Header("Player Light Condition")]
     public float LightIntensity = 2f;
-
+    public float LightOuterRadius = 5f;
+    public float LightInnerRadius = 3f;
 
     [Header("Player Current States")]
     public bool IsOnGround = false;
