@@ -32,4 +32,7 @@ public class TerrainInfo : ScriptableObject
     [Header("Smooth Cellular")]
     public bool WallEdges;
     [Range(0, 20)] public int SmoothCount;
+
+    [Header("Player Spawn Point")]
+    public Vector2 SpawnPoint;
 }

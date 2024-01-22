@@ -11,6 +11,9 @@ public class TerrainGeneration : MonoBehaviour
     [Header("Tiles")]
     [SerializeField] TileBase CaveTile;
 
+    [Header("testing")]
+    [SerializeField] GameObject entrypointtest;
+
     [Header("Data Keeper")]
     [SerializeField] public TerrainInfo TerrainInfo;
 
@@ -20,8 +23,10 @@ public class TerrainGeneration : MonoBehaviour
         RandomWalkCave(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.PlayerMovingAreaPercent);
         GenerateCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.FillChance, TerrainInfo.WallEdges);
         SmoothMooreCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.WallEdges, TerrainInfo.SmoothCount);
+        GeneratePlayerSpawnPoint(TerrainInfo.TerrainArray);
         RenderTerrainArray(TerrainInfo.TerrainArray, TerrainTilemap);
-        
+
+        Instantiate(entrypointtest, new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
     }
 
     private void Update()
@@ -32,7 +37,11 @@ public class TerrainGeneration : MonoBehaviour
             RandomWalkCave(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.PlayerMovingAreaPercent);
             GenerateCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.FillChance, TerrainInfo.WallEdges);
             SmoothMooreCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.WallEdges, TerrainInfo.SmoothCount);
+            GeneratePlayerSpawnPoint(TerrainInfo.TerrainArray);
             RenderTerrainArray(TerrainInfo.TerrainArray, TerrainTilemap);
+            
+
+            Instantiate(entrypointtest, new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
         }
     }
 
@@ -171,8 +180,8 @@ public class TerrainGeneration : MonoBehaviour
         //int entranceX = terrainWidth / 2;
         //int entranceY = 0;
 
-        int entranceX = terrainWidth/2;
-        int entranceY = 0; ;
+        int entranceX = 0;
+        int entranceY = terrainHeight / 2; ;
         TerrainInfo.EntryPoint2 = new Vector2(entranceX, entranceY);
 
         // Perform flood-fill algorithm from entrance point
@@ -251,15 +260,21 @@ public class TerrainGeneration : MonoBehaviour
                     //if (edgesAreWalls && (x == 0 || x == (terrainWidth - 1) || y == 0 || y == (terrainHeight - 1)))
                     if (edgesAreWalls && (x == 0 || x == (terrainWidth - 1) || y == 0))
                     {
+                        /*
+                        if (x == TerrainInfo.EntryPoint1.x && y == TerrainInfo.EntryPoint1.y - 1)
+                        {
+                            terrainArray[x, y] = 0;
+                        }
+                        */
                         //Set the edge to be a wall if we have edgesAreWalls to be true
                         terrainArray[x, y] = 1;
                     }
                     //The default moore rule requires more than 4 neighbours
-                    else if (surroundingTiles > 4)
+                    else if (surroundingTiles > 7)  // 6 or 7 is good
                     {
                         terrainArray[x, y] = 1;
                     }
-                    else if (surroundingTiles < 4)
+                    else if (surroundingTiles < 4)  // 4 is the best, if less than it will look blocky
                     {
                         terrainArray[x, y] = 0;
                     }
@@ -269,6 +284,71 @@ public class TerrainGeneration : MonoBehaviour
         //Return the modified map
         return terrainArray;
     }
+
+    public int[,] GeneratePlayerSpawnPoint(int[,] terrainArray)
+    {
+        int terrainWidth = terrainArray.GetUpperBound(0);
+        int terrainHeight = terrainArray.GetUpperBound(1);
+
+        int x_LongestNullColumn = -1;
+        //x_LongestNullColumn: x pos which has the longest y = 0 column, this x pos is where player spawns
+        //= -1 means it has none for now.
+
+        //int y_longestNullColumn = -1;
+        int longestNullColumn = 0;   //longest y = 0 column length
+
+        for (int x = 0; x <= terrainWidth; x++)
+        {
+            if (terrainArray[x, terrainHeight] == 0)
+            {
+                int nullColumns = 0;
+                bool stopCounting = false;
+
+                for (int y = terrainHeight; y >= 0; y--)
+                {
+                    if (terrainArray[x, y] == 0 && !stopCounting)
+                    {
+                        nullColumns++;
+                    }
+                    else
+                    {
+                        stopCounting = true; // Set stopCounting to true when encountering a non-null tile
+                    }
+                }
+
+                if (nullColumns > longestNullColumn)
+                {
+                    x_LongestNullColumn = x;
+                    longestNullColumn = nullColumns;
+
+                    TerrainInfo.SpawnPoint.x = x_LongestNullColumn;
+                    TerrainInfo.SpawnPoint.y = terrainHeight;
+                }
+            }
+
+            if (terrainArray[x, terrainHeight] == 1)
+            {
+                terrainArray[x, terrainHeight] = 0;
+            }
+        }
+
+        for (int x = 0; x <= terrainWidth; x++)
+        {
+            if (x == x_LongestNullColumn)
+            {
+                terrainArray[x_LongestNullColumn, terrainHeight - 1] = 0;
+            }
+
+            else if (x != x_LongestNullColumn)
+            {
+                terrainArray[x, terrainHeight - 1] = 1;
+            }
+        }
+
+        //isTerrainGenerated = true;
+        return terrainArray;
+    }
+
 
     public void RenderTerrainArray(int[,] terrainArray, Tilemap terrainTilemap)
     {
