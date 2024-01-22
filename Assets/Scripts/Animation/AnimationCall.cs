@@ -25,7 +25,7 @@ public class AnimationCall : MonoBehaviour
     }
 
     //animation states
-    public const string LAND_IDLE = "";
+    public const string LAND_IDLE = "Running Idle";
     public const string LAND_RUN = "Running";
     public const string CAVE_IDLE = "DiveIdle";
     public const string CAVE_DIVE = "Dive";

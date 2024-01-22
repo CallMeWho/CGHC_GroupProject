@@ -73,6 +73,8 @@ public class GameScenesManager : MonoBehaviour
         GameInfo.HasInteracted = false;
 
         TerrainInfo.TerrainLevel = 0;
+        TerrainInfo.Width = 100;
+        TerrainInfo.Height = 100;
     }
 
     private void Update()

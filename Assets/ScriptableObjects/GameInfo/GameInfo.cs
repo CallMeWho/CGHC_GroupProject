@@ -32,6 +32,10 @@ public class GameInfo : ScriptableObject
     public int ShopCost = 50;
     public float CostIncrementPercent = 0.5f;
 
+    [Header("Player Light Condition")]
+    public float LightIntensity = 2f;
+
+
     [Header("Player Current States")]
     public bool IsOnGround = false;
     public bool IsVerticalMoving = false;
