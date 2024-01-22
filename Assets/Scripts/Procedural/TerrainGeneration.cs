@@ -17,10 +17,19 @@ public class TerrainGeneration : MonoBehaviour
     [SerializeField] GameObject entrypointtest;
 
     [Header("Data Keeper")]
+    [SerializeField] public GameInfo GameInfo;
     [SerializeField] public TerrainInfo TerrainInfo;
 
     private void Start()
     {
+        if (TerrainInfo.TerrainLevel != GameInfo.CaveLevel)
+        {
+            TerrainInfo.Width += 15;
+            TerrainInfo.Height += 15;
+            TerrainInfo.TerrainLevel++;
+        }
+
+
         GenerateBaseTerrainArray();
         RandomWalkCave(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.PlayerMovingAreaPercent);
         GenerateCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.FillChance, TerrainInfo.WallEdges);
@@ -44,6 +53,13 @@ public class TerrainGeneration : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            if (TerrainInfo.TerrainLevel != GameInfo.CaveLevel)
+            {
+                TerrainInfo.Width += 15;
+                TerrainInfo.Height += 15;
+                TerrainInfo.TerrainLevel++;
+            }
+
             GenerateBaseTerrainArray();
             RandomWalkCave(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.PlayerMovingAreaPercent);
             GenerateCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.FillChance, TerrainInfo.WallEdges);
@@ -293,7 +309,7 @@ public class TerrainGeneration : MonoBehaviour
                         terrainArray[x, y] = 1;
                     }
                     //The default moore rule requires more than 4 neighbours
-                    else if (surroundingTiles > 7)  // 6 or 7 is good
+                    else if (surroundingTiles > 8)  // 6 or 7 is good
                     {
                         terrainArray[x, y] = 1;
                     }

@@ -8,6 +8,7 @@ public class TerrainInfo : ScriptableObject
     public int[,] TerrainArray;
 
     [Header("Current Terrain")]
+    public int TerrainLevel;
     public int Width;
     public int Height;
     public int Size;
