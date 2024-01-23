@@ -18,15 +18,15 @@ MonoBehaviour:
   MaxAcceleration: 35
   RotationSpeed: 720
   GroundFriction: 0
-  CurrentOxygen: 90.68775
+  CurrentOxygen: 97.6411
   MaxOxygen: 100
   OxygenRecoverRate: 100
   OxygenConsumptionRate: 0.5
-  CurrentWaterPressure: 30.320717
+  CurrentWaterPressure: 12.937813
   MaxPressureCapacity: 100
   PressureChangeRate: 0.5
-  CurrentCredit: 278
-  Quota: 400
+  CurrentCredit: 50
+  Quota: 200
   ShopCost: 150
   CostIncrementPercent: 0.5
   LightIntensity: 2.5
@@ -37,7 +37,7 @@ MonoBehaviour:
   HasNoOxygen: 0
   HasOverWaterPressure: 0
   HasMetQuota: 0
-  CanBuySkill: 1
+  CanBuySkill: 0
   IsTouchingObject: 0
   IsPressingKey: 0
   HasInteracted: 0

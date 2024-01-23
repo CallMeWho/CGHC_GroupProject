@@ -87,11 +87,12 @@ public class TerrainGeneration : MonoBehaviour
             GenerateCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.Seed, TerrainInfo.FillChance, TerrainInfo.WallEdges);
             SmoothMooreCellularAutomata(TerrainInfo.TerrainArray, TerrainInfo.WallEdges, TerrainInfo.SmoothCount);
             GeneratePlayerSpawnPoint(TerrainInfo.TerrainArray);
+            PlayerSpawner(TerrainInfo.TerrainArray);
+            SetPlayerSpawnPoint(Player);
             RenderTerrainArray(TerrainInfo.TerrainArray, TerrainTilemap);
 
-            // this spawn entry point got some issue still, the position
             GameObject entryPoint = GameObject.Find("EntryPoint(Clone)");
-
+            
             if (entryPoint != null)
             {
                 entryPoint.transform.position = new Vector3(TerrainInfo.EntryPoint1.x + 0.5f, TerrainInfo.EntryPoint1.y - 0.5f, 0);
@@ -452,6 +453,7 @@ public class TerrainGeneration : MonoBehaviour
     public void SetPlayerSpawnPoint(GameObject player)
     {
         GameObject playerToDestroy = GameObject.FindGameObjectWithTag("Player");
+
         /*
         if (playerToDestroy != null)
         {
@@ -461,11 +463,13 @@ public class TerrainGeneration : MonoBehaviour
         GameObject playerInstance = Instantiate(player, Spawner.transform.position, Quaternion.identity);
         */
 
+        
         if (playerToDestroy == null)
         {
             GameObject playerInstance = Instantiate(player, PlayerSpawnPoint.transform.position, Quaternion.identity);
         }
 
         playerToDestroy.transform.position = PlayerSpawnPoint.transform.position;
+        
     }
 }

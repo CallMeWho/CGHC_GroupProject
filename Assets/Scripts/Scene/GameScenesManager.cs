@@ -96,7 +96,7 @@ public class GameScenesManager : MonoBehaviour
                 if (sceneEle.SceneName != null &&
                      sceneEle.SceneName == sceneName)
                 {
-                    SceneManager.LoadScene(sceneEle.SceneName);
+                    SceneManager.LoadSceneAsync(sceneEle.SceneName);
                     break;
                 }
             }

@@ -26,11 +26,11 @@ public class CameraManager : MonoBehaviour
         if (CameraManagerInstance == null)
         {
             CameraManagerInstance = this;
-            DontDestroyOnLoad(CameraManagerInstance);
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(CameraManagerInstance);
+            Destroy(gameObject);
         }
     }
 
@@ -90,7 +90,10 @@ public class CameraManager : MonoBehaviour
         cinemachine = VirtualCamera.GetComponent<CinemachineVirtualCamera>();
         GameObject player = GameObject.FindGameObjectWithTag("Player");
 
-        cinemachine.Follow = player.transform;
-        cinemachine.LookAt = player.transform;
+        if (player != null)
+        {
+            cinemachine.Follow = player.transform;
+            cinemachine.LookAt = player.transform;
+        }
     }
 }
