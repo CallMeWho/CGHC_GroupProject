@@ -72,18 +72,19 @@ public class MoveProcess : MonoBehaviour
 
         if (isMoving)
         {
-            AudioManager.instance.moveSource.gameObject.SetActive(true);
+            AudioManager.instance.moveSource.gameObject.SetActive(true);    // show move audio source
+            AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.LAND_RUN);
 
             desiredVelocity = new Vector2(direction.x, 0f) * MathF.Max(GameInfo.MaxSpeed - GameInfo.GroundFriction, 0f);
-            AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.LAND_RUN);
             Flipping();
         }
+
         else
         {
-            AudioManager.instance.moveSource.gameObject.SetActive(false);
+            AudioManager.instance.moveSource.gameObject.SetActive(false);   // hide move audio source
+            AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.LAND_IDLE);
 
             desiredVelocity = Vector2.zero;
-            AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.LAND_IDLE);
         }
     }
 
@@ -107,18 +108,5 @@ public class MoveProcess : MonoBehaviour
         velocity.x = Mathf.MoveTowards(velocity.x, desiredVelocity.x, maxSpeedChange);
 
         Body.velocity = velocity;
-    }
-
-    private void PlayWalkSound()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-
-        }
-
-        if (Input.GetKeyUp(KeyCode.A))
-        {
-
-        }
     }
 }

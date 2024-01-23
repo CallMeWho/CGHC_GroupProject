@@ -82,6 +82,7 @@ public class AudioManager : MonoBehaviour
         moveSource.Play();
     }
 
+    // for setting ui use
     public void ToggleMusic()
     {
         musicSource.mute = !musicSource.mute;

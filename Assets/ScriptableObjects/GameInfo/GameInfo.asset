@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GameInfo
   m_EditorClassIdentifier: 
   CurrentSceneName: Company
-  CaveLevel: 0
+  CaveLevel: 2
   MaxSpeed: 10
   MaxAcceleration: 35
   RotationSpeed: 720
@@ -25,8 +25,8 @@ MonoBehaviour:
   CurrentWaterPressure: 0
   MaxPressureCapacity: 100
   PressureChangeRate: 0.5
-  CurrentCredit: 0
-  Quota: 0
+  CurrentCredit: 273
+  Quota: 200
   ShopCost: 100
   CostIncrementPercent: 0.5
   LightIntensity: 2
@@ -37,7 +37,7 @@ MonoBehaviour:
   HasNoOxygen: 0
   HasOverWaterPressure: 0
   HasMetQuota: 1
-  CanBuySkill: 0
+  CanBuySkill: 1
   IsTouchingObject: 0
   IsPressingKey: 0
   HasInteracted: 0

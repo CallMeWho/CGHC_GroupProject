@@ -27,23 +27,28 @@ public class TeleportPoint : MonoBehaviour
         {
             if (GameInfo.CurrentSceneName == "Company")
             {
+                // Company -> Shop
                 if (sceneName == "Shop" && GameInfo.CanBuySkill && GameInfo.HasInteracted)
                 {
                     StartCoroutine(FadeInLoadScene(sceneName));
                 }
 
+                // Company -> Cave
                 if (sceneName == "Cave")
                 {
                     StartCoroutine(FadeInLoadScene(sceneName));
                     GameInfo.CaveLevel += 1;
+                    AudioManager.instance.PlaySound("CaveBgm", AudioManager.instance.musicSounds, AudioManager.instance.musicSource, false);
                 }
             }
 
             else if (GameInfo.CurrentSceneName == "Cave")
             {
+                // Cave -> Company
                 if (sceneName == "Company" && GameInfo.HasMetQuota)
                 {
                     StartCoroutine(FadeInLoadScene(sceneName));
+                    AudioManager.instance.PlaySound("NormalBgm", AudioManager.instance.musicSounds, AudioManager.instance.musicSource, false);
                 }
                 else
                 {
