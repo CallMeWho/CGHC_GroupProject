@@ -48,7 +48,7 @@ public class TeleportPoint : MonoBehaviour
                 if (sceneName == "Company" && GameInfo.HasMetQuota)
                 {
                     StartCoroutine(FadeInLoadScene(sceneName));
-                    AudioManager.instance.PlaySound("NormalBgm", AudioManager.instance.musicSounds, AudioManager.instance.musicSource, false);
+                    AudioManager.instance.PlaySound("CommonBgm", AudioManager.instance.musicSounds, AudioManager.instance.musicSource, false);
                 }
                 else
                 {

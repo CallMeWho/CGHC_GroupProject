@@ -26,7 +26,7 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        
+        AudioManager.instance.PlaySound("CommonBgm", AudioManager.instance.musicSounds, AudioManager.instance.musicSource, false);
     }
 
     public void PlaySound(string soundName, CustomSoundEle[] soundArray, AudioSource playSource, bool isOneShot)
@@ -65,21 +65,22 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    // for button use
+    public void PlayMusic(string name)
+    {
+        // find music
+        CustomSoundEle s = Array.Find(musicSounds, x => x.SoundName == name);
+
+        // put music into audio source, and play
+        moveSource.clip = s.SoundClip;
+        moveSource.Play();
+    }
+
     public void PlaySFX(string name)
     {
         CustomSoundEle s = Array.Find(sfxSounds, x => x.SoundName == name);
 
         sfxSource.PlayOneShot(s.SoundClip);
-    }
-
-    public void PlayMoveSound(string name)
-    {
-        // find music
-        CustomSoundEle s = Array.Find(sfxSounds, x => x.SoundName == name);
-
-        // put music into audio source, and play
-        moveSource.clip = s.SoundClip;
-        moveSource.Play();
     }
 
     // for setting ui use

@@ -88,29 +88,6 @@ public class GameScenesManager : MonoBehaviour
     private void Update()
     {
         GameInfo.CurrentSceneName = SceneManager.GetActiveScene().name;
-
-
-        /*
-        if (GameInfo.CurrentSceneName == "Company")
-        {
-            OpenMoveSource = false;
-        }
-        else if (GameInfo.CurrentSceneName == "Cave")
-        {
-            OpenMoveSource = true;
-        }
-
-        if (OpenMoveSource)
-        {
-            AudioManager.instance.moveSource.gameObject.SetActive(true);
-            AudioManager.instance.PlayMoveSound("Walk");
-        }
-        else
-        {
-            AudioManager.instance.moveSource.gameObject.SetActive(false);
-            AudioManager.instance.PlayMoveSound("BreatheSound");
-        }
-        */
     }
 
     public void LoadGameScene(string sceneName)
