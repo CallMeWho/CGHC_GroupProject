@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public class UIController : MonoBehaviour
+public class SettingsUIController : MonoBehaviour
 {
     public Slider _musicslider, _sfxslider;
 
