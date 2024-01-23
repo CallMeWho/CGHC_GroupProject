@@ -315,6 +315,10 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 200ea1e55339a964587e8dc767198458, type: 3}
   - name: BookBuySound
     clip: {fileID: 8300000, guid: 8582cc765b5d49b45a5658b58f6d8811, type: 3}
+  - name: MiningSound
+    clip: {fileID: 8300000, guid: 0052948607ae249418be78dbc90f7119, type: 3}
+  - name: ReachQuotaSound
+    clip: {fileID: 8300000, guid: afcb46ef5c4d5264185b3cd3867d9bc1, type: 3}
   musicSource: {fileID: 1291738835213685241}
   sfxSource: {fileID: 3374238318137227757}
 --- !u!1 &8166445647764542186
