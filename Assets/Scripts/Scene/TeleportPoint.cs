@@ -60,5 +60,9 @@ public class TeleportPoint : MonoBehaviour
         Fade.StartFadeIn();
         yield return new WaitForSeconds(1);
         GameScenesManager.GameScenesManagerInstance.LoadGameScene(sceneName);
+
+        // these lines below not working
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        player.transform.position = transform.position;
     }
 }
