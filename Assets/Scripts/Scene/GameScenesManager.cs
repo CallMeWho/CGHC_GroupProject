@@ -32,6 +32,7 @@ public class GameScenesManager : MonoBehaviour
     public static GameScenesManager GameScenesManagerInstance;
 
     private bool hasStarted = false;
+    private bool OpenMoveSource;
 
     private void Awake()
     {
@@ -55,8 +56,10 @@ public class GameScenesManager : MonoBehaviour
         }
 
         SpawnPlayer(SceneNameSelection.ToString());
-        PlayBGM();
+
+        //PlayBGM();
     }
+
 
     public void ResetGame()
     {
@@ -85,6 +88,29 @@ public class GameScenesManager : MonoBehaviour
     private void Update()
     {
         GameInfo.CurrentSceneName = SceneManager.GetActiveScene().name;
+
+
+        /*
+        if (GameInfo.CurrentSceneName == "Company")
+        {
+            OpenMoveSource = false;
+        }
+        else if (GameInfo.CurrentSceneName == "Cave")
+        {
+            OpenMoveSource = true;
+        }
+
+        if (OpenMoveSource)
+        {
+            AudioManager.instance.moveSource.gameObject.SetActive(true);
+            AudioManager.instance.PlayMoveSound("Walk");
+        }
+        else
+        {
+            AudioManager.instance.moveSource.gameObject.SetActive(false);
+            AudioManager.instance.PlayMoveSound("BreatheSound");
+        }
+        */
     }
 
     public void LoadGameScene(string sceneName)
@@ -126,19 +152,5 @@ public class GameScenesManager : MonoBehaviour
         {
             return;
         }
-    }
-
-    private void PlayBGM()
-    {
-        if (SceneManager.GetActiveScene().name == "GameStartScene")
-        {
-            AudioManager.instance.PlayMusic("bgm");
-        }
-
-        if (SceneManager.GetActiveScene().name == "Company")
-        {
-            AudioManager.instance.PlayMusic("bgm");
-        }
-
     }
 }

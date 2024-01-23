@@ -7,8 +7,8 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
 
-    public Sound[] musicSounds, sfxSounds;
-    public AudioSource musicSource, sfxSource;
+    public CustomSoundEle[] musicSounds, sfxSounds;
+    public AudioSource musicSource, sfxSource, moveSource;
 
     private void Awake()
     {
@@ -23,21 +23,61 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayMusic(string name)
+    private void Start()
+    {
+        
+    }
+
+    public void PlaySound(string soundName, CustomSoundEle[] soundArray, AudioSource playSource, bool isOneShot)
     {
         // find music
-        Sound s = Array.Find(musicSounds, x => x.name == name);
+        CustomSoundEle ele = Array.Find(soundArray, x => x.SoundName == soundName);
 
-        // put music into audio source, and play
-        musicSource.clip = s.clip;
-        musicSource.Play();
+        // play the clip
+        if (ele != null && ele.SoundClip != null)
+        {
+            if (isOneShot)
+            {
+                playSource.PlayOneShot(ele.SoundClip);
+            }
+            else
+            {
+                // play repeat
+                playSource.clip = ele.SoundClip;
+                playSource.Play();
+            }
+        }
+        
+        // if errors, show reasons
+        if (ele == null)
+        {
+            Debug.Log($"Array {soundArray} has no sound name {soundName}");
+        }
+        if (ele.SoundClip == null)
+        {
+            Debug.Log($"Sound name {soundName} in array {soundArray}, has NO CLIP.");
+        }
+        if (playSource == null)
+        {
+            Debug.Log($"NO AUDIO SOURCE {playSource}.");
+        }
     }
 
     public void PlaySFX(string name)
     {
-        Sound s = Array.Find(sfxSounds, x => x.name == name);
+        CustomSoundEle s = Array.Find(sfxSounds, x => x.SoundName == name);
 
-        sfxSource.PlayOneShot(s.clip);
+        sfxSource.PlayOneShot(s.SoundClip);
+    }
+
+    public void PlayMoveSound(string name)
+    {
+        // find music
+        CustomSoundEle s = Array.Find(sfxSounds, x => x.SoundName == name);
+
+        // put music into audio source, and play
+        moveSource.clip = s.SoundClip;
+        moveSource.Play();
     }
 
     public void ToggleMusic()

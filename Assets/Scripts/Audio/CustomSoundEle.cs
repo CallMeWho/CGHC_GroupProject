@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Sound
+public class CustomSoundEle
 {
-    public string name;
-    public AudioClip clip;
+    public string SoundName;
+    public AudioClip SoundClip;
 }

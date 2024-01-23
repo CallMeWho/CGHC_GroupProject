@@ -72,12 +72,16 @@ public class MoveProcess : MonoBehaviour
 
         if (isMoving)
         {
+            AudioManager.instance.moveSource.gameObject.SetActive(true);
+
             desiredVelocity = new Vector2(direction.x, 0f) * MathF.Max(GameInfo.MaxSpeed - GameInfo.GroundFriction, 0f);
             AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.LAND_RUN);
             Flipping();
         }
         else
         {
+            AudioManager.instance.moveSource.gameObject.SetActive(false);
+
             desiredVelocity = Vector2.zero;
             AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.LAND_IDLE);
         }
