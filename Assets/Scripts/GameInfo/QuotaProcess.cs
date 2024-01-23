@@ -55,7 +55,7 @@ public class QuotaProcess : MonoBehaviour
     {
         if (GameInfo.HasMetQuota && !hasPlayedQuotaSound && GameInfo.CurrentSceneName == "Cave")
         {
-            AudioManager.instance.PlaySFX("ReachQuotaSound");
+            AudioManager.instance.PlaySound("ReachQuotaSound", AudioManager.instance.sfxSounds, AudioManager.instance.sfxSource, true);
             hasPlayedQuotaSound = true;
         }
     }

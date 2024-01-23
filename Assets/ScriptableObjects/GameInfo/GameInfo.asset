@@ -25,19 +25,19 @@ MonoBehaviour:
   CurrentWaterPressure: 0
   MaxPressureCapacity: 100
   PressureChangeRate: 0.5
-  CurrentCredit: 9900
+  CurrentCredit: 0
   Quota: 0
-  ShopCost: 150
+  ShopCost: 100
   CostIncrementPercent: 0.5
-  LightIntensity: 2.5
-  LightOuterRadius: 7
-  LightInnerRadius: 5
+  LightIntensity: 2
+  LightOuterRadius: 5
+  LightInnerRadius: 3
   IsOnGround: 0
   IsVerticalMoving: 0
   HasNoOxygen: 0
   HasOverWaterPressure: 0
   HasMetQuota: 1
-  CanBuySkill: 1
+  CanBuySkill: 0
   IsTouchingObject: 0
   IsPressingKey: 0
   HasInteracted: 0

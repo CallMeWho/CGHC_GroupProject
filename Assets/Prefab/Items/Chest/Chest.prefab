@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4215351370781574241}
   - component: {fileID: 4773308362023411677}
   m_Layer: 0
-  m_Name: TreasureUnknown
+  m_Name: Chest Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -229,8 +229,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactType: 0
-  Open: {fileID: 21300000, guid: ce5888adbd7d13c46b6107d49fdcadcc, type: 3}
-  Closed: {fileID: 21300000, guid: bd078291722d2f04bbf6162ba854db70, type: 3}
+  NormalSprite: {fileID: 21300000, guid: bd078291722d2f04bbf6162ba854db70, type: 3}
+  InteractedSprite: {fileID: 21300000, guid: ce5888adbd7d13c46b6107d49fdcadcc, type: 3}
   TouchBorder: {fileID: 5854161127164358254}
   Value: 150
   GameInfo: {fileID: 11400000, guid: 6aff3c642ba480f4b9bc667943b91095, type: 2}

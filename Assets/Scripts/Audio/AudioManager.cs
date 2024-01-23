@@ -10,6 +10,7 @@ public class AudioManager : MonoBehaviour
     public CustomSoundEle[] musicSounds, sfxSounds;
     public AudioSource musicSource, sfxSource, moveSource;
 
+    // dont destroy on load
     private void Awake()
     {
         if (instance == null)
@@ -38,6 +39,7 @@ public class AudioManager : MonoBehaviour
         {
             if (isOneShot)
             {
+                // play once
                 playSource.PlayOneShot(ele.SoundClip);
             }
             else

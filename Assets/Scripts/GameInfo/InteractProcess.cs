@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// player interacts
 public class InteractProcess : MonoBehaviour
 {
     [SerializeField] private InputController input = null;
@@ -12,8 +13,8 @@ public class InteractProcess : MonoBehaviour
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
 
-    private BoxCollider2D playerCol;
-    private Vector2 boxSize;
+    private BoxCollider2D playerCol;    // player collider
+    private Vector2 boxSize;    // collider size
     private Vector3 iconScale;
 
     private void Awake()
@@ -36,7 +37,21 @@ public class InteractProcess : MonoBehaviour
         UpdateIconPosition();
     }
 
-    #region newCodes
+    #region Public Callable Functions
+    public void ShowInteractIcon()
+    {
+        GameInfo.IsTouchingObject = true;
+        InteractIcon.SetActive(true);
+    }
+
+    public void HideInteractIcon()
+    {
+        GameInfo.IsTouchingObject = false;
+        InteractIcon.SetActive(false);
+    }
+    #endregion
+
+    #region Private Functions
     private void CheckIfPressingKey()
     {
         if (Input.GetKey(KeyCode.J))
@@ -61,39 +76,12 @@ public class InteractProcess : MonoBehaviour
         }
     }
 
-    #endregion
-
-
-    private void temp()
-    {
-        if (input.RetrieveInteractInput())
-        {
-            GameInfo.IsPressingKey = true;
-            CheckInteract();
-        }
-        else
-        {
-            GameInfo.IsPressingKey = false;
-        }
-    }
-
-    public void ShowInteractIcon()
-    {
-        GameInfo.IsTouchingObject = true;
-        InteractIcon.SetActive(true);
-    }
-
-    public void HideInteractIcon()
-    {
-        GameInfo.IsTouchingObject = false;
-        InteractIcon.SetActive(false);
-    }
-
+    // check collided game object, and interact it
     private void CheckInteract()
     {
-        RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position, boxSize, 0, Vector2.zero);
+        RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position, boxSize, 0, Vector2.zero);   // check player collider collision
 
-        if (hits.Length > 0)
+        if (hits.Length > 0)    // got collided game object (or collider, not sure)
         {
             foreach (RaycastHit2D hit in hits)
             {
@@ -101,18 +89,19 @@ public class InteractProcess : MonoBehaviour
                 {
                     bool isInteracted = hit.transform.GetComponent<InteractableObject>().Interact();
 
-                    if (isInteracted)
+                    if (isInteracted && hit.transform.GetComponent<ItemInteraction>())
                     {
-                        int itemValue = hit.transform.GetComponent<InteractableObject>().GetValue();
+                        int itemValue = hit.transform.GetComponent<ItemInteraction>().Value;
                         GameInfo.CurrentCredit += itemValue;
-                        return; // will choose the nearest one only, if dont want then remove return
                     }
 
+                    return; // will choose the nearest one only, if dont want then remove return
                 }
             }
         }
     }
 
+    // set player interact icon position
     private void UpdateIconPosition()
     {
         InteractIcon.transform.position = transform.position + new Vector3(iconOffsetX, iconOffsetY, -2);
@@ -124,9 +113,5 @@ public class InteractProcess : MonoBehaviour
         float z = iconScale.z;
         InteractIcon.transform.localScale = isFlipped ? new Vector3(x, y, z) : new Vector3(-x, y, z);
     }
-
-    private IEnumerator Wait(float second)
-    {
-        yield return new WaitForSeconds(second); // Wait for 1 second before starting the fading effect
-    }
+    #endregion
 }

@@ -145,8 +145,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactType: 0
-  Open: {fileID: 21300000, guid: 7fc0be646622d7a4b95908f99cc04304, type: 3}
-  Closed: {fileID: 21300000, guid: 7fc0be646622d7a4b95908f99cc04304, type: 3}
+  NormalSprite: {fileID: 21300000, guid: 7fc0be646622d7a4b95908f99cc04304, type: 3}
+  InteractedSprite: {fileID: 21300000, guid: 7fc0be646622d7a4b95908f99cc04304, type: 3}
   TouchBorder: {fileID: 8510015480142609654}
   Value: 20
   GameInfo: {fileID: 11400000, guid: 6aff3c642ba480f4b9bc667943b91095, type: 2}
