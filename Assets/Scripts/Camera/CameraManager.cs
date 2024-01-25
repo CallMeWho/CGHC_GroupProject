@@ -44,6 +44,11 @@ public class CameraManager : MonoBehaviour
         SetBoundSize();
         SetCameraBoundary();
         SetFollowPlayer();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ChangeBound = true;
+        }
     }
 
     private void SetBoundSize()

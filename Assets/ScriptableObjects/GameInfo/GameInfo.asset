@@ -13,25 +13,25 @@ MonoBehaviour:
   m_Name: GameInfo
   m_EditorClassIdentifier: 
   CurrentSceneName: Cave
-  CaveLevel: 6
+  CaveLevel: 2
   MaxSpeed: 10
   MaxAcceleration: 35
   RotationSpeed: 720
   GroundFriction: 0
-  CurrentOxygen: 73.30763
+  CurrentOxygen: 97.476685
   MaxOxygen: 100
   OxygenRecoverRate: 100
   OxygenConsumptionRate: 0.5
-  CurrentWaterPressure: 42.870247
+  CurrentWaterPressure: 1.1092987
   MaxPressureCapacity: 100
   PressureChangeRate: 0.5
-  CurrentCredit: 4942
-  Quota: 2000
-  ShopCost: 1703
+  CurrentCredit: 400
+  Quota: 300
+  ShopCost: 100
   CostIncrementPercent: 0.5
-  LightIntensity: 5.5
-  LightOuterRadius: 19
-  LightInnerRadius: 17
+  LightIntensity: 2
+  LightOuterRadius: 5
+  LightInnerRadius: 3
   IsOnGround: 0
   IsVerticalMoving: 1
   HasNoOxygen: 0
