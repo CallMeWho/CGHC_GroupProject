@@ -9,10 +9,19 @@ using UnityEngine.Rendering;
 public class InGameUIProcess : MonoBehaviour
 {
     [SerializeField] public Canvas Canvas;
+
+    [Header("Oxygen")]
     [SerializeField] public UnityEngine.UI.Image OxygenIconImage;
     [SerializeField] public GameObject OxygenTextObject;
+
+    [Header("Water Pressure")]
     [SerializeField] public GameObject PressureIcon;
-    [SerializeField] public GameObject PressureTicker;
+    [SerializeField] public RectTransform PressureTicker;
+
+    [Header("Quota")]
+    [SerializeField] TextMeshProUGUI QuotaText;
+
+    [Header("Hurt")]
     [SerializeField] public GameObject HurtScreen;
 
     [Header("Data Keeper")]
@@ -59,6 +68,7 @@ public class InGameUIProcess : MonoBehaviour
         ProcessOxygenUI();
         ProcessHurtScreen();
         ProcessPressureUI();
+        ProcessQuota();
     }
 
     private void ProcessOxygenUI()
@@ -72,31 +82,13 @@ public class InGameUIProcess : MonoBehaviour
 
     private void ProcessPressureUI()
     {
-        float rotationSpeed = 50f;
+        // ticker will rotate based on current pressure
+        PressureTicker.localEulerAngles = new Vector3(0, 0, Mathf.Lerp(130, -130, GameInfo.CurrentWaterPressure / GameInfo.MaxPressureCapacity));
+    }
 
-        if (isReverting)
-        {
-            rotationSpeed = -rotationSpeed;
-        }
-        
-        if (isStopped)
-        {
-            rotationSpeed = 0;
-        }
-
-        float nextFrameRotationZ = PressureTicker.transform.eulerAngles.z + rotationSpeed * Time.deltaTime; // rotate ticker value only in z
-
-        PressureTicker.transform.eulerAngles = new Vector3(
-            PressureTicker.transform.eulerAngles.x, 
-            PressureTicker.transform.eulerAngles.y,
-            nextFrameRotationZ);
-
-        if (PressureTicker.transform.eulerAngles.z >= 180 || PressureTicker.transform.eulerAngles.z <= -90)
-        {
-            isStopped = true;
-            isReverting = true;
-            isStopped = false;
-        }
+    private void ProcessQuota()
+    {
+        QuotaText.text = $"QUOTA \n{GameInfo.CurrentCredit} / {GameInfo.Quota}";
     }
 
     // check player oxygen and show hurt screen

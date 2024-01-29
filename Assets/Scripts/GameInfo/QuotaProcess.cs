@@ -8,47 +8,35 @@ public class QuotaProcess : MonoBehaviour
     [SerializeField] public GameInfo GameInfo;
 
     private int previousLevel;
-    private bool hasPlayedQuotaSound = false;
+    private int currentLevel;
+    private bool hasPlayedQuotaSound;
+    private bool increaseCaveLevel;
 
     private void Start()
     {
-        int currentLevel = GameInfo.CaveLevel; // Get the current level
-
-        if (currentLevel > previousLevel && GameInfo.CurrentSceneName != "Cave")
-        {
-            int levelDifference = currentLevel - previousLevel;
-            GameInfo.Quota += levelDifference * 100;
-            previousLevel = currentLevel;
-        }
-
+        increaseCaveLevel = false;
         hasPlayedQuotaSound = false;
     }
 
     private void Update()
     {
-        if (GameInfo.CurrentCredit >= GameInfo.Quota)
-        {
-            GameInfo.HasMetQuota = true;
-        }
-        else
-        {
-            GameInfo.HasMetQuota = false;
-        }
-
-        ShopCheckInRequirement();
+        GameInfo.CanBuySkill = GameInfo.CurrentCredit >= GameInfo.ShopCost;
+        GameInfo.HasMetQuota = (GameInfo.CurrentCredit >= GameInfo.Quota && GameInfo.Quota != 0);
         ReachQuotaSound();
+
+        if (GameInfo.CurrentSceneName == "Cave" && !increaseCaveLevel)
+        {
+            IncreaseDifficulty();
+            increaseCaveLevel = true;
+        }
     }
 
-    private void ShopCheckInRequirement()
+    private void IncreaseDifficulty()
     {
-        if (GameInfo.CurrentCredit >= GameInfo.ShopCost)
-        {
-            GameInfo.CanBuySkill = true;
-        }
-        else
-        {
-            GameInfo.CanBuySkill = false;
-        }
+        int currentLevel = GameInfo.CaveLevel; // Get the current level
+        int levelDifference = currentLevel - previousLevel;
+        GameInfo.Quota += levelDifference * 100;
+        previousLevel = currentLevel;
     }
 
     private void ReachQuotaSound()  //maybe this one can apply in shopbuysound there
