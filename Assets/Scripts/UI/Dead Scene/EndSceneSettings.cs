@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class EndSceneSettings : MonoBehaviour
 {
+    public static EndSceneSettings EndSceneSettingsInstance;
     private GameObject player;
     private GameInfo gameInfo;
 
@@ -16,7 +17,7 @@ public class EndSceneSettings : MonoBehaviour
         if (gameInfo == null || player == null) return;
 
         // hide dead screen
-        gameObject.SetActive(true);
+        gameObject.SetActive(false);
 
         // set sorting layer
         int playerSortLayer = player.GetComponent<Renderer>().sortingOrder;
@@ -27,7 +28,9 @@ public class EndSceneSettings : MonoBehaviour
 
     public void BackToMenu()
     {
+        AudioManager.instance.musicSource.Stop();
         AudioManager.instance.moveSource.Stop();
+        GameScenesManager.GameScenesManagerInstance.ResetGame();
         GameScenesManager.GameScenesManagerInstance.LoadGameScene("GameStartScene");
     }
 }

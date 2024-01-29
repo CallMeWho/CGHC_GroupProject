@@ -10,6 +10,9 @@ public class DiveProcess : MonoBehaviour
     [SerializeField] public Rigidbody2D Body;
     [SerializeField] private GameObject Light;
 
+    [Header("End Scene")]
+    public GameObject EndSceneObj;
+
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
 
@@ -109,6 +112,8 @@ public class DiveProcess : MonoBehaviour
             desiredVelocity = Vector2.zero;
             Body.velocity = Vector2.zero;   //if dont have these two, player will still straight moving, even though we dont press any key
             GameInfo.CurrentCredit = 0;
+
+            EndSceneObj.SetActive(true);
             return;
         }
     }

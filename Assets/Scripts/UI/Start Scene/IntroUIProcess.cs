@@ -31,6 +31,8 @@ public class IntroUIProcess : MonoBehaviour
     private void Start()
     {
         Fade = GetComponent<FadeInOut>();
+
+        AudioManager.instance.PlaySound("CommonBgm", AudioManager.instance.musicSounds, AudioManager.instance.musicSource, false);
     }
 
     public void LoadScene()
