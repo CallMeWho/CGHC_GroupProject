@@ -7,9 +7,10 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
 
-    public Sound[] musicSounds, sfxSounds;
-    public AudioSource musicSource, sfxSource;
+    public CustomSoundEle[] musicSounds, sfxSounds;
+    public AudioSource musicSource, sfxSource, moveSource;
 
+    // dont destroy on load
     private void Awake()
     {
         if (instance == null)
@@ -25,36 +26,64 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        PlayMusic("Theme");
+        AudioManager.instance.PlaySound("CommonBgm", AudioManager.instance.musicSounds, AudioManager.instance.musicSource, false);
     }
 
+    public void PlaySound(string soundName, CustomSoundEle[] soundArray, AudioSource playSource, bool isOneShot)
+    {
+        // find music
+        CustomSoundEle ele = Array.Find(soundArray, x => x.SoundName == soundName);
+
+        // play the clip
+        if (ele != null && ele.SoundClip != null)
+        {
+            if (isOneShot)
+            {
+                // play once
+                playSource.PlayOneShot(ele.SoundClip);
+            }
+            else
+            {
+                // play repeat
+                playSource.clip = ele.SoundClip;
+                playSource.Play();
+            }
+        }
+        
+        // if errors, show reasons
+        if (ele == null)
+        {
+            Debug.Log($"Array {soundArray} has no sound name {soundName}");
+        }
+        if (ele.SoundClip == null)
+        {
+            Debug.Log($"Sound name {soundName} in array {soundArray}, has NO CLIP.");
+        }
+        if (playSource == null)
+        {
+            Debug.Log($"NO AUDIO SOURCE {playSource}.");
+        }
+    }
+
+    // for button use
     public void PlayMusic(string name)
     {
-        Sound s = Array.Find(musicSounds, x => x.name == name);
-        if (s == null)
-        {
-            Debug.Log("Sound Not Found");
-        }
-        else
-        {
-            musicSource.clip = s.clip;
-            musicSource.Play();
-        }
+        // find music
+        CustomSoundEle s = Array.Find(musicSounds, x => x.SoundName == name);
+
+        // put music into audio source, and play
+        moveSource.clip = s.SoundClip;
+        moveSource.Play();
     }
 
     public void PlaySFX(string name)
     {
-        Sound s = Array.Find(sfxSounds, x => x.name == name);
-        if (s == null)
-        {
-            Debug.Log("Sound Not Found");
-        }
-        else
-        {
-            sfxSource.PlayOneShot(s.clip);
-        }
+        CustomSoundEle s = Array.Find(sfxSounds, x => x.SoundName == name);
+
+        sfxSource.PlayOneShot(s.SoundClip);
     }
 
+    // for setting ui use
     public void ToggleMusic()
     {
         musicSource.mute = !musicSource.mute;

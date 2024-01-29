@@ -73,8 +73,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2131422009
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 914e84b92b9b1684aa7eea487676aecf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -144,10 +144,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ddf124985f0f44b9c9f8b71b44b06a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Open: {fileID: 21300000, guid: 914e84b92b9b1684aa7eea487676aecf, type: 3}
-  Closed: {fileID: 21300000, guid: 914e84b92b9b1684aa7eea487676aecf, type: 3}
+  interactType: 0
+  NormalSprite: {fileID: 21300000, guid: 914e84b92b9b1684aa7eea487676aecf, type: 3}
+  InteractedSprite: {fileID: 21300000, guid: 914e84b92b9b1684aa7eea487676aecf, type: 3}
   TouchBorder: {fileID: 1554895259002483073}
-  Value: 50
+  Value: 55
   GameInfo: {fileID: 11400000, guid: 6aff3c642ba480f4b9bc667943b91095, type: 2}
 --- !u!1001 &8858362423715358084
 PrefabInstance:

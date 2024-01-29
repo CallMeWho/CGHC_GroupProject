@@ -27,10 +27,12 @@ public class GameScenesManager : MonoBehaviour
 
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
+    [SerializeField] public TerrainInfo TerrainInfo;
 
     public static GameScenesManager GameScenesManagerInstance;
 
     private bool hasStarted = false;
+    private bool OpenMoveSource;
 
     private void Awake()
     {
@@ -54,7 +56,10 @@ public class GameScenesManager : MonoBehaviour
         }
 
         SpawnPlayer(SceneNameSelection.ToString());
+
+        //PlayBGM();
     }
+
 
     public void ResetGame()
     {
@@ -69,7 +74,15 @@ public class GameScenesManager : MonoBehaviour
         GameInfo.CurrentCredit = 0;
         GameInfo.Quota = 0;
         GameInfo.ShopCost = 100;
+        GameInfo.LightIntensity = 2;
+        GameInfo.LightInnerRadius = 3;
+        GameInfo.LightOuterRadius = 5;
         GameInfo.HasInteracted = false;
+
+        TerrainInfo.TerrainLevel = 0;
+        TerrainInfo.Width = 100;
+        TerrainInfo.Height = 100;
+        TerrainInfo.TerrainLightIntensity = 1f;
     }
 
     private void Update()
@@ -86,7 +99,7 @@ public class GameScenesManager : MonoBehaviour
                 if (sceneEle.SceneName != null &&
                      sceneEle.SceneName == sceneName)
                 {
-                    SceneManager.LoadScene(sceneEle.SceneName);
+                    SceneManager.LoadSceneAsync(sceneEle.SceneName);
                     break;
                 }
             }

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8037dba9b2e0ff47af5580a32d982c0, type: 3}
+  m_Name: TerrainInfo
+  m_EditorClassIdentifier: 
+  TerrainLevel: 4
+  Width: 160
+  Height: 220
+  Size: 35200
+  ActualSize: 34821
+  BoundaryMaxPoint: {x: 159, y: 219}
+  BoundaryMinPoint: {x: 0, y: 0}
+  Seed: -90744
+  EntryPoint1: {x: 140, y: 219}
+  PlayerMovingAreaPercent: 40
+  PlayerMovingAreaCount: 13928
+  EntryPoint2: {x: 0, y: 109}
+  FillChance: 10
+  WallEdges: 1
+  SmoothCount: 20
+  SpawnPoint: {x: 139, y: 219}
+  IsTerrainGenerated: 1

@@ -72,14 +72,19 @@ public class MoveProcess : MonoBehaviour
 
         if (isMoving)
         {
-            desiredVelocity = new Vector2(direction.x, 0f) * MathF.Max(GameInfo.MaxSpeed - GameInfo.GroundFriction, 0f);
+            AudioManager.instance.moveSource.gameObject.SetActive(true);    // show move audio source
             AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.LAND_RUN);
+
+            desiredVelocity = new Vector2(direction.x, 0f) * MathF.Max(GameInfo.MaxSpeed - GameInfo.GroundFriction, 0f);
             Flipping();
         }
+
         else
         {
-            desiredVelocity = Vector2.zero;
+            AudioManager.instance.moveSource.gameObject.SetActive(false);   // hide move audio source
             AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.LAND_IDLE);
+
+            desiredVelocity = Vector2.zero;
         }
     }
 
