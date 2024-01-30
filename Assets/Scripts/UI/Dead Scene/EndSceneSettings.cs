@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -22,15 +23,23 @@ public class EndSceneSettings : MonoBehaviour
         // set sorting layer
         int playerSortLayer = player.GetComponent<Renderer>().sortingOrder;
         gameObject.GetComponent<Canvas>().sortingOrder = playerSortLayer + 1;   // end scene is set at front player
+
+        // set result text
+        TextMeshProUGUI textResult = GetComponentInChildren<TextMeshProUGUI>();
+        string days = (gameInfo.CaveLevel <= 1) ? "Day" : "Days";
+        textResult.text = $"YOU ARE FIRED AFTER {gameInfo.CaveLevel} {days}";
     }
 
     // update not working in canvas here, dk why
 
     public void BackToMenu()
     {
-        AudioManager.instance.musicSource.Stop();
-        AudioManager.instance.moveSource.Stop();
-        GameScenesManager.GameScenesManagerInstance.ResetGame();
-        GameScenesManager.GameScenesManagerInstance.LoadGameScene("GameStartScene");
+        AudioManager audioManager = AudioManager.instance;
+        audioManager.musicSource.Stop();
+        audioManager.moveSource.Stop();
+
+        GameScenesManager gameScenesManager = GameScenesManager.GameScenesManagerInstance;
+        gameScenesManager.ResetGame();
+        gameScenesManager.LoadGameScene("GameStartScene");
     }
 }

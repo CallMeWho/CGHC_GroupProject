@@ -25,44 +25,34 @@ public class DiveProcess : MonoBehaviour
 
     private void Awake()
     {
-        if (GameInfo.CurrentSceneName != "Cave")
-        {
-            return;
-        }
-
+        InitializeCaveScene();
         Body = GetComponent<Rigidbody2D>();
     }
 
     private void Start()
     {
-        if (GameInfo.CurrentSceneName != "Cave")
-        {
-            return;
-        }
-
+        InitializeCaveScene();
         Body.gravityScale = 1f;
         initialRotation = transform.localRotation;
     }
 
     private void Update()
     {
-        if (GameInfo.CurrentSceneName != "Cave")
-        {
-            return;
-        }
-
+        InitializeCaveScene();
         Diving();
         Light.SetActive(true);
     }
 
     private void FixedUpdate()
     {
-        if (GameInfo.CurrentSceneName != "Cave")
-        {
-            return;
-        }
-
+        InitializeCaveScene();
         Accelerate();
+    }
+
+    // initialization
+    private void InitializeCaveScene()
+    {
+        if (GameInfo.CurrentSceneName != "Cave") return;
     }
 
     private void Diving()

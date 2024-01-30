@@ -256,11 +256,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1cecf0b27c9406e4095ac59a3bdb6252, type: 3}
---- !u!60 &293422717 stripped
-PolygonCollider2D:
-  m_CorrespondingSourceObject: {fileID: 1558804230719421795, guid: da7f6e802faf65e439c3ca28708ec6db, type: 3}
-  m_PrefabInstance: {fileID: 1423033244}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &731241427
 GameObject:
   m_ObjectHideFlags: 0
@@ -858,16 +853,16 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 139972162757182917, guid: da7f6e802faf65e439c3ca28708ec6db, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -30.10425
+      value: -28.377903
       objectReference: {fileID: 0}
     - target: {fileID: 139972162757182917, guid: da7f6e802faf65e439c3ca28708ec6db, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -95.50739
+      value: -95.53256
       objectReference: {fileID: 0}
     - target: {fileID: 393416302050168276, guid: da7f6e802faf65e439c3ca28708ec6db, type: 3}
       propertyPath: m_BoundingShape2D
       value: 
-      objectReference: {fileID: 293422717}
+      objectReference: {fileID: 1423033245}
     - target: {fileID: 753458495148072132, guid: da7f6e802faf65e439c3ca28708ec6db, type: 3}
       propertyPath: m_Name
       value: CameraManager

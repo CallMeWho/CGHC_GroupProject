@@ -49,19 +49,22 @@ public class AudioManager : MonoBehaviour
                 playSource.Play();
             }
         }
-        
+
         // if errors, show reasons
-        if (ele == null)
+        if (ele == null || ele.SoundClip == null || playSource == null)
         {
-            Debug.Log($"Array {soundArray} has no sound name {soundName}");
-        }
-        if (ele.SoundClip == null)
-        {
-            Debug.Log($"Sound name {soundName} in array {soundArray}, has NO CLIP.");
-        }
-        if (playSource == null)
-        {
-            Debug.Log($"NO AUDIO SOURCE {playSource}.");
+            if (ele == null)
+            {
+                Debug.Log($"Array {soundArray} has no sound name {soundName}");
+            }
+            if (ele != null && ele.SoundClip == null)
+            {
+                Debug.Log($"Sound name {soundName} in array {soundArray}, has NO CLIP.");
+            }
+            if (playSource == null)
+            {
+                Debug.Log($"NO AUDIO SOURCE {playSource}.");
+            }
         }
     }
 

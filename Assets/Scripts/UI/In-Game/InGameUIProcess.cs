@@ -94,7 +94,7 @@ public class InGameUIProcess : MonoBehaviour
     // check player oxygen and show hurt screen
     private void ProcessHurtScreen()
     {
-        if (GameInfo.CurrentOxygen <= GameInfo.MaxOxygen * 0.2f)    // if lower than 20% of max oxygen
+        if (GameInfo.CurrentOxygen <= GameInfo.MaxOxygen * 0.2f || GameInfo.CurrentWaterPressure >= GameInfo.MaxPressureCapacity * 0.9f)    // if lower than 20% of max oxygen
         {
             HurtScreen.SetActive(true);
 
