@@ -95,6 +95,7 @@ public class AudioManager : MonoBehaviour
     public void ToggleSFX()
     {
         sfxSource.mute = !sfxSource.mute;
+        moveSource.mute = !moveSource.mute;
     }
 
     public void MusicVolume(float volume)
@@ -105,5 +106,6 @@ public class AudioManager : MonoBehaviour
     public void SFXVolume(float volume)
     {
         sfxSource.volume = volume;
+        moveSource.volume = volume;
     }
 }

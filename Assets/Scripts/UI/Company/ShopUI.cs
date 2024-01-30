@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.TextCore.Text;
+//using UnityEditor.TextCore.Text;
 using UnityEngine;
 
 public class ShopUI : MonoBehaviour

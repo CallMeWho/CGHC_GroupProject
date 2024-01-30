@@ -33,6 +33,11 @@ public class IntroUIProcess : MonoBehaviour
         Fade = GetComponent<FadeInOut>();
 
         AudioManager.instance.PlaySound("CommonBgm", AudioManager.instance.musicSounds, AudioManager.instance.musicSource, false);
+
+        if (InGameUIProcess.InGameCanvasObj != null) 
+        {
+            InGameUIProcess.InGameCanvasObj.SetActive(false);
+        }
     }
 
     public void LoadScene()
@@ -49,7 +54,8 @@ public class IntroUIProcess : MonoBehaviour
     {
         Fade.StartFadeIn();
         yield return new WaitForSeconds(1);
-        SceneManager.LoadSceneAsync("Company");
+        GameScenesManager.GameScenesManagerInstance.LoadGameScene("Company");
+        //SceneManager.LoadSceneAsync("Company");
     }
 
     private IEnumerator CoolQuitScene()
