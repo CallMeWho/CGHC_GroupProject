@@ -38,6 +38,8 @@ public class InGameUIProcess : MonoBehaviour
     private UnityEngine.UI.Image HurtScreenImage;
     private TextMeshProUGUI OxygenText;
 
+    private GameInfo gameInfo;
+
     private void Awake()
     {
         if (InGameUIProcessInstance == null)
@@ -52,6 +54,7 @@ public class InGameUIProcess : MonoBehaviour
 
         HurtScreenImage = HurtScreen.GetComponent<UnityEngine.UI.Image>();
         OxygenText = OxygenTextObject.GetComponent<TextMeshProUGUI>();
+        
     }
 
     private void Start()

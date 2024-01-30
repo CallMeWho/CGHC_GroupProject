@@ -10,20 +10,20 @@ public class IntroUIProcess : MonoBehaviour
     private void Awake()
     {
         AudioListener[] audioListeners = FindObjectsOfType<AudioListener>();
+
+        // if no audio listener
         if (audioListeners.Length == 0)
         {
             gameObject.AddComponent<AudioListener>();
         }
-        else if (audioListeners.Length > 0)
+        // remove extra audio listener
+        else if (audioListeners.Length > 1)
         {
-            for (int i = 0; i < audioListeners.Length; i++)
+            AudioListener currentListener = gameObject.GetComponent<AudioListener>();
+
+            foreach (AudioListener listener in audioListeners)
             {
-                if (audioListeners[i] != GetComponent<AudioListener>())
-                {
-                    Debug.Log("Extra audio listener found at: " + audioListeners[i].gameObject.name);
-                    //audioListeners[i].enabled = false;
-                    //Destroy(audioListeners[i]);
-                }
+                if (listener != currentListener) Destroy(listener);
             }
         }
     }
@@ -45,6 +45,11 @@ public class IntroUIProcess : MonoBehaviour
         StartCoroutine(FadeInLoadScene());
     }
 
+    public void OpenSetting()
+    {
+        SettingsUIController.SettingsCanvas.SetActive(true);
+    }
+
     public void QuitGame()
     {
         Application.Quit();
@@ -54,8 +59,14 @@ public class IntroUIProcess : MonoBehaviour
     {
         Fade.StartFadeIn();
         yield return new WaitForSeconds(1);
-        GameScenesManager.GameScenesManagerInstance.LoadGameScene("Company");
-        //SceneManager.LoadSceneAsync("Company");
+        //GameScenesManager.GameScenesManagerInstance.LoadGameScene("Company");
+        SceneManager.LoadSceneAsync("Company");
+
+        new WaitForSeconds(3);
+        if (InGameUIProcess.InGameCanvasObj != null)
+        {
+            InGameUIProcess.InGameCanvasObj.SetActive(true);
+        }
     }
 
     private IEnumerator CoolQuitScene()
