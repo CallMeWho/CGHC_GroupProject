@@ -10,6 +10,8 @@ public class InGameUIProcess : MonoBehaviour
 {
     [SerializeField] public Canvas Canvas;
 
+    public static GameObject InGameCanvasObj;
+
     [Header("Oxygen")]
     [SerializeField] public UnityEngine.UI.Image OxygenIconImage;
     [SerializeField] public GameObject OxygenTextObject;
@@ -54,6 +56,8 @@ public class InGameUIProcess : MonoBehaviour
 
     private void Start()
     {
+        InGameCanvasObj = gameObject;
+
         HurtScreen.SetActive(false);
 
         // set the ticker to initial point

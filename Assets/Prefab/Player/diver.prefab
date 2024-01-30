@@ -234,6 +234,7 @@ GameObject:
   - component: {fileID: 2568857808938216043}
   - component: {fileID: 7939657871459951167}
   - component: {fileID: 8415110522303273009}
+  - component: {fileID: 7078458331532296777}
   m_Layer: 0
   m_Name: Diver
   m_TagString: Player
@@ -250,7 +251,7 @@ Transform:
   m_GameObject: {fileID: 4109214323134627538}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -37.54, y: -95.41, z: 0}
+  m_LocalPosition: {x: 7.94, y: -1.89, z: 0}
   m_LocalScale: {x: 0.29999998, y: 0.29999998, z: 0.29999998}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -298,7 +299,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 16
   m_Sprite: {fileID: 21300000, guid: e0f96c49e7e752e4c8986a5796890d58, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -408,7 +409,7 @@ MonoBehaviour:
   - {x: 1.5950012, y: -3.1399841, z: 0}
   m_ShapePathHash: 0
   m_Mesh: {fileID: 0}
-  m_InstanceId: -80010
+  m_InstanceId: -52276
   m_LocalBounds:
     m_Center: {x: 0, y: 0.000015258789, z: 0}
     m_Extent: {x: 1.5950012, y: 3.1399994, z: 0}
@@ -467,7 +468,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4109214323134627538}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a19f62953fadd8e4b8f297c039f90f0d, type: 3}
   m_Name: 
@@ -489,10 +490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   input: {fileID: 11400000, guid: 78aca62eb68e655459f706dcd3e41716, type: 2}
-  Body: {fileID: 6487319139208981954}
-  Light: {fileID: 968243419416038035}
-  GameInfo: {fileID: 11400000, guid: 6aff3c642ba480f4b9bc667943b91095, type: 2}
-  direction: {x: 0, y: 0}
+  EndSceneObj: {fileID: 0}
 --- !u!114 &730694786833064879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,4 +546,18 @@ MonoBehaviour:
   InteractIcon: {fileID: 2334870704497258771}
   iconOffsetX: 1.2
   iconOffsetY: 1
+  GameInfo: {fileID: 11400000, guid: 6aff3c642ba480f4b9bc667943b91095, type: 2}
+--- !u!114 &7078458331532296777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4109214323134627538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 277e535c17360c340b5b6780a7f2d6a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LightObject: {fileID: 968243419416038035}
   GameInfo: {fileID: 11400000, guid: 6aff3c642ba480f4b9bc667943b91095, type: 2}

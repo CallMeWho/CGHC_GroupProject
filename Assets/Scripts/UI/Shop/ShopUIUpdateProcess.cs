@@ -8,12 +8,22 @@ public class ShopUIUpdateProcess : MonoBehaviour
     [SerializeField] public GameObject[] Positions;
     [SerializeField] public GameObject[] Books;
 
+    public static GameObject ShopCanvasObj;
+
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
 
     private void Start()
     {
+        // hide dead screen
+        gameObject.SetActive(false);
+
         RandomGenerateBook();
+
+        ShopCanvasObj = gameObject;
+        Canvas canvas = gameObject.GetComponent<Canvas>();
+        canvas.sortingLayerName = "Map";
+        canvas.sortingOrder = 10;
     }
 
     private void RandomGenerateBook()

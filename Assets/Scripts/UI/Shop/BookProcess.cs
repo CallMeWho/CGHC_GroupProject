@@ -13,14 +13,19 @@ public class BookProcess : MonoBehaviour
 
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
-
+    
     // after player clicks the book, this activates.
     public void BuySkill()
     {
         AudioManager.instance.PlaySound("BookBuySound", AudioManager.instance.sfxSounds, AudioManager.instance.sfxSource, true);
         GameInfo.CurrentCredit -= GameInfo.ShopCost;
         GameInfo.ShopCost += Mathf.RoundToInt(GameInfo.ShopCost * GameInfo.CostIncrementPercent);
-        SceneManager.LoadSceneAsync("Company");
+
+        ShopUIUpdateProcess.ShopCanvasObj.SetActive(false);
+
+        InGameUIProcess.InGameCanvasObj.SetActive(true);
+        
+        //GameScenesManager.GameScenesManagerInstance.LoadGameScene("Company");
     }
 
     // move speed

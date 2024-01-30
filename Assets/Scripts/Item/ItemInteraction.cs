@@ -1,5 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+//using System.Diagnostics;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -12,6 +15,7 @@ public class ItemInteraction : InteractableObject
     [SerializeField] private Sprite InteractedSprite;
     [SerializeField] private GameObject TouchBorder;
     [SerializeField] public int Value;
+    public GameObject ShopCanvas;
 
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
@@ -54,9 +58,18 @@ public class ItemInteraction : InteractableObject
             {
                 if (GameInfo.CanBuySkill && GameInfo.HasInteracted)
                 {
-                    PlaySound();
-                    StartCoroutine(InteractCoroutine());
-                    GameScenesManager.GameScenesManagerInstance.LoadGameScene("Shop");
+                    //PlaySound();
+                    //StartCoroutine(InteractCoroutine());
+                    //GameScenesManager.GameScenesManagerInstance.LoadGameScene("Shop");
+
+                    GameObject inGameCanvas = GameObject.Find("In-Game Canvas");
+                    if (ShopCanvas != null && inGameCanvas != null && inGameCanvas.activeSelf)
+                    {
+                        //ShopCanvas.SetActive(true);
+                        ShopUIUpdateProcess.ShopCanvasObj.SetActive(true);
+                        inGameCanvas.SetActive(false);
+                    }
+                    
                 }
             }
 

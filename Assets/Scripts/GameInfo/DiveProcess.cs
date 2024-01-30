@@ -7,40 +7,52 @@ using UnityEngine.Rendering.Universal;
 public class DiveProcess : MonoBehaviour
 {
     [SerializeField] private InputController input = null;
-    [SerializeField] public Rigidbody2D Body;
-    [SerializeField] private GameObject Light;
 
     [Header("End Scene")]
     public GameObject EndSceneObj;
 
-    [Header("Data Keeper")]
-    [SerializeField] public GameInfo GameInfo;
+    // player components
+    private Rigidbody2D body;
+    private GameObject lightObj;
 
-    public Vector2 direction;
+    // scriptable objs
+    private GameInfo gameInfo;
+
+    // movement
+    private Vector2 direction;
     private Vector2 desiredVelocity;
-    private Vector2 velocity;
-    private float maxSpeedChange;
-    private float acceleration;
     private Quaternion initialRotation;
 
     private void Awake()
     {
         InitializeCaveScene();
-        Body = GetComponent<Rigidbody2D>();
+        body = GetComponent<Rigidbody2D>();
+        lightObj = GetComponentInChildren<Light2D>(true)?.gameObject;
+        gameInfo = FindAnyObjectByType<GameScenesManager>().GameInfo;
     }
 
     private void Start()
     {
         InitializeCaveScene();
-        Body.gravityScale = 1f;
-        initialRotation = transform.localRotation;
+
+        if (gameInfo.CurrentSceneName == "Company")
+        {
+            body.gravityScale = 1f;
+            lightObj.SetActive(false);
+        }
+        else if (gameInfo.CurrentSceneName == "Cave")
+        {
+            body.gravityScale = 1f;
+            lightObj.SetActive(true);
+            initialRotation = transform.localRotation;
+        }
+        else return;
     }
 
     private void Update()
     {
         InitializeCaveScene();
-        Diving();
-        Light.SetActive(true);
+        Moving();
     }
 
     private void FixedUpdate()
@@ -52,57 +64,73 @@ public class DiveProcess : MonoBehaviour
     // initialization
     private void InitializeCaveScene()
     {
-        if (GameInfo.CurrentSceneName != "Cave") return;
+        if (gameInfo == null || gameInfo.CurrentSceneName != "Company" || gameInfo.CurrentSceneName != "Cave" ||
+            body == null || lightObj == null || input == null)
+            return;
     }
 
-    private void Diving()
+    private void Moving()
     {
-        direction.x = input.RetrieveHorizontalMoveInput();
-        direction.y = input.RetrieveVerticalMoveInput();
-
-        //desiredVelocity = new Vector2(direction.x, direction.y) * MathF.Max(maxSpeed - ground.GetFriction(), 0f);
-        bool isMoving = direction.x != 0f || direction.y != 0f;
-
-        if (isMoving)
+        switch (gameInfo.CurrentSceneName)
         {
-            desiredVelocity = new Vector2(direction.x, direction.y) * MathF.Max(GameInfo.MaxSpeed, 0f);
-            AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.CAVE_DIVE);
+            case "Company":
+                direction.x = input.RetrieveHorizontalMoveInput();
+                bool isMovingCompany = direction.x != 0f;
+
+                AudioManager.instance.moveSource.gameObject.SetActive(isMovingCompany); // show/hide move audio source
+                AnimationCall.PlayerAnimationInstance.ChangeAnimationState(isMovingCompany ? AnimationCall.LAND_RUN : AnimationCall.LAND_IDLE);
+
+                desiredVelocity = new Vector2(direction.x, 0f).normalized * Mathf.Max(gameInfo.MaxSpeed - gameInfo.GroundFriction, 0f);
+                Flipping();
+                
+                break;
+
+            case "Cave":
+                lightObj.SetActive(true);
+
+                direction.x = input.RetrieveHorizontalMoveInput();
+                direction.y = input.RetrieveVerticalMoveInput();
+                bool isMovingCave = direction.x != 0f || direction.y != 0f;
+
+                AnimationCall.PlayerAnimationInstance.ChangeAnimationState(isMovingCave ? AnimationCall.CAVE_DIVE : AnimationCall.CAVE_IDLE);
+
+                desiredVelocity = isMovingCave ? direction.normalized * Mathf.Max(gameInfo.MaxSpeed, 0f) : Vector2.zero;
+                
+                if (!isMovingCave)
+                {
+                    float rotationTime = 1f; // The duration of the rotation in seconds
+                    float elapsedTime = 0f;
+                    Quaternion startRotation = transform.rotation;
+                    Quaternion targetRotation = initialRotation;
+
+                    while (elapsedTime < rotationTime)
+                    {
+                        float t = elapsedTime / rotationTime;
+                        transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+                        elapsedTime += Time.deltaTime;
+                    }
+
+                    transform.rotation = targetRotation;
+                }
+                
+                Flipping();
+                StopMoving();
+                break;
+
+            default:
+                return;
         }
-        else
-        {
-            desiredVelocity = Vector2.zero;
-            //StartCoroutine(RotateToInitialRotation());
-
-            //STILL NEED TO MODIFY
-            Quaternion startRotation = transform.rotation;
-            float rotationTime = 1f; // The duration of the rotation in seconds
-            float elapsedTime = 0f;
-
-            while (elapsedTime < rotationTime)
-            {
-                float t = elapsedTime / rotationTime;
-                transform.rotation = Quaternion.Slerp(startRotation, initialRotation, t);
-                elapsedTime += Time.deltaTime;
-
-            }
-
-            transform.rotation = initialRotation;
-
-            AnimationCall.PlayerAnimationInstance.ChangeAnimationState(AnimationCall.CAVE_IDLE);
-        }
-
-        Flipping();
-        StopMoving();
     }
 
     private void StopMoving()
     {
-        if (GameInfo.HasNoOxygen || GameInfo.HasOverWaterPressure)    
+        if (gameInfo.CurrentSceneName == "Cave" && (gameInfo.HasNoOxygen || gameInfo.HasOverWaterPressure))
         {
+            //if dont have these two, player will still straight moving, even though we dont press any key
             desiredVelocity = Vector2.zero;
-            Body.velocity = Vector2.zero;   //if dont have these two, player will still straight moving, even though we dont press any key
-            GameInfo.CurrentCredit = 0;
+            body.velocity = desiredVelocity;
 
+            // (play die animation)
             EndSceneObj.SetActive(true);
             return;
         }
@@ -110,31 +138,59 @@ public class DiveProcess : MonoBehaviour
 
     private void Flipping()
     {
-        if (desiredVelocity != Vector2.zero)
+        switch (gameInfo.CurrentSceneName)
         {
-            Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, desiredVelocity);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, GameInfo.RotationSpeed * Time.deltaTime);
+            case "Company":
+                if (Math.Abs(direction.x) > 0)
+                {
+                    // flip horizontally
+                    Vector3 newScale = transform.localScale;
+                    newScale.x = Mathf.Sign(input.RetrieveHorizontalMoveInput()) * Mathf.Abs(newScale.x);
+                    transform.localScale = newScale;
+                }
+                break;
 
-            if (Mathf.Abs(direction.x) > 0)
-            {
-                // Flip the sprite horizontally
-                Vector3 newScale = transform.localScale;
-                newScale.x = Mathf.Sign(direction.x) * Mathf.Abs(newScale.x);
-                transform.localScale = newScale;
-            }
+            case "Cave":
+                if (desiredVelocity != Vector2.zero)
+                {
+                    // rotation moving
+                    Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, desiredVelocity);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, gameInfo.RotationSpeed * Time.deltaTime);
+
+                    if (Mathf.Abs(direction.x) > 0f)
+                    {
+                        Vector3 newScale = transform.localScale;
+                        newScale.x = Mathf.Sign(direction.x) * Mathf.Abs(newScale.x);
+                        transform.localScale = newScale;
+                    }
+                }
+                break;
+
+            default:
+                break;
         }
     }
 
     private void Accelerate()
     {
-        velocity = Body.velocity;
+        Vector2 velocity = body.velocity;
+        float maxSpeedChange = gameInfo.MaxAcceleration * Time.deltaTime;
 
-        //acceleration = onGround ? maxAcceleration : 0;
-        acceleration = GameInfo.MaxAcceleration;
-        maxSpeedChange = acceleration * Time.deltaTime;
         velocity.x = Mathf.MoveTowards(velocity.x, desiredVelocity.x, maxSpeedChange);
-        velocity.y = Mathf.MoveTowards(velocity.y, desiredVelocity.y, maxSpeedChange);
 
-        Body.velocity = velocity;
+        switch (gameInfo.CurrentSceneName)
+        {
+            case "Company":
+                body.velocity = velocity;
+                break;
+
+            case "Cave":
+                velocity.y = Mathf.MoveTowards(velocity.y, desiredVelocity.y, maxSpeedChange);
+                body.velocity = velocity;
+                break;
+
+            default:
+                return;
+        }
     }
 }

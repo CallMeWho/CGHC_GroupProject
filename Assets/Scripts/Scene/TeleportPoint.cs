@@ -30,7 +30,10 @@ public class TeleportPoint : MonoBehaviour
                 // Company -> Shop
                 if (sceneName == "Shop" && GameInfo.CanBuySkill && GameInfo.HasInteracted)
                 {
-                    StartCoroutine(FadeInLoadScene(sceneName));
+                    //StartCoroutine(FadeInLoadScene(sceneName));
+
+                    //GameObject shopCanvas = FindAnyObjectByType<ShopUIUpdateProcess>().gameObject;
+                    //shopCanvas.SetActive(true);
                 }
 
                 // Company -> Cave
