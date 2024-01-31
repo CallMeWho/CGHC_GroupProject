@@ -10,7 +10,6 @@ public class AudioManager : MonoBehaviour
     public CustomSoundEle[] musicSounds, sfxSounds;
     public AudioSource musicSource, sfxSource, moveSource;
 
-    // dont destroy on load
     private void Awake()
     {
         if (instance == null)
@@ -22,35 +21,32 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        EnsureAudioListener();
     }
 
     private void Start()
     {
-        AudioManager.instance.PlaySound("CommonBgm", AudioManager.instance.musicSounds, AudioManager.instance.musicSource, false);
+        PlaySound("CommonBgm", musicSounds, musicSource, false);
     }
 
     public void PlaySound(string soundName, CustomSoundEle[] soundArray, AudioSource playSource, bool isOneShot)
     {
-        // find music
         CustomSoundEle ele = Array.Find(soundArray, x => x.SoundName == soundName);
 
-        // play the clip
         if (ele != null && ele.SoundClip != null)
         {
             if (isOneShot)
             {
-                // play once
                 playSource.PlayOneShot(ele.SoundClip);
             }
             else
             {
-                // play repeat
                 playSource.clip = ele.SoundClip;
                 playSource.Play();
             }
         }
 
-        // if errors, show reasons
         if (ele == null || ele.SoundClip == null || playSource == null)
         {
             if (ele == null)
@@ -68,13 +64,10 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // for button use
     public void PlayMusic(string name)
     {
-        // find music
         CustomSoundEle s = Array.Find(musicSounds, x => x.SoundName == name);
 
-        // put music into audio source, and play
         moveSource.clip = s.SoundClip;
         moveSource.Play();
     }
@@ -86,7 +79,6 @@ public class AudioManager : MonoBehaviour
         sfxSource.PlayOneShot(s.SoundClip);
     }
 
-    // for setting ui use
     public void ToggleMusic()
     {
         musicSource.mute = !musicSource.mute;
@@ -107,5 +99,14 @@ public class AudioManager : MonoBehaviour
     {
         sfxSource.volume = volume;
         moveSource.volume = volume;
+    }
+
+    private void EnsureAudioListener()
+    {
+        if (FindObjectOfType<AudioListener>() == null)
+        {
+            GameObject audioListenerObj = new GameObject("AudioListener");
+            audioListenerObj.AddComponent<AudioListener>();
+        }
     }
 }

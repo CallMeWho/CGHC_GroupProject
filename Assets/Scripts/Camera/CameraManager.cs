@@ -44,6 +44,7 @@ public class CameraManager : MonoBehaviour
     {
         SetCameraBoundary();
         SetFollowPlayer();
+        SetAudioListener();
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -102,6 +103,17 @@ public class CameraManager : MonoBehaviour
                 cinemachine.Follow = playerTransform;
                 cinemachine.LookAt = playerTransform;
             }
+        }
+    }
+
+    // Set the camera audio listener component.
+    private void SetAudioListener()
+    {
+        Camera cameraObject = Camera.GetComponent<Camera>();
+
+        if (!cameraObject.GetComponent<AudioListener>())
+        {
+            cameraObject.gameObject.AddComponent<AudioListener>();
         }
     }
 }

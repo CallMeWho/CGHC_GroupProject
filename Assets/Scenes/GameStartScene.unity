@@ -191,6 +191,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!60 &207117305 stripped
+PolygonCollider2D:
+  m_CorrespondingSourceObject: {fileID: 1558804230719421795, guid: da7f6e802faf65e439c3ca28708ec6db, type: 3}
+  m_PrefabInstance: {fileID: 1423033244}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &210631453
 GameObject:
   m_ObjectHideFlags: 0
@@ -1973,7 +1978,7 @@ PrefabInstance:
     - target: {fileID: 393416302050168276, guid: da7f6e802faf65e439c3ca28708ec6db, type: 3}
       propertyPath: m_BoundingShape2D
       value: 
-      objectReference: {fileID: 1773643524}
+      objectReference: {fileID: 207117305}
     - target: {fileID: 753458495148072132, guid: da7f6e802faf65e439c3ca28708ec6db, type: 3}
       propertyPath: m_Name
       value: CameraManager
@@ -2502,11 +2507,6 @@ RectTransform:
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!60 &1773643524 stripped
-PolygonCollider2D:
-  m_CorrespondingSourceObject: {fileID: 1558804230719421795, guid: da7f6e802faf65e439c3ca28708ec6db, type: 3}
-  m_PrefabInstance: {fileID: 1423033244}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1891313194
 GameObject:
   m_ObjectHideFlags: 0
