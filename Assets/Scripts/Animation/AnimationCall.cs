@@ -16,11 +16,11 @@ public class AnimationCall : MonoBehaviour
         if (PlayerAnimationInstance == null)
         {
             PlayerAnimationInstance = this;
-            //DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
+            return;
         }
     }
 
@@ -32,11 +32,10 @@ public class AnimationCall : MonoBehaviour
 
     public void ChangeAnimationState(string newState)
     {
-        if (CurrentState != newState)
-        {
-            Animator.Play(newState);
-            CurrentState = newState;
-        }
-        else { return; }
+        if (CurrentState == newState)
+            return;
+
+        Animator.Play(newState);
+        CurrentState = newState;
     }
 }
