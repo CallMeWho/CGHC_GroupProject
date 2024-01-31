@@ -7,31 +7,33 @@ public class InteractProcess : MonoBehaviour
 {
     [SerializeField] private InputController input = null;
     [SerializeField] public GameObject InteractIcon;
+
+    // Offset of the interact icon on each axis
     [SerializeField, Range(-2, 2)] private float iconOffsetX = 1.2f;
     [SerializeField, Range(-2, 2)] private float iconOffsetY = 1f;
 
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
 
-    private BoxCollider2D playerCol;    // player collider
-    private Vector2 boxSize;    // collider size
+    private BoxCollider2D playerCollider;    
+    private Vector2 colliderSize;    
     private Vector3 iconScale;
 
     private void Awake()
     {
-        playerCol = GetComponent<BoxCollider2D>();
+        playerCollider = GetComponent<BoxCollider2D>();
     }
 
     private void Start()
     {
-        boxSize = playerCol.size;
+        colliderSize = playerCollider.size;
         iconScale = InteractIcon.transform.localScale;
     }
 
     private void Update()
     {
-        CheckIfPressingKey();
-        CheckIfHasInteracted();
+        UpdateKeyPressStatus();
+        UpdateInteractionStatus();
 
         CheckInteract();
         UpdateIconPosition();
@@ -52,66 +54,57 @@ public class InteractProcess : MonoBehaviour
     #endregion
 
     #region Private Functions
-    private void CheckIfPressingKey()
+    private void UpdateKeyPressStatus()
     {
-        if (Input.GetKey(KeyCode.J))
-        {
-            GameInfo.IsPressingKey = true;
-        }
-        else
-        {
-            GameInfo.IsPressingKey = false;
-        }
+        GameInfo.IsPressingKey = input.RetrieveInteractInput(); 
     }
 
-    private void CheckIfHasInteracted()
+    private void UpdateInteractionStatus()
     {
-        if (GameInfo.IsTouchingObject && GameInfo.IsPressingKey)
-        {
-            GameInfo.HasInteracted = true;
-        }
-        else
-        {
-            GameInfo.HasInteracted = false;
-        }
+        GameInfo.HasInteracted = GameInfo.IsTouchingObject && GameInfo.IsPressingKey;
     }
 
-    // check collided game object, and interact it
+    // Check the collided game object, and interact it
     private void CheckInteract()
     {
-        RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position, boxSize, 0, Vector2.zero);   // check player collider collision
+        RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position, colliderSize, 0, Vector2.zero);
 
-        if (hits.Length > 0)    // got collided game object (or collider, not sure)
+        if (hits.Length > 0)
         {
             foreach (RaycastHit2D hit in hits)
             {
-                if (hit.transform.GetComponent<InteractableObject>())
+                InteractableObject interactableObject = hit.transform.GetComponent<InteractableObject>();
+
+                if (interactableObject == null)
+                    continue;
+
+                bool isInteracted = interactableObject.Interact();
+
+                if (!isInteracted)
+                    continue;
+
+                ItemInteraction itemInteraction = hit.transform.GetComponent<ItemInteraction>();
+
+                if (itemInteraction != null)
                 {
-                    bool isInteracted = hit.transform.GetComponent<InteractableObject>().Interact();
-
-                    if (isInteracted && hit.transform.GetComponent<ItemInteraction>())
-                    {
-                        int itemValue = hit.transform.GetComponent<ItemInteraction>().Value;
-                        GameInfo.CurrentCredit += itemValue;
-                    }
-
-                    return; // will choose the nearest one only, if dont want then remove return
+                    int itemValue = itemInteraction.Value;
+                    GameInfo.CurrentCredit += itemValue;
                 }
+
+                return;
             }
         }
     }
 
-    // set player interact icon position
+    // Set the player interact icon position
     private void UpdateIconPosition()
     {
         InteractIcon.transform.position = transform.position + new Vector3(iconOffsetX, iconOffsetY, -2);
         InteractIcon.transform.rotation = Quaternion.identity;
 
         bool isFlipped = transform.localScale.x < 0;
-        float x = iconScale.x;
-        float y = iconScale.y;
-        float z = iconScale.z;
-        InteractIcon.transform.localScale = isFlipped ? new Vector3(x, y, z) : new Vector3(-x, y, z);
+        Vector3 scale = new Vector3(iconScale.x, iconScale.y, iconScale.z);
+        InteractIcon.transform.localScale = Vector3.Scale(scale, isFlipped ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1));
     }
     #endregion
 }

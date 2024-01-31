@@ -18,11 +18,11 @@ MonoBehaviour:
   MaxAcceleration: 35
   RotationSpeed: 720
   GroundFriction: 0
-  CurrentOxygen: 96.459045
+  CurrentOxygen: 98.31035
   MaxOxygen: 100
   OxygenRecoverRate: 100
   OxygenConsumptionRate: 0.5
-  CurrentWaterPressure: 15.070366
+  CurrentWaterPressure: 4.3828087
   MaxPressureCapacity: 100
   PressureChangeRate: 0.5
   CurrentCredit: 0
