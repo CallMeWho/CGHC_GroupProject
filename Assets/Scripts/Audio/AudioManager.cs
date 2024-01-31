@@ -21,8 +21,6 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        EnsureAudioListener();
     }
 
     private void Start()
@@ -30,22 +28,10 @@ public class AudioManager : MonoBehaviour
         PlaySound("CommonBgm", musicSounds, musicSource, false);
     }
 
+    // Play a sound
     public void PlaySound(string soundName, CustomSoundEle[] soundArray, AudioSource playSource, bool isOneShot)
     {
-        CustomSoundEle ele = Array.Find(soundArray, x => x.SoundName == soundName);
-
-        if (ele != null && ele.SoundClip != null)
-        {
-            if (isOneShot)
-            {
-                playSource.PlayOneShot(ele.SoundClip);
-            }
-            else
-            {
-                playSource.clip = ele.SoundClip;
-                playSource.Play();
-            }
-        }
+        CustomSoundEle ele = FindSoundByName(soundName, soundArray);
 
         if (ele == null || ele.SoundClip == null || playSource == null)
         {
@@ -61,22 +47,32 @@ public class AudioManager : MonoBehaviour
             {
                 Debug.Log($"NO AUDIO SOURCE {playSource}.");
             }
+
+            return; // Return early if any null condition is met
+        }
+
+        if (isOneShot)
+        {
+            playSource.PlayOneShot(ele.SoundClip);
+        }
+        else
+        {
+            playSource.clip = ele.SoundClip;
+            playSource.Play();
         }
     }
 
-    public void PlayMusic(string name)
+    private CustomSoundEle FindSoundByName(string soundName, CustomSoundEle[] soundArray)
     {
-        CustomSoundEle s = Array.Find(musicSounds, x => x.SoundName == name);
+        foreach (CustomSoundEle sound in soundArray)
+        {
+            if (sound.SoundName == soundName)
+            {
+                return sound;
+            }
+        }
 
-        moveSource.clip = s.SoundClip;
-        moveSource.Play();
-    }
-
-    public void PlaySFX(string name)
-    {
-        CustomSoundEle s = Array.Find(sfxSounds, x => x.SoundName == name);
-
-        sfxSource.PlayOneShot(s.SoundClip);
+        return null;
     }
 
     public void ToggleMusic()
@@ -99,14 +95,5 @@ public class AudioManager : MonoBehaviour
     {
         sfxSource.volume = volume;
         moveSource.volume = volume;
-    }
-
-    private void EnsureAudioListener()
-    {
-        if (FindObjectOfType<AudioListener>() == null)
-        {
-            GameObject audioListenerObj = new GameObject("AudioListener");
-            audioListenerObj.AddComponent<AudioListener>();
-        }
     }
 }
