@@ -8,22 +8,27 @@ public class SpawnCheck : MonoBehaviour
 
     private void Start()
     {
+        DestroyExistingPlayer();
+    }
+
+    private void Update()
+    {
+        InstantiatePlayer();
+    }
+
+    // destroys any existing player object in the scene
+    private void DestroyExistingPlayer()
+    {
         GameObject player = GameObject.FindWithTag("Player");
         if (player != null)
         {
             Destroy(player);
         }
-        
-        GameObject spawner = GameObject.Find("PlayerSpawner");
-        //Instantiate(playerPrefab, spawner.transform.position, Quaternion.identity);
-        Instantiate(playerPrefab);
     }
 
-    private void Update()
+    // instantiates a new player object in the scene
+    private void InstantiatePlayer()
     {
-        for (int i = 0; i < 1; i++)
-        {
-            Instantiate(playerPrefab);
-        }
+        Instantiate(playerPrefab);
     }
 }

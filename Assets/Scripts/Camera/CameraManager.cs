@@ -51,9 +51,10 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+    // Set the size of the camera boundary for the Cave scene.
     private void SetBoundSize()
     {
-        if (GameInfo.CurrentSceneName == "Cave")
+        if (GameInfo != null && TerrainInfo != null && GameInfo.CurrentSceneName == "Cave")
         {
             CaveCameraBound.pathCount = 0;
 
@@ -66,23 +67,28 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+    // Set the camera boundary based on the current scene.
     private void SetCameraBoundary()
     {
-        switch (GameInfo.CurrentSceneName)
+        if (confiner != null)
         {
-            case "Company":
-                confiner.m_BoundingShape2D = CompanyCameraBound;
-                break;
+            switch (GameInfo?.CurrentSceneName)
+            {
+                case "Company":
+                    confiner.m_BoundingShape2D = CompanyCameraBound;
+                    break;
 
-            case "Cave":
-                confiner.m_BoundingShape2D = CaveCameraBound;
-                break;
+                case "Cave":
+                    confiner.m_BoundingShape2D = CaveCameraBound;
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
     }
 
+    // Set the camera to follow and look at the player.
     private void SetFollowPlayer()
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -91,7 +97,7 @@ public class CameraManager : MonoBehaviour
         {
             Transform playerTransform = player.transform;
 
-            if (playerTransform != null)
+            if (playerTransform != null && cinemachine != null)
             {
                 cinemachine.Follow = playerTransform;
                 cinemachine.LookAt = playerTransform;
