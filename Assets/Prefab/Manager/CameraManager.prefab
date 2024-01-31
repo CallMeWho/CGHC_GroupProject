@@ -50,10 +50,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Camera: {fileID: 2680528733708945509}
   VirtualCamera: {fileID: 8412185170784015874}
+  CompanyCameraBound: {fileID: 1732175753682448366}
   CaveCameraBound: {fileID: 1558804230719421795}
   GameInfo: {fileID: 11400000, guid: 6aff3c642ba480f4b9bc667943b91095, type: 2}
   TerrainInfo: {fileID: 11400000, guid: 4965bcc74452a89419197178527a5d38, type: 2}
-  ChangeBound: 0
 --- !u!1 &955014011372131695
 GameObject:
   m_ObjectHideFlags: 0
