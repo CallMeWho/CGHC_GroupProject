@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,84 +35,57 @@ public class TerrainGeneration : MonoBehaviour
 
     private void Start()
     {
-        if (terrainInfo.TerrainLevel < gameInfo.CaveLevel)
-        {
-            terrainInfo.TerrainLevel++;
-            terrainInfo.Width += 15;
-            terrainInfo.Height += 30;
-
-            terrainInfo.TerrainLightIntensity -= 0.1f;
-            if (terrainInfo.TerrainLightIntensity <= 0)
-            {
-                terrainInfo.TerrainLightIntensity = 0;
-            }
-        }
-
-        GenerateBaseTerrainArray();
-        RandomWalkCave();
-        GenerateCellularAutomata();
-        SmoothMooreCellularAutomata();
+        GenerateTerrain();
         GeneratePlayerSpawnPoint();
-        PlayerSpawner();
-        SetPlayerSpawnPoint();
         RenderTerrainArray();
 
-        GameObject entryPoint = GameObject.Find("entrypointtest");
-
-        if (entryPoint != null)
-        {
-            entryPoint.transform.position = new Vector3(terrainInfo.EntryPoint1.x + 0.5f, terrainInfo.EntryPoint1.y - 0.5f, 0);
-        }
-        else
-        {
-            entryPoint = Instantiate(playerSpawnPoint, new Vector3(terrainInfo.EntryPoint1.x + 0.5f, terrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
-        }
+        PlayerSpawner();
+        SetPlayerSpawnPoint();
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (terrainInfo.TerrainLevel != gameInfo.CaveLevel)
-            {
-                terrainInfo.Width += 15;
-                terrainInfo.Height += 30;
-                terrainInfo.TerrainLevel++;
-            }
-
-            GenerateBaseTerrainArray();
-            RandomWalkCave();
-            GenerateCellularAutomata();
-            SmoothMooreCellularAutomata();
+            GenerateTerrain();
             GeneratePlayerSpawnPoint();
-            PlayerSpawner();
-            SetPlayerSpawnPoint();
             RenderTerrainArray();
 
-            GameObject entryPoint = GameObject.Find("EntryPoint(Clone)");
-
-            if (entryPoint != null)
-            {
-                entryPoint.transform.position = new Vector3(terrainInfo.EntryPoint1.x + 0.5f, terrainInfo.EntryPoint1.y - 0.5f, 0);
-            }
-            else
-            {
-                entryPoint = Instantiate(playerSpawnPoint, new Vector3(terrainInfo.EntryPoint1.x + 0.5f, terrainInfo.EntryPoint1.y - 0.5f, 0), Quaternion.identity);
-            }
+            PlayerSpawner();
+            SetPlayerSpawnPoint();
         }
     }
 
-    public void GenerateBaseTerrainArray()
+    private void GenerateTerrain()
     {
-        terrainInfo.IsTerrainGenerated = false;
+        IncreaseTerrainLevel();
+        GenerateBaseTerrainArray();
+        RandomWalkCave();
+        GenerateCellularAutomata();
+        SmoothMooreCellularAutomata();
+    }
 
+    private void IncreaseTerrainLevel()
+    {
+        if (terrainInfo.TerrainLevel != gameInfo.CaveLevel)
+        {
+            // Increase the terrain level by a customizable amount
+            terrainInfo.TerrainLevel++;
+            terrainInfo.Width += 15;
+            terrainInfo.Height += 30;
+
+            terrainInfo.TerrainLightIntensity -= 0.1f;
+            terrainInfo.TerrainLightIntensity = Mathf.Max(terrainInfo.TerrainLightIntensity, 0);
+        }
+    }
+
+    private void GenerateBaseTerrainArray()
+    {
         int width = terrainInfo.Width;
         int height = terrainInfo.Height;
 
-        // Create a new 2D array for the terrain
         terrainInfo.TerrainArray = new int[width, height];
 
-        // Fill the terrain array with the default value of 1
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -120,7 +94,6 @@ public class TerrainGeneration : MonoBehaviour
             }
         }
 
-        // Get basic info about the terrain
         terrainInfo.Size = width * height;
         terrainInfo.BoundaryMaxPoint = new Vector2(width - 1, height - 1);
         terrainInfo.BoundaryMinPoint = Vector2.zero;
@@ -128,23 +101,20 @@ public class TerrainGeneration : MonoBehaviour
         terrainInfo.ActualSize = terrainInfo.Size;
     }
 
-    public void RandomWalkCave()
+    private void RandomWalkCave()
     {
-        terrainInfo.Seed = Random.Range(-100000, 100000);
-        UnityEngine.Random.InitState(terrainInfo.Seed.GetHashCode());
-
         int terrainWidth = terrainInfo.TerrainArray.GetLength(0);
         int terrainHeight = terrainInfo.TerrainArray.GetLength(1);
 
-        int block_Xpos = UnityEngine.Random.Range(1, terrainWidth - 1);
-        int block_Ypos = terrainHeight - 1;
-        terrainInfo.EntryPoint1 = new Vector2(block_Xpos, block_Ypos);
+        int currentX = UnityEngine.Random.Range(1, terrainWidth - 1);
+        int currentY = terrainHeight - 1;
+        terrainInfo.EntryPoint1 = new Vector2(currentX, currentY);
 
         int terrainSize = terrainHeight * terrainWidth;
         int playerMovingAreaCount = (terrainSize * terrainInfo.PlayerMovingAreaPercent) / 100;
 
         int blockCurrentFilledCount = 0;
-        terrainInfo.TerrainArray[block_Xpos, block_Ypos] = 0;
+        terrainInfo.TerrainArray[currentX, currentY] = 0;
         blockCurrentFilledCount++;
 
         while (blockCurrentFilledCount < playerMovingAreaCount)
@@ -154,52 +124,52 @@ public class TerrainGeneration : MonoBehaviour
             switch (randDir)
             {
                 case 0:
-                    if ((block_Ypos + 1) < (terrainHeight - 1))
+                    if ((currentY + 1) < (terrainHeight - 1))
                     {
-                        block_Ypos++;
+                        currentY++;
 
-                        if (terrainInfo.TerrainArray[block_Xpos, block_Ypos] == 1)
+                        if (terrainInfo.TerrainArray[currentX, currentY] == 1)
                         {
-                            terrainInfo.TerrainArray[block_Xpos, block_Ypos] = 0;
+                            terrainInfo.TerrainArray[currentX, currentY] = 0;
                             blockCurrentFilledCount++;
                         }
                     }
                     break;
 
                 case 1:
-                    if ((block_Ypos - 1) > 1)
+                    if ((currentY - 1) > 1)
                     {
-                        block_Ypos--;
+                        currentY--;
 
-                        if (terrainInfo.TerrainArray[block_Xpos, block_Ypos] == 1)
+                        if (terrainInfo.TerrainArray[currentX, currentY] == 1)
                         {
-                            terrainInfo.TerrainArray[block_Xpos, block_Ypos] = 0;
+                            terrainInfo.TerrainArray[currentX, currentY] = 0;
                             blockCurrentFilledCount++;
                         }
                     }
                     break;
 
                 case 2:
-                    if ((block_Xpos + 1) < (terrainWidth - 1))
+                    if ((currentX + 1) < (terrainWidth - 1))
                     {
-                        block_Xpos++;
+                        currentX++;
 
-                        if (terrainInfo.TerrainArray[block_Xpos, block_Ypos] == 1)
+                        if (terrainInfo.TerrainArray[currentX, currentY] == 1)
                         {
-                            terrainInfo.TerrainArray[block_Xpos, block_Ypos] = 0;
+                            terrainInfo.TerrainArray[currentX, currentY] = 0;
                             blockCurrentFilledCount++;
                         }
                     }
                     break;
 
                 case 3:
-                    if ((block_Xpos - 1) > 1)
+                    if ((currentX - 1) > 1)
                     {
-                        block_Xpos--;
+                        currentX--;
 
-                        if (terrainInfo.TerrainArray[block_Xpos, block_Ypos] == 1)
+                        if (terrainInfo.TerrainArray[currentX, currentY] == 1)
                         {
-                            terrainInfo.TerrainArray[block_Xpos, block_Ypos] = 0;
+                            terrainInfo.TerrainArray[currentX, currentY] = 0;
                             blockCurrentFilledCount++;
                         }
                     }
@@ -208,7 +178,7 @@ public class TerrainGeneration : MonoBehaviour
         }
     }
 
-    public void GenerateCellularAutomata()
+    private void GenerateCellularAutomata()
     {
         System.Random rand = new System.Random(terrainInfo.Seed.GetHashCode());
 
@@ -222,26 +192,26 @@ public class TerrainGeneration : MonoBehaviour
         FloodFill(entranceX, entranceY, terrainInfo.FillChance, rand);
     }
 
-    private void FloodFill(int x, int y, int fillPercent, System.Random rand)
+    private void FloodFill(int currentX, int currentY, int fillPercent, System.Random rand)
     {
         int terrainWidth = terrainInfo.TerrainArray.GetUpperBound(0);
         int terrainHeight = terrainInfo.TerrainArray.GetUpperBound(1);
 
-        if (x >= 0 && x < terrainWidth && y >= 0 && y < terrainHeight && terrainInfo.TerrainArray[x, y] == 0)
+        if (currentX >= 0 && currentX < terrainWidth && currentY >= 0 && currentY < terrainHeight && terrainInfo.TerrainArray[currentX, currentY] == 0)
         {
-            terrainInfo.TerrainArray[x, y] = (rand.Next(0, 100) < fillPercent) ? 1 : 0;
+            terrainInfo.TerrainArray[currentX, currentY] = (rand.Next(0, 100) < fillPercent) ? 1 : 0;
 
-            FloodFill(x + 1, y, fillPercent, rand);
-            FloodFill(x - 1, y, fillPercent, rand);
-            FloodFill(x, y + 1, fillPercent, rand);
-            FloodFill(x, y - 1, fillPercent, rand);
+            FloodFill(currentX + 1, currentY, fillPercent, rand);
+            FloodFill(currentX - 1, currentY, fillPercent, rand);
+            FloodFill(currentX, currentY + 1, fillPercent, rand);
+            FloodFill(currentX, currentY - 1, fillPercent, rand);
         }
     }
 
-    public int GetNeighbourTilesCount(int mainTile_XPos, int mainTile_YPos)
+    private int GetNeighbourTilesCount(int mainTile_XPos, int mainTile_YPos)
     {
-        int terrainWidth = terrainInfo.TerrainArray.GetUpperBound(0);
-        int terrainHeight = terrainInfo.TerrainArray.GetUpperBound(1);
+        int terrainWidth = terrainInfo.TerrainArray.GetLength(0);
+        int terrainHeight = terrainInfo.TerrainArray.GetLength(1);
 
         int tileCount = 0;
 
@@ -260,7 +230,7 @@ public class TerrainGeneration : MonoBehaviour
         return tileCount;
     }
 
-    public void SmoothMooreCellularAutomata()
+    private void SmoothMooreCellularAutomata()
     {
         int terrainWidth = terrainInfo.TerrainArray.GetUpperBound(0);
         int terrainHeight = terrainInfo.TerrainArray.GetUpperBound(1);
@@ -283,7 +253,7 @@ public class TerrainGeneration : MonoBehaviour
         }
     }
 
-    public void GeneratePlayerSpawnPoint()
+    private void GeneratePlayerSpawnPoint()
     {
         int terrainWidth = terrainInfo.TerrainArray.GetUpperBound(0);
         int terrainHeight = terrainInfo.TerrainArray.GetUpperBound(1);
@@ -324,7 +294,7 @@ public class TerrainGeneration : MonoBehaviour
         terrainInfo.IsTerrainGenerated = true;
     }
 
-    public void RenderTerrainArray()
+    private void RenderTerrainArray()
     {
         terrainTilemap.ClearAllTiles();
 
@@ -349,13 +319,13 @@ public class TerrainGeneration : MonoBehaviour
         }
     }
 
-    public void PlayerSpawner()
+    private void PlayerSpawner()
     {
         playerSpawnPoint.transform.position = new Vector3(terrainInfo.SpawnPoint.x, terrainInfo.SpawnPoint.y - 2, 0);
         playerTeleportPoint.transform.position = new Vector3(terrainInfo.SpawnPoint.x + 0.5f, terrainInfo.SpawnPoint.y, 0);
     }
 
-    public void SetPlayerSpawnPoint()
+    private void SetPlayerSpawnPoint()
     {
         GameObject existedPlayer = GameObject.FindGameObjectWithTag("Player");
 
