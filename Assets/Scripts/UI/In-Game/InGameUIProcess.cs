@@ -118,36 +118,32 @@ public class InGameUIProcess : MonoBehaviour
     private IEnumerator FadeHurtScreen(float minAlpha, float maxAlpha)  // max alpha is 1
     {
         Color targetColor = HurtScreenImage.color;
-        targetColor.a = 0;  // set initial alpha to screen
 
         float duration = 1f; // fade duration (editable)
-        float timer = 0f;    // elapsed time
+        int numSteps = 100; // number of steps for the fade
 
-        while (true) // this line is a must, or the update will be very quick, which has no kinda like waiting order.
+        for (int i = 0; i <= numSteps; i++)
         {
+            float t = i / (float)numSteps;
+
             // min alpha -> max alpha
-            while (timer < duration)
-            {
-                float alpha = Mathf.Lerp(minAlpha, maxAlpha, timer / duration); // get current alpha
-                HurtScreenImage.color = new Color(targetColor.r, targetColor.g, targetColor.b, alpha);
+            float alpha = Mathf.SmoothStep(minAlpha, maxAlpha, t);
+            targetColor.a = alpha;
+            HurtScreenImage.color = targetColor;
 
-                timer += Time.deltaTime;
-                yield return null;
-            }
+            yield return null;
+        }
 
-            timer = 0f; // reset timer
+        for (int i = 0; i <= numSteps; i++)
+        {
+            float t = i / (float)numSteps;
 
             // max alpha -> min alpha
-            while (timer < duration)
-            {
-                float alpha = Mathf.Lerp(maxAlpha, minAlpha, timer / duration); 
-                HurtScreenImage.color = new Color(targetColor.r, targetColor.g, targetColor.b, alpha);
+            float alpha = Mathf.SmoothStep(maxAlpha, minAlpha, t);
+            targetColor.a = alpha;
+            HurtScreenImage.color = targetColor;
 
-                timer += Time.deltaTime;
-                yield return null;
-            }
-
-            timer = 0f; // reset timer
+            yield return null;
         }
     }
 }
