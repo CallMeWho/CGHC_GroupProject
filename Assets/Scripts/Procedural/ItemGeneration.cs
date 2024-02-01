@@ -2,14 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.TerrainTools.PaintContext;
 
 public class ItemGeneration : MonoBehaviour
 {
-    [SerializeField]
-    public ItemTypes[] itemList;
+    [SerializeField] private ItemTypes[] itemList;
 
     [Header("Data Keeper")]
-    [SerializeField] public TerrainInfo TerrainInfo;
+    [SerializeField] private TerrainInfo terrainInfo;
 
     private bool hasGeneratedTerrain = false;
 
@@ -17,7 +17,7 @@ public class ItemGeneration : MonoBehaviour
     {
         if (!hasGeneratedTerrain)
         {
-            StartCoroutine(getterrain());
+            StartCoroutine(GetTerrain());
             hasGeneratedTerrain = true;
         }
 
@@ -27,41 +27,62 @@ public class ItemGeneration : MonoBehaviour
         }
     }
 
-    private IEnumerator getterrain()
+    private IEnumerator GetTerrain()
     {
-        foreach (ItemTypes ele in itemList)
+        try
         {
-            RemoveItems($"{ele.ItemName}Parent");
-            GameObject itemParent = ItemProcessMethods.CreateEmptyFolder($"{ele.ItemName}Parent");
-            int maxItems = (int)(TerrainInfo.TerrainArray.GetUpperBound(0) * TerrainInfo.TerrainArray.GetUpperBound(1) * ele.FillPercent);
-            int itemSpawned = 0;
-
-            for (int x = 0; x < TerrainInfo.TerrainArray.GetUpperBound(0); x++)
+            foreach (ItemTypes item in itemList)
             {
-                for (int y = 0; y < TerrainInfo.TerrainArray.GetUpperBound(1); y++)
+                RemoveItems($"{item.ItemName}Parent");
+                GameObject itemParent = ItemProcessMethods.CreateEmptyFolder($"{item.ItemName}Parent");
+
+                GenerateItems(item, itemParent);
+            }
+        }
+        catch (ArgumentNullException e)
+        {
+            Debug.LogError($"An argument null exception occurred: {e.Message}");
+        }
+        catch (InvalidOperationException e)
+        {
+            Debug.LogError($"An invalid operation exception occurred: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"An error occurred while generating items: {e.Message}");
+        }
+
+        yield return null;
+    }
+
+    private void GenerateItems(ItemTypes item, GameObject itemParent)
+    {
+        int maxX = terrainInfo.TerrainArray.GetUpperBound(0);
+        int maxY = terrainInfo.TerrainArray.GetUpperBound(1);
+        int maxItems = (int)(maxX * maxY * item.FillPercent);
+        int itemSpawned = 0;
+
+        for (int x = 0; x < maxX && itemSpawned < maxItems; x++)
+        {
+            for (int y = 0; y < maxY && itemSpawned < maxItems; y++)
+            {
+                if (terrainInfo.TerrainArray[x, y] == 0)
                 {
-                    if (TerrainInfo.TerrainArray[x, y] == 0)
+                    bool isAtEdge = ItemProcessMethods.GetAtEdge(terrainInfo.TerrainArray, x, y);
+                    float neighItemsCount = ItemProcessMethods.GetNeighItemsCount(terrainInfo.TerrainArray, x, y, item.DetectRadius, item.ArrayIndex);
+
+                    if (isAtEdge && neighItemsCount == 0 && UnityEngine.Random.value < item.SpawnProbability)
                     {
-                        bool isAtEdge = ItemProcessMethods.GetAtEdge(TerrainInfo.TerrainArray, x, y);
-                        float neighItemsCount = ItemProcessMethods.GetNeighItemsCount(TerrainInfo.TerrainArray, x, y, ele.DetectRadius, ele.ArrayIndex);
+                        Vector3 spawnPosition = new Vector3(x + item.SpawnOffset.x, y + item.SpawnOffset.y, item.SpawnOffset.z);
+                        GameObject newItem = ItemProcessMethods.GetRandomSelectedPrefab(item.PrefabList);
+                        Instantiate(newItem, spawnPosition, Quaternion.identity, itemParent.transform);
 
-                        if (isAtEdge && neighItemsCount == 0 && itemSpawned < maxItems)
-                            if (UnityEngine.Random.value < ele.SpawnProbability)
-                            {
-                                Vector3 spawnPosition = new Vector3(x + ele.SpawnOffset.x, y + ele.SpawnOffset.y, ele.SpawnOffset.z = 0.5f);
-                                GameObject newItem = ItemProcessMethods.GetRandomSelectedPrefab(ele.PrefabList);
-                                newItem = Instantiate(newItem, spawnPosition, Quaternion.identity);
-
-                                newItem.transform.SetParent(itemParent.transform);
-                                itemSpawned++;
-                                TerrainInfo.TerrainArray[x, y] = 2; // use 2 for easy item detection future
-                            }
+                        itemSpawned++;
+                        terrainInfo.TerrainArray[x, y] = 2; // Use 2 for easy item detection in the future
                     }
                 }
             }
         }
-
-        yield return null;
     }
 
     private void RemoveItems(string folderName)
@@ -77,6 +98,6 @@ public class ItemGeneration : MonoBehaviour
                 Destroy(itemParent.transform.GetChild(i).gameObject);   //cannot move to IPMethods because of Destroy function
             }
         }
-        else { return; }
+        else return;
     }
 }
