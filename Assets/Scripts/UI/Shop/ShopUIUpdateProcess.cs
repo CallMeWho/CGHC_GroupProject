@@ -5,23 +5,24 @@ using UnityEngine.SceneManagement;
 
 public class ShopUIUpdateProcess : MonoBehaviour
 {
-    [SerializeField] public GameObject[] Positions;
-    [SerializeField] public GameObject[] Books;
-
     public static GameObject ShopCanvasObj;
 
-    [Header("Data Keeper")]
-    [SerializeField] public GameInfo GameInfo;
+    [SerializeField] private GameObject[] bookPositions;
+    [SerializeField] private GameObject[] availableBooks;
+
     private bool bookGenerated = false;
-    private List<GameObject> generatedBooks = new List<GameObject>();
+    private Queue<GameObject> generatedBooks = new Queue<GameObject>();
 
     private void Start()
     {
-        // hide dead screen
+        // Set the game object to be inactive at the start
         gameObject.SetActive(false);
 
+        // Assign the game object to the static variable for easy access
         ShopCanvasObj = gameObject;
-        Canvas canvas = gameObject.GetComponent<Canvas>();
+
+        // Get the canvas component and set the sorting layer and order
+        var canvas = gameObject.GetComponent<Canvas>();
         canvas.sortingLayerName = "Map";
         canvas.sortingOrder = 10;
     }
@@ -31,7 +32,7 @@ public class ShopUIUpdateProcess : MonoBehaviour
         if (!bookGenerated)
         {
             bookGenerated = true;
-            RandomGenerateBook();
+            RandomGenerateBooks();
         }
     }
 
@@ -41,36 +42,39 @@ public class ShopUIUpdateProcess : MonoBehaviour
         ClearGeneratedBooks();
     }
 
-    private void RandomGenerateBook()
+    private void RandomGenerateBooks()
     {
-        List<GameObject> availableBooks = new List<GameObject>(Books); // Create a list to store available books
+        var availableBooksList = new List<GameObject>(availableBooks);
 
-        for (int i = 0; i < Positions.Length; i++)
+        for (int i = 0; i < bookPositions.Length; i++)
         {
-            if (availableBooks.Count == 0)
+            if (availableBooksList.Count == 0)
             {
-                Debug.Log("Not enough available books!");
+                // Log an error if there are no available books
+                Debug.LogError("Not enough available books!");
                 return;
             }
 
-            int randomIndex = Random.Range(0, availableBooks.Count); 
-            GameObject selectedBook = availableBooks[randomIndex];
+            int randomIndex = Random.Range(0, availableBooksList.Count);
+            GameObject selectedBook = availableBooksList[randomIndex];
 
-            GameObject instantiatedBook = Instantiate(selectedBook, Positions[i].transform.position, Quaternion.identity, transform);
-            generatedBooks.Add(instantiatedBook);
-            //Positions[i].transform.position = selectedBook.transform.position; 
-            //instantiatedBook.transform.SetParent(transform.parent);
+            // Instantiate the selected book at the position of the book position object
+            GameObject instantiatedBook = Instantiate(selectedBook,
+                bookPositions[i].transform.position, Quaternion.identity, transform);
+            generatedBooks.Enqueue(instantiatedBook);
 
-            availableBooks.RemoveAt(randomIndex);
+            // Remove the selected book from the available books list
+            availableBooksList.RemoveAt(randomIndex);
         }
     }
 
     private void ClearGeneratedBooks()
     {
-        foreach (GameObject book in generatedBooks)
+        while (generatedBooks.Count > 0)
         {
+            // Destroy the generated books
+            GameObject book = generatedBooks.Dequeue();
             Destroy(book);
         }
-        generatedBooks.Clear();
     }
 }

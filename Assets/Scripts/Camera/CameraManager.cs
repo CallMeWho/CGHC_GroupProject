@@ -42,14 +42,10 @@ public class CameraManager : MonoBehaviour
 
     private void Update()
     {
+        SetBoundSize();
         SetCameraBoundary();
         SetFollowPlayer();
         SetAudioListener();
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SetBoundSize();
-        }
     }
 
     // Set the size of the camera boundary for the Cave scene.

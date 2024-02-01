@@ -12,22 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf23aadf84d3b304581932e0be66ee5d, type: 3}
   m_Name: GameInfo
   m_EditorClassIdentifier: 
-  CurrentSceneName: Company
-  CaveLevel: 1
-  MaxSpeed: 15
-  MaxAcceleration: 40
+  CurrentSceneName: Cave
+  CaveLevel: 2
+  MaxSpeed: 25
+  MaxAcceleration: 50
   RotationSpeed: 720
   GroundFriction: 0
-  CurrentOxygen: 100
+  CurrentOxygen: 88.68028
   MaxOxygen: 100
   OxygenRecoverRate: 100
-  OxygenConsumptionRate: 0.5
-  CurrentWaterPressure: 0
+  OxygenConsumptionRate: 0.45
+  CurrentWaterPressure: 7.8102684
   MaxPressureCapacity: 100
   PressureChangeRate: 0.5
-  CurrentCredit: 412
-  Quota: 100
-  ShopCost: 150
+  CurrentCredit: 836
+  Quota: 300
+  ShopCost: 505
   CostIncrementPercent: 0.5
   LightIntensity: 2
   LightOuterRadius: 5
