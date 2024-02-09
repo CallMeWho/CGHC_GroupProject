@@ -7,8 +7,18 @@ using UnityEngine.UI;
 public class SettingsUIController : MonoBehaviour
 {
     public static GameObject SettingsCanvas;
-    
+    public static SettingsUIController Instance;
+
     public Slider MusicSlider, SfxSlider;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -38,6 +48,16 @@ public class SettingsUIController : MonoBehaviour
 
     public void CloseCanvas()
     {
+        //Instance.gameObject.SetActive(false);
         gameObject.SetActive(false);
+
+        InGameUIProcess.isPaused = false;
+        Time.timeScale = 1;
+    }
+
+    public void Leave()
+    {
+        CloseCanvas();
+        EndSceneSettings.BackToMenu();
     }
 }

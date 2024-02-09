@@ -26,6 +26,11 @@ public class InGameUIProcess : MonoBehaviour
     [Header("Hurt")]
     [SerializeField] public GameObject HurtScreen;
 
+    [Header("Pause")]
+    [SerializeField] private InputController input = null;
+    [SerializeField] private GameObject PauseMenu;
+    public static bool isPaused = false;
+
     [Header("Data Keeper")]
     [SerializeField] public GameInfo GameInfo;
     [SerializeField] public TerrainInfo TerrainInfo;
@@ -76,6 +81,8 @@ public class InGameUIProcess : MonoBehaviour
         ProcessHurtScreen();
         ProcessPressureUI();
         ProcessQuota();
+
+        CheckPauseInput();
     }
 
     private void ProcessOxygenUI()
@@ -148,6 +155,15 @@ public class InGameUIProcess : MonoBehaviour
 
                 yield return null;
             }
+        }
+    }
+
+    private void CheckPauseInput()
+    {
+        if (input.RetrievePauseInput() && !isPaused)
+        {
+            PauseMenu.SetActive(true);
+            Time.timeScale = 0;
         }
     }
 }

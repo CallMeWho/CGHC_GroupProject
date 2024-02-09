@@ -32,7 +32,7 @@ public class EndSceneSettings : MonoBehaviour
 
     // update not working in canvas here, dk why
 
-    public void BackToMenu()
+    public static void BackToMenu()
     {
         AudioManager audioManager = AudioManager.instance;
         audioManager.musicSource.Stop();

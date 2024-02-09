@@ -20,4 +20,9 @@ public class PlayerController : InputController
     {
         return Input.GetKey(KeyCode.J);
     }
+
+    public override bool RetrievePauseInput()
+    {
+        return Input.GetKey(KeyCode.Escape);
+    }
 }
