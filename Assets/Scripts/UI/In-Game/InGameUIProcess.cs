@@ -101,6 +101,7 @@ public class InGameUIProcess : MonoBehaviour
     // check player oxygen and show hurt screen
     private void ProcessHurtScreen()
     {
+
         if (GameInfo.CurrentOxygen <= GameInfo.MaxOxygen * 0.2f || GameInfo.CurrentWaterPressure >= GameInfo.MaxPressureCapacity * 0.9f)    // if lower than 20% of max oxygen
         {
             HurtScreen.SetActive(true);
@@ -117,33 +118,36 @@ public class InGameUIProcess : MonoBehaviour
     // future try if can use animation and timeline to do, instead of code here to make the effect
     private IEnumerator FadeHurtScreen(float minAlpha, float maxAlpha)  // max alpha is 1
     {
-        Color targetColor = HurtScreenImage.color;
-
-        float duration = 1f; // fade duration (editable)
-        int numSteps = 100; // number of steps for the fade
-
-        for (int i = 0; i <= numSteps; i++)
+        while (true)
         {
-            float t = i / (float)numSteps;
+            Color targetColor = HurtScreenImage.color;
 
-            // min alpha -> max alpha
-            float alpha = Mathf.SmoothStep(minAlpha, maxAlpha, t);
-            targetColor.a = alpha;
-            HurtScreenImage.color = targetColor;
+            float duration = 1f; // fade duration (editable)
+            int numSteps = 100; // number of steps for the fade
 
-            yield return null;
-        }
+            for (int i = 0; i <= numSteps; i++)
+            {
+                float t = i / (float)numSteps;
 
-        for (int i = 0; i <= numSteps; i++)
-        {
-            float t = i / (float)numSteps;
+                // min alpha -> max alpha
+                float alpha = Mathf.SmoothStep(minAlpha, maxAlpha, t);
+                targetColor.a = alpha;
+                HurtScreenImage.color = targetColor;
 
-            // max alpha -> min alpha
-            float alpha = Mathf.SmoothStep(maxAlpha, minAlpha, t);
-            targetColor.a = alpha;
-            HurtScreenImage.color = targetColor;
+                yield return null;
+            }
 
-            yield return null;
+            for (int i = 0; i <= numSteps; i++)
+            {
+                float t = i / (float)numSteps;
+
+                // max alpha -> min alpha
+                float alpha = Mathf.SmoothStep(maxAlpha, minAlpha, t);
+                targetColor.a = alpha;
+                HurtScreenImage.color = targetColor;
+
+                yield return null;
+            }
         }
     }
 }
